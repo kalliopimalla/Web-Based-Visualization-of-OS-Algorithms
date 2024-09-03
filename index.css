@@ -48,6 +48,7 @@ nav ul li a:hover {
     min-width: 200px;
     box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
     z-index: 1;
+    padding: 0;
 }
 
 .dropdown-content li {
@@ -69,6 +70,33 @@ nav ul li a:hover {
 /* Show Dropdown on Hover */
 .dropdown:hover .dropdown-content {
     display: block;
+}
+
+/* Submenu styles */
+.dropdown-submenu {
+    position: relative;
+}
+
+/* Submenu content hidden by default */
+.submenu-content {
+    display: none;
+    position: absolute;
+    left: 100%; /* Aligns the submenu to the right of its parent */
+    top: 0;
+    background-color: #e38a45;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Show submenu on hover */
+.dropdown-submenu:hover .submenu-content {
+    display: block;
+}
+
+/* Submenu item hover effect */
+.submenu-content li a:hover {
+    background-color: #ff5722;
 }
 
 /* Στυλ για το Hero Section */
