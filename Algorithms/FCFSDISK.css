@@ -1,0 +1,549 @@
+/* Βασικά στυλ για τη σελίδα */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+/* Στυλ για το Header */
+header {
+    background-color: teal;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    position: relative;
+    margin-right: 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: inline-block;
+    transition: background-color 0.3s ease;
+}
+
+/* Hover Effect for Menu Items */
+nav ul li a:hover {
+    background-color: #ff5722;
+}
+
+/* Dropdown Menu Styles */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #e38a45;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    padding: 0;
+}
+
+.dropdown-content li {
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content li a {
+    padding: 12px 16px;
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content li a:hover {
+    background-color: #ff5722;
+}
+
+/* Show Dropdown on Hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Submenu styles */
+.dropdown-submenu {
+    position: relative;
+}
+
+/* Submenu content hidden by default */
+.submenu-content {
+    display: none;
+    position: absolute;
+    left: 100%; /* Aligns the submenu to the right of its parent */
+    top: 0;
+    background-color: #e38a45;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Show submenu on hover */
+.dropdown-submenu:hover .submenu-content {
+    display: block;
+}
+
+/* Submenu item hover effect */
+.submenu-content li a:hover {
+    background-color: #ff5722;
+}
+
+/* Στυλ για το Hero Section */
+.hero-section {
+    background: url('hero-image.jpg') no-repeat center center/cover;
+    color: white;
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero-section h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.hero-section p {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.hero-section .btn {
+    background-color: #ff5722;
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+/* Στυλ για το Main Content */
+.main-content {
+    padding: 20px;
+    text-align: center;
+}
+
+.section {
+    margin-bottom: 40px;
+}
+
+.section h2 {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+/* Στυλ για το Footer */
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+footer ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+footer ul li {
+    display: inline;
+    margin-right: 15px;
+}
+
+footer ul li a {
+    color: white;
+    text-decoration: none;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    width: 100vw;
+    overflow-x: hidden;
+    background-color: white;
+  }
+  
+  .nav {
+    z-index: 3;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 8vh;
+    position: fixed;
+    background-color: white;
+    box-shadow: 0px 0.5px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  .nav > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    padding: 5px;
+    width: 80%;
+  }
+  
+  .nav > div > .name {
+    font-size: 18px;
+    letter-spacing: 3px;
+    width: 20%;
+  }
+  
+  .nav > div > .name > a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  .nav > div > .logo {
+    font-family: "Chonburi", cursive;
+    font-size: 28px;
+    letter-spacing: 2px;
+    width: 60%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .nav > div > .button {
+    display: flex;
+    justify-content: flex-end;
+    width: 20%;
+  }
+  
+  .nav > div > .button > div {
+    border: 1px solid black;
+    color: black;
+    padding: 10px 30px;
+    position: relative;
+  }
+  
+  @keyframes forward-text {
+    from {
+      color: black;
+    }
+    to {
+      color: white;
+    }
+  }
+  
+  @keyframes reverse-text {
+    from {
+      color: white;
+    }
+    to {
+      color: black;
+    }
+  }
+  
+  .nav > div > .button > div > div {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 1);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  
+  @keyframes hover-on {
+    100% {
+      transform: scaleX(1);
+    }
+  }
+  
+  @keyframes hover-out {
+    0% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+  
+  .menu {
+    position: fixed;
+    margin-top: 8vh;
+    right: 0;
+    background-color: white;
+    transform: scaleX(0);
+    transform-origin: right;
+    opacity: 1;
+    box-shadow: -2px 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 2;
+  }
+  
+  @keyframes slide-out {
+    100% {
+      transform: scaleX(1);
+    }
+  }
+  
+  @keyframes slide-in {
+    0% {
+      transform: scaleX(1);
+    }
+    100% {
+      transform: scaleX(0);
+    }
+  }
+  
+  .menu > .menu-item {
+    padding: 10px;
+    opacity: 0;
+  }
+  
+  @keyframes reverse-menu {
+    40% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+  @keyframes forward-menu {
+    0% {
+      opacity: 1;
+    }
+    40% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  
+  .menu > .menu-item > div {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .menu > .menu-item > div > a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .menu > .menu-item > div > a > div {
+    margin: 20px;
+    width: 7vw;
+    height: 7vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .menu > .menu-item > div > a > div::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    transition: top, bottom, right, left, 300ms ease-in-out;
+  }
+  
+  .menu > .menu-item > div > a > .fcfs::before {
+    border: 3px solid #ffc000;
+  }
+  .menu > .menu-item > div > a > .sjf::before {
+    border: 3px solid #06b0d7;
+  }
+  .menu > .menu-item > div > a > .ljf::before {
+    border: 3px solid #010b1e;
+  }
+  .menu > .menu-item > div > a > .rr::before {
+    border: 3px solid #430f0f;
+  }
+  .menu > .menu-item > div > a > .srjf::before {
+    border: 3px solid #e41d1d;
+  }
+  .menu > .menu-item > div > a > .pp::before {
+    border: 3px solid #484749;
+  }
+  .menu > .menu-item > div > a > .hrrn::before {
+    border: 3px solid #ff005d;
+  }
+  .menu > .menu-item > div > a > .lrjf::before {
+    border: 3px solid #220a41;
+  }
+  .menu > .menu-item > div > a > .pnp::before {
+    border: 3px solid #dda3c4;
+  }
+  
+  .menu > .menu-item > div > a > div:hover::before,
+  .menu > .menu-item > div > a > div:focus::before {
+    top: calc(4px * -1.5);
+    bottom: calc(4px * -1.5);
+    right: calc(4px * -1.5);
+    left: calc(4px * -1.5);
+  }
+  
+  .menu > .menu-item > div > a > div > div:first-child {
+    font-family: "Work Sans", sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+  }
+  
+  .menu > .menu-item > div > a > div > div:last-child {
+    font-family: "Work Sans", sans-serif;
+    font-size: 9px;
+    font-weight: 400;
+    text-align: center;
+  }
+  
+  .menu > .menu-item > div > a > .fcfs {
+    background-color: #ffc000;
+  }
+  
+  .menu > .menu-item > div > a > .sjf {
+    background-color: #06b0d7;
+  }
+  
+  .menu > .menu-item > div > a > .ljf {
+    background-color: #010b1e;
+    color: aliceblue;
+  }
+  
+  .menu > .menu-item > div > a > .rr {
+    background-color: #430f0f;
+    color: aliceblue;
+  }
+  
+  .menu > .menu-item > div > a > .srjf {
+    background-color: #e41d1d;
+    color: aliceblue;
+  }
+  
+  .menu > .menu-item > div > a > .pp {
+    background-color: #484749;
+    color: aliceblue;
+  }
+  
+  .menu > .menu-item > div > a > .hrrn {
+    background-color: #ff005d;
+    color: aliceblue;
+  }
+  
+  .menu > .menu-item > div > a > .lrjf {
+    background-color: #220a41;
+    color: aliceblue;
+  }
+  
+  .menu > .menu-item > div > a > .pnp {
+    background-color: #dda3c4;
+  }
+  
+  .content {
+    padding: 8vh 45px 0px 30px;
+    width: 100%;
+    font-family: "Chonburi", serif;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .content > .theory {
+    background-color: white;
+  }
+  
+  .content > .theory > .theory-heading {
+    text-align: center;
+    padding: 40px 0px;
+    background-color: #ff5722;
+    letter-spacing: 5px;
+    border-radius: 5px;
+  }
+  
+  .content > .theory > .theory-heading > div:first-child {
+    font-size: 30px;
+    font-weight: 600;
+    padding: 30px 0px;
+  }
+  
+  .content > .theory > .theory-heading > div:last-child {
+    font-size: 20px;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+  }
+  
+  .content > .theory > .theory-text {
+    margin: 20px 0px;
+    background-color: rgb(243, 243, 243);
+    border-radius: 5px;
+    padding: 50px 100px;
+  }
+  
+  .content > .theory > .theory-text > div:first-child {
+    font-size: 25px;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  
+  .content > .theory > .theory-text > div:nth-child(2) {
+    height: 1.5px;
+    background-color: rgb(216, 216, 216);
+    width: 100%;
+  }
+  
+  .content > .theory > .theory-text > div:last-child {
+    text-align: justify;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 400;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    line-height: 30px;
+    color: rgb(61, 61, 61);
+    padding-top: 20px;
+  }
+  
+  .content > .theory > .theory-step {
+    margin: 20px 0px;
+    background-color: #252141;
+    border-radius: 5px;
+    padding: 20px 100px 40px 100px;
+  }
+  
+  .content > .theory > .theory-step > ul {
+    text-align: justify;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    line-height: 30px;
+    color: rgb(221, 221, 221);
+    padding: 20px 0px 0px 20px;
+    list-style: none;
+  }
+  
+  .content > .theory > .theory-step > ul > label {
+    font-family: "Work Sans", sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #638891;
+    letter-spacing: 0.5px;
+    line-height: 30px;
+  }
+  
+  .content > .theory > .theory-step > ul > li {
+    padding-bottom: 15px;
+  }
+  
+ 

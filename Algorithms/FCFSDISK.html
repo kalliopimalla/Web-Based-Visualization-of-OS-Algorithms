@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web-Based Εφαρμογή Αλγορίθμων</title>
-    <link rel="stylesheet" href="../index.css"> <!-- Συνδέουμε το CSS αρχείο -->
+    <link rel="stylesheet" href="FCFSDISK.css"> 
 </head>
 <body>
 
@@ -26,7 +26,7 @@
                             <a href="#">Disk Scheduling Algorithms</a>
                             <ul class="submenu-content">
                                 <!-- Στο Disk Scheduling Algorithms Submenu -->
-                                <li><a>FCFS</a></li>
+                                <li><a href="FCFSDISK.html">FCFS</a></li>
                                 <li><a href="SSTF.html">SSTF</a></li>
                                 <li><a href="SCAN.html">SCAN</a></li>
                                 <li><a href="CSCAN.html">C-SCAN</a></li>
@@ -66,7 +66,53 @@
     </header>
 
     <!-- Hero Section -->
-  
+    <div class="content">
+
+        <div class="theory">
+          <div class="theory-heading">
+            <div>First Come First Serve</div>
+            <div>F.C.F.S.</div>
+          </div>
+
+          <div class="theory-text">
+            <div>Αλγόριθμος FCFS: Λειτουργία και Χαρακτηριστικά</div>
+            <div></div>
+            <div>
+                Ο αλγόριθμος FCFS (First-Come-First-Serve) είναι ο πιο απλός αλγόριθμος προγραμματισμού δίσκων. Σε αυτόν τον αλγόριθμο,
+                 κάθε αίτημα εισόδου/εξόδου εξυπηρετείται με βάση τη σειρά που φτάνουν. Δηλαδή, τα αιτήματα εξυπηρετούνται αυστηρά κατά 
+                 προτεραιότητα, χωρίς να υπάρχει προτίμηση σε κανένα συγκεκριμένο αίτημα.
+                <h2>Πλεονεκτήματα</h2>
+                <ul>
+                    <li>Δεν υπάρχει αόριστη καθυστέρηση για την εξυπηρέτηση των αιτημάτων.</li>
+                    <li>Δεν εμφανίζεται πείνα (starvation), αφού κάθε αίτημα έχει ίσες πιθανότητες να εξυπηρετηθεί.</li>
+                </ul>
+            
+                <h2>Μειονεκτήματα</h2>
+                <ul>
+                    <li>Δεν προσφέρει τη βέλτιστη εξυπηρέτηση.</li>
+                    <li>Ο χρόνος προγραμματισμού δίσκου δεν είναι βελτιστοποιημένος, γεγονός που μπορεί να οδηγήσει σε μεγάλους χρόνους αναμονής.</li>
+                </ul>
+            </div>
+          </div>
+          <div class="theory-step">
+            <ul>
+
+            <label>ΒΗΜΑ 1 :</label>
+            <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο FCFS.</li>
+
+            <label>ΒΗΜΑ 2 :</label>
+            <li>Εισάγετε τη τρέχουσα θέση της κεφαλής.</li>
+            
+           <label>ΒΗΜΑ 3 :</label>
+           <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
+
+          </ul>
+          </div>
+        </div>
+      </div>
+
+
+    
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Web-Based Εφαρμογή Αλγορίθμων. All rights reserved.</p>
