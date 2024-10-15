@@ -107,13 +107,24 @@
           </div>
         </div>
       </div>
-
-
+      <div class="content">
+      <div class="container">
+        <div class="input-steps">
+            <p>Tracks</p>
+            <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...).Προσοχή στα κενά !">
+            <p>Head position</p>
+            <input type="number" id="head-position" placeholder="π.χ. 50">
+            <button onclick="runFCFS()">Εκτέλεση</button>
+        </div>
+        <p id="seek-count"></p>
+        <div id="seek-sequence" class="seek-sequence"></div>
+    </div>
+  </div>
     
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Web-Based Εφαρμογή Αλγορίθμων. All rights reserved.</p>
     </footer>
-
+    <script src="script.js"></script>
 </body>
 </html>
