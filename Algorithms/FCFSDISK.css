@@ -549,22 +549,7 @@ footer ul li a {
     padding-bottom: 15px;
   }
   
- /*Στυλ για τα κουμπιά περισσότερων πληροφοριών κάτω απο την εξήγηση των πληροφοριών */
- .buttonSeeMore {
-  display: inline-block;
-  padding: 5px 15px; 
-  margin: 5px 0; 
-  background-color: lightgray; 
-  color: #333; 
-  text-decoration: none;
-  border-radius: 3px; 
-  font-size: 0.9em; 
-  border: 1px solid #ccc; 
-}
-.buttonSeeMore:hover {
-  background-color: #e0e0e0; 
-  border-color: #bbb; 
-}
+
 
 
 
