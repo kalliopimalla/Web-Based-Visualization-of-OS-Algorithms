@@ -109,12 +109,34 @@
         </div>
       </div>
 
+    </ul>
+</div>
+</div>
+</div>
+<div class="content">
+<div class="container">
+    <div class="input-steps">
+        <p>Tracks</p>
+        <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...).Προσοχή στα κενά !">
+        <p>Head position</p>
+        <input type="number" id="head-position" placeholder="π.χ. 50">
+        <button onclick="runSSTF()">Εκτέλεση</button> 
+    </div>
+    
+    <p id="seek-count"></p>
+    <div id="seek-sequence" class="seek-sequence"></div>
+    <canvas id="seekCanvas" width="800" height="400" style="border: 1px solid #000; margin-top: 20px;"></canvas>
+
+
+</div>
+</div>
+<br>
 
 
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 AlgoVista. All rights reserved.</p>
     </footer>
-
+    <script src="SSTF.js"></script>
 </body>
 </html>
