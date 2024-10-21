@@ -1,49 +1,79 @@
 function runFCFS() {
-    // Λήψη της ουράς διεργασιών και της θέσης κεφαλής από τον χρήστη
-    var processQueueInput = document.getElementById('process-queue').value;
-    var headPositionInput = parseInt(document.getElementById('head-position').value);
-
-    // Μετατροπή της ουράς διεργασιών σε πίνακα αριθμών
-    var arr = processQueueInput.split(',').map(Number);
-
-    // Έλεγχος αν η είσοδος είναι έγκυρη
-    if (arr.length === 0 || isNaN(headPositionInput)) {
-        alert('Παρακαλώ εισάγετε έγκυρες τιμές για την ουρά διεργασιών και τη θέση κεφαλής.');
+    // Λάβετε τις τιμές εισόδου
+    const inputQueue = document.getElementById("process-queue").value.trim();
+    const headPosition = parseInt(document.getElementById("head-position").value);
+    
+    // Έλεγχος αν οι είσοδοι είναι έγκυροι
+    if (!inputQueue || isNaN(headPosition)) {
+        alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
 
-    // Κλήση της συνάρτησης FCFS με τις τιμές που εισήγαγε ο χρήστης
-    FCFS(arr, headPositionInput);
-}
+    // Ανάλυση της ουράς εισόδου σε πίνακα αιτημάτων
+    const requestQueue = inputQueue.split(",").map(Number);
+    
+    // Υλοποίηση του αλγορίθμου FCFS
+    let seekCount = 0; // Μετρητής κινήσεων
+    let seekSequence = [headPosition]; // Σειρά εξυπηρέτησης
+    let currentPosition = headPosition; // Τρέχουσα θέση κεφαλής
 
-// Javascript program to demonstrate
-// FCFS Disk Scheduling algorithm
-function FCFS(arr, head) {
-    var seek_count = 0;
-    var distance, cur_track;
-    var sequence = '';
-
-    for (var i = 0; i < arr.length; i++) {
-        cur_track = arr[i];
-
-        // Υπολογισμός απόστασης
-        distance = Math.abs(cur_track - head);
-
-        // Αύξηση του συνολικού αριθμού των seek operations
-        seek_count += distance;
-
-        // Το τρέχον track γίνεται η νέα κεφαλή
-        head = cur_track;
-
-        // Προσθήκη στο sequence
-        sequence += '<div class="disk-track">' + cur_track + '</div>';
+    for (let i = 0; i < requestQueue.length; i++) {
+        // Υπολογισμός της απόστασης από την τρέχουσα θέση στο επόμενο αίτημα
+        let distance = Math.abs(currentPosition - requestQueue[i]);
+        seekCount += distance; // Ενημέρωση του μετρητή κινήσεων
+        currentPosition = requestQueue[i]; // Ενημέρωση της τρέχουσας θέσης
+        seekSequence.push(currentPosition); // Προσθήκη στη σειρά εξυπηρέτησης
     }
 
-    // Εμφάνιση του συνολικού αριθμού seek operations
-    document.getElementById('seek-count').textContent =
-        'Συνολικός αριθμός seek operations = ' + seek_count;
+    // Εμφάνιση των αποτελεσμάτων
+    document.getElementById("seek-count").innerText = `Σύνολο κινήσεων: ${seekCount}`;
+    document.getElementById("seek-sequence").innerText = `Σειρά εξυπηρέτησης: ${seekSequence.join(" -> ")}`;
 
-    // Εμφάνιση της σειράς εξυπηρέτησης
-    document.getElementById('seek-sequence').innerHTML = 
-        'Η σειρά εξυπηρέτησης είναι: <br>' + sequence;
+    // Οπτικοποίηση της σειράς κινήσεων
+    visualizeSeekSequence(seekSequence);
+}
+
+function visualizeSeekSequence(seekSequence) {
+    // Λάβετε το στοιχείο καμβά
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Καθαρίστε την προηγούμενη οπτικοποίηση
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Ρύθμιση ιδιοτήτων καμβά
+    const trackHeight = canvas.height - 40; // Χώρος για περιθώρια
+    const trackWidth = canvas.width / (199 - 0); // Υποθέτοντας μέγεθος δίσκου 199
+    const margin = 20; // Περιθώριο
+    const startY = margin; // Αρχικό Y
+
+    // Σχεδίαση της σειράς κινήσεων ως βέλη
+    ctx.lineWidth = 2; // Πάχος γραμμής
+    ctx.strokeStyle = "green"; // Χρώμα γραμμής
+    ctx.fillStyle = "green"; // Χρώμα πλήρωσης
+    ctx.font = "12px Arial"; // Γραμματοσειρά
+
+    for (let i = 0; i < seekSequence.length - 1; i++) {
+        // Υπολογισμός θέσεων για το τρέχον και το επόμενο αίτημα
+        const x1 = seekSequence[i] * trackWidth + margin;
+        const y1 = startY + (i * (trackHeight / (seekSequence.length - 1)));
+        const x2 = seekSequence[i + 1] * trackWidth + margin;
+        const y2 = startY + ((i + 1) * (trackHeight / (seekSequence.length - 1)));
+
+        // Σχεδίαση γραμμής
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Σχεδίαση κεφαλής βέλους
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const arrowLength = 10; // Μήκος βέλους
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fill();
+    }
 }
