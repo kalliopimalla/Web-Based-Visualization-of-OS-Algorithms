@@ -65,7 +65,7 @@ function drawCLOOK(sequence) {
         }
     }
 
-    ctx.strokeStyle = "blue"; // Χρώμα γραμμής
+    ctx.strokeStyle = "green"; // Χρώμα γραμμής
     ctx.lineWidth = 2; // Πάχος γραμμής
     ctx.stroke(); // Σχεδιάζουμε τη γραμμή
 }
