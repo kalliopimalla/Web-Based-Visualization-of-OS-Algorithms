@@ -107,10 +107,27 @@
         </div>
       </div>
   
+      <div class="content">
+        <div class="container">
+          <div class="input-steps">
+              <p>Χρόνοι εκτέλεσης διεργασιών :</p>
+              <input type="text" id="burst-time" placeholder="(π.χ. 8,9,4,...).Προσοχή στα κενά !">
+              <p>Χρόνοι άφιξης διεργασιών :</p>
+              <input type="text" id="arrival-time" placeholder="π.χ. 4,6,8,....">
+              <button onclick="runSJF()">Εκτέλεση</button>
+          </div>
+          <p id="seek-count"></p>
+          <div id="seek-sequence" class="seek-sequence"></div>
+          <canvas id="seekCanvas" width="800" height="400" style="border: 1px solid #000; margin-top: 20px;"></canvas>
+  
+      </div>
+    </div>
+      <br>
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
     </footer>
-
+    <script src="SJF.js"></script>
 </body>
 </html>
+

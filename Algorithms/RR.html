@@ -100,7 +100,7 @@
             <label>ΒΗΜΑ 3 :</label>
             <li>Εισάγετε και το επιθυμητό κβάντο χρόνου.</li>
             
-            <label>ΒΗΜΑ 3 :</label>
+            <label>ΒΗΜΑ 4 :</label>
            <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
     
                 
@@ -109,10 +109,30 @@
                     </div>
                   </div>
   
+                  <div class="content">
+                    <div class="container">
+                      <div class="input-steps">
+                          <p>Χρόνοι εκτέλεσης διεργασιών :</p>
+                          <input type="text" id="burst-time" placeholder="(π.χ. 8,9,4,...).Προσοχή στα κενά !">
+                          <p>Χρόνοι άφιξης διεργασιών :</p>
+                          <input type="text" id="arrival-time" placeholder="π.χ. 4,6,8,....">
+                          <p>Κβάντο χρόνου :</p>
+                          <input type="number" id="quantum" placeholder="π.χ. 2">
+                          <button onclick="runRR()">Εκτέλεση</button>
+                      </div>
+                      <p id="seek-count"></p>
+                      <div id="seek-sequence" class="seek-sequence"></div>
+                      <canvas id="seekCanvas" width="800" height="400" style="border: 1px solid #000; margin-top: 20px;"></canvas>
+              
+                  </div>
+                </div>
+                  <br>
+
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
     </footer>
-
+    <script src="RR.js"></script>
 </body>
 </html>
+
