@@ -1,21 +1,16 @@
 // Ορισμός του μεγέθους του δίσκου
 let disk_size = 199;
 
-// Συνάρτηση εκτέλεσης του C-SCAN
 function executeCSCAN() {
     let tracksInput = document.getElementById("process-queue").value;
     let head = parseInt(document.getElementById("head-position").value);
-    let direction = document.getElementById("direction").value;
-
-    // Μετατροπή των εισαγόμενων κομματιών (tracks) σε πίνακα αριθμών
+    let direction = document.getElementById("direction").value;  // Αποθηκεύουμε την κατεύθυνση
     let tracks = tracksInput.split(',').map(Number).filter(num => !isNaN(num));
 
-    // Προσθέτουμε το 0 αν δεν υπάρχει
     if (!tracks.includes(0)) {
-        tracks.push(0); 
+        tracks.push(0);
     }
-    
-    // Ταξινόμηση των κομματιών
+
     tracks.sort((a, b) => a - b);
     let left = [], right = [];
     let seekSequence = [];
@@ -27,9 +22,13 @@ function executeCSCAN() {
         if (tracks[i] > head) right.push(tracks[i]);
     }
 
-    // Υπολογισμός της ακολουθίας αναζήτησης
-    right.push(disk_size); // Προσθέτουμε το μέγιστο κομμάτι
-    seekSequence = [...right, 0, ...left]; // Δεξιά πρώτα, μετά 0, μετά αριστερά
+    if (direction === "right") {
+        right.push(disk_size); // Προσθέτουμε το μέγιστο κομμάτι αν πάμε δεξιά
+        seekSequence = [...right, 0, ...left]; // Δεξιά πρώτα, μετά 0, μετά αριστερά
+    } else {
+        left.unshift(0); // Προσθέτουμε το 0 αν πάμε αριστερά
+        seekSequence = [...left.reverse(), disk_size, ...right.reverse()]; // Αριστερά πρώτα, μετά max, μετά δεξιά
+    }
 
     // Υπολογισμός του συνολικού κόστους αναζήτησης
     let currentPos = head;
@@ -44,6 +43,7 @@ function executeCSCAN() {
     
     drawCSCAN(seekSequence); // Σχεδίαση της ακολουθίας C-SCAN
 }
+
 
 // Συνάρτηση που απεικονίζει την ακολουθία του C-SCAN σε καμβά
 function drawCSCAN(sequence) {
