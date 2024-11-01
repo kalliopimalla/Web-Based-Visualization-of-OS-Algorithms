@@ -80,11 +80,29 @@ function visualizeSeekSequence(seekSequence) {
     const margin = 20; // Περιθώριο
     const startY = margin; // Αρχικό Y
 
+    // Σχεδίαση της ευθείας γραμμής με τους αριθμούς
+    ctx.strokeStyle = "black"; // Χρώμα γραμμής
+    ctx.lineWidth = 1; // Πάχος γραμμής
+    const blackLineY = startY; // Τοποθέτηση της γκρι γραμμής στην αρχή του καμβά
+    ctx.beginPath();
+    ctx.moveTo(margin, blackLineY); // Αρχή της ευθείας γραμμής
+    ctx.lineTo(canvas.width - margin, blackLineY); // Τέλος της ευθείας γραμμής
+    ctx.stroke();
+
+// Σχεδίαση των αριθμών πάνω στη γραμμή
+ctx.fillStyle = "green"; // Χρώμα πλήρωσης
+ctx.font = "12px Arial"; // Γραμματοσειρά
+for (let i = 0; i < seekSequence.length; i++) {
+    const x = seekSequence[i] * trackWidth + margin;
+    ctx.fillText(seekSequence[i], x, blackLineY - 10); // Το -5 μετατοπίζει το κείμενο λίγο πάνω από τη γραμμή
+}
+
+
+
     // Σχεδίαση της σειράς κινήσεων ως βέλη
     ctx.lineWidth = 2; // Πάχος γραμμής
     ctx.strokeStyle = "green"; // Χρώμα γραμμής
     ctx.fillStyle = "green"; // Χρώμα πλήρωσης
-    ctx.font = "12px Arial"; // Γραμματοσειρά
 
     for (let i = 0; i < seekSequence.length - 1; i++) {
         // Υπολογισμός θέσεων για το τρέχον και το επόμενο αίτημα
@@ -110,3 +128,8 @@ function visualizeSeekSequence(seekSequence) {
         ctx.fill();
     }
 }
+
+
+
+
+
