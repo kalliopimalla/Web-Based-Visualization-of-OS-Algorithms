@@ -116,10 +116,18 @@
 <div class="content">
 <div class="container">
     <div class="input-steps">
+
         <p>Η σειρά των αιτήσεων:</p>
-        <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...).Προσοχή στα κενά !">
+        <div class="popup">
+        <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
+        <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+        </div>
+       
         <p>Η θέση της κεφαλής :</p>
+        <div class="popup">
         <input type="number" id="head-position" placeholder="π.χ. 50">
+        <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
+        </div>
         <button onclick="runSSTF()">Εκτέλεση</button> 
     </div>
     

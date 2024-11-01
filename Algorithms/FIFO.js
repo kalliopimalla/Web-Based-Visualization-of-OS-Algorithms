@@ -25,16 +25,15 @@ function runFIFO() {
     const startX = 50;     // Αρχικό X
     const startY = 50;     // Αρχικό Y
 
-    // Διέρχεται την ακολουθία σελίδων και ζωγραφίζει μόνο τα γεμάτα πλαίσια
+    // Διέρχεται την ακολουθία σελίδων και ζωγραφίζει το στάδιο κάθε βήματος
     for (let i = 0; i < pages.length; i++) {
         const page = pages[i];
 
-        // Ελέγχει αν η σελίδα είναι ήδη στα πλαίσια (hit)
-        if (frames.includes(page)) {
+        // Έλεγχος για hit ή fault
+        let isHit = frames.includes(page);
+        if (isHit) {
             hits++;
-            ctx.fillStyle = "#b3ffb3"; // Πράσινο για hit
         } else {
-            // Αν όχι, προσθέτει τη σελίδα και αυξάνει τα page faults
             if (frames.length < frameNumber) {
                 frames.push(page);
             } else {
@@ -42,24 +41,35 @@ function runFIFO() {
                 frames.push(page);
             }
             pageFaults++;
-            ctx.fillStyle = "#ff9999"; // Κόκκινο για page fault
         }
 
-        // Ζωγραφίζει τα γεμάτα πλαίσια
-        for (let j = 0; j < frames.length; j++) {
+        // Ρυθμίσεις χρώματος για hit ή fault
+        const fillColor = isHit ? "#b3ffb3" : "#ff9999"; // Πράσινο για hit, κόκκινο για fault
+        ctx.fillStyle = fillColor;
+
+        // Ζωγραφίζει τα πλαίσια
+        for (let j = 0; j < frameNumber; j++) {
             if (frames[j] !== undefined) {
+                // Σχεδιασμός κελιού για κάθε σελίδα
                 ctx.fillRect(startX + i * cellWidth, startY + j * cellHeight, cellWidth, cellHeight);
                 ctx.strokeRect(startX + i * cellWidth, startY + j * cellHeight, cellWidth, cellHeight);
+
+                // Εμφάνιση αριθμού της σελίδας στο κελί
                 ctx.fillStyle = "black";
                 ctx.fillText(frames[j], startX + i * cellWidth + 15, startY + j * cellHeight + 30);
+            } else {
+                // Κελί κενό αν δεν υπάρχει σελίδα
+                ctx.clearRect(startX + i * cellWidth, startY + j * cellHeight, cellWidth, cellHeight);
             }
         }
+
+        // Προβολή hit/fault δίπλα σε κάθε βήμα
+        ctx.fillStyle = fillColor;
+        ctx.fillText(isHit ? "H" : "F", startX + i * cellWidth + 15, startY + frameNumber * cellHeight + 20);
     }
 
-    // Υπολογίζει το hit rate
+    // Υπολογίζει και εμφανίζει το hit rate
     const hitRate = (hits / pages.length) * 100;
-
-    // Εμφανίζει τα αποτελέσματα κειμένου
     document.getElementById("seek-count").innerHTML = `
         <p>Number of Hits: <span style="color: green;">${hits}</span></p>
         <p>Page Faults: <span style="color: red;">${pageFaults}</span></p>

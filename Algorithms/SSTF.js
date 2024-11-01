@@ -1,17 +1,43 @@
+/**
+ * Εκτελεί τον αλγόριθμο Shortest Seek Time First (SSTF) για την εξυπηρέτηση αιτημάτων δίσκου.
+ * 
+ * Αυτή η συνάρτηση διαβάζει τα δεδομένα εισόδου από την ιστοσελίδα, 
+ * ελέγχει την εγκυρότητά τους και υπολογίζει τη σειρά εξυπηρέτησης 
+ * των αιτημάτων με βάση την πλησιέστερη θέση κεφαλής δίσκου.
+ * 
+ * Η διαδικασία περιλαμβάνει:
+ * - Έλεγχο της εγκυρότητας των δεδομένων εισόδου
+ * - Διαχωρισμό και μετατροπή των αιτημάτων σε αριθμούς
+ * - Υπολογισμό του συνολικού αριθμού κινήσεων της κεφαλής
+ * - Ενημέρωση της εμφάνισης με τα αποτελέσματα
+ * 
+ * @returns {void} Δεν επιστρέφει τιμή.
+ */
 function runSSTF() {
     const inputQueue = document.getElementById("process-queue").value.trim();
     const headPosition = parseInt(document.getElementById("head-position").value);
     
+    // Έλεγχος για κενό input ή μη έγκυρη θέση κεφαλής
     if (!inputQueue || isNaN(headPosition)) {
         alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
+    
+    // Διαχωρισμός της εισόδου και έλεγχος για μη αριθμητικά στοιχεία
+    const requestQueue = inputQueue.split(",").map(item => item.trim()); // Καθαρισμός των κενών διαστημάτων
+    if (requestQueue.some(item => isNaN(Number(item)))) {
+        alert("Παρακαλώ εισάγετε μια λίστα αριθμών, χωρισμένων με κόμματα!");
+        return;
+    }
+    
+    // Μετατροπή των στοιχείων σε αριθμούς
+    const numericRequestQueue = requestQueue.map(Number);
 
-    const requestQueue = inputQueue.split(",").map(Number);
     let seekCount = 0; 
     let seekSequence = [headPosition]; 
     let currentPosition = headPosition; 
-    let remainingRequests = [...requestQueue]; // Αντιγραφή της ουράς αιτημάτων
+    let remainingRequests = [...numericRequestQueue]; // Αντιγραφή της αριθμητικής ουράς αιτημάτων
+    // Αντιγραφή της ουράς αιτημάτων
 
     while (remainingRequests.length > 0) {
         // Εύρεση του πλησιέστερου αιτήματος
@@ -41,6 +67,20 @@ function runSSTF() {
     visualizeSeekSequence(seekSequence);
 }
 
+/**
+ * Οπτικοποιεί τη σειρά εξυπηρέτησης των αιτημάτων δίσκου σε έναν καμβά.
+ * 
+ * Αυτή η συνάρτηση χρησιμοποιεί το στοιχείο καμβά (canvas) για να σχεδιάσει 
+ * τη διαδρομή της κεφαλής του δίσκου καθώς εξυπηρετεί τα αιτήματα 
+ * με βάση τη δοθείσα σειρά. Σχεδιάζει τις κινήσεις με γραμμές και βέλη
+ * για να απεικονίσει την κατεύθυνση της κεφαλής.
+ * 
+ * @param {number[]} seekSequence - Μια λίστα αριθμών που αντιπροσωπεύει 
+ *                                   τη σειρά των αιτημάτων που εξυπηρετούνται.
+ *                                   Κάθε αριθμός αντιστοιχεί σε μια θέση
+ *                                   στον δίσκο.
+ * @returns {void} Δεν επιστρέφει τιμή.
+ */
 function visualizeSeekSequence(seekSequence) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");

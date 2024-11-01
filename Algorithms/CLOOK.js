@@ -1,14 +1,37 @@
 // Ορισμός του μεγέθους του δίσκου
 let disk_size = 200;
 
-// Συνάρτηση εκτέλεσης του C-LOOK
+/**
+ * Εκτελεί τον αλγόριθμο C-LOOK για χρονοπρογραμματισμό δίσκου.
+ * Διαχειρίζεται τις εισόδους από τον χρήστη και υπολογίζει τη σειρά αναζήτησης,
+ * καθώς και το συνολικό κόστος αναζήτησης.
+ *
+ * @function
+ * @returns {void} Δεν επιστρέφει καμία τιμή. Ενημερώνει το DOM με τα αποτελέσματα.
+ * @throws {Error} Αν οι είσοδοι είναι κενές ή περιέχουν μη έγκυρους αριθμούς.
+ */
 function executeCLOOK() {
     let tracksInput = document.getElementById("process-queue").value;
     let head = parseInt(document.getElementById("head-position").value);
     let direction = document.getElementById("direction").value;
 
+    // Έλεγχος εγκυρότητας των εισαγωγών
+    if (!tracksInput) {
+        alert("Παρακαλώ εισάγετε αιτήματα.");
+        return;
+    }
+
     // Μετατροπή των εισαγόμενων κομματιών (tracks) σε πίνακα αριθμών
-    let tracks = tracksInput.split(',').map(Number).filter(num => !isNaN(num));
+    let tracks = tracksInput.split(',').map(item => item.trim()).filter(num => num !== "" && !isNaN(Number(num)));
+
+    // Έλεγχος αν υπάρχουν έγκυρα αιτήματα
+    if (tracks.length === 0) {
+        alert("Παρακαλώ εισάγετε έγκυρους αριθμούς χωρισμένους με κόμματα.");
+        return;
+    }
+
+    // Μετατροπή των αιτημάτων σε αριθμούς
+    tracks = tracks.map(Number);
 
     // Διαχωρισμός των κομματιών σε δύο ομάδες (αριστερά και δεξιά από την κεφαλή)
     let left = [], right = [];

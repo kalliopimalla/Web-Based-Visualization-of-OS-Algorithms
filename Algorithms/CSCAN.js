@@ -1,12 +1,36 @@
 // Ορισμός του μεγέθους του δίσκου
 let disk_size = 199;
-
+/**
+ * Εκτελεί τον αλγόριθμο C-SCAN για την αναζήτηση δίσκου.
+ * Λαμβάνει τις εισροές από τον χρήστη, επεξεργάζεται τις θέσεις των κομματιών,
+ * υπολογίζει την ακολουθία αναζήτησης και εμφανίζει τα αποτελέσματα.
+ *
+ * @function executeCSCAN
+ * @returns {void} Δεν επιστρέφει καμία τιμή. Ενημερώνει το DOM με τα αποτελέσματα.
+ *
+ * @throws {Error} Αν δεν υπάρχουν έγκυρες εισροές, εμφανίζει μήνυμα σφάλματος.
+ */
 function executeCSCAN() {
-    let tracksInput = document.getElementById("process-queue").value;
+    // Λήψη και επεξεργασία των εισροών
+    let tracksInput = document.getElementById("process-queue").value.trim();
     let head = parseInt(document.getElementById("head-position").value);
-    let direction = document.getElementById("direction").value;  // Αποθηκεύουμε την κατεύθυνση
-    let tracks = tracksInput.split(',').map(Number).filter(num => !isNaN(num));
+    let direction = document.getElementById("direction").value;  // Αποθήκευση της κατεύθυνσης
+    
+    // Έλεγχος για έγκυρη είσοδο
+    if (!tracksInput) {
+        alert("Παρακαλώ εισάγετε μια λίστα αριθμών, χωρισμένων με κόμματα!");
+        return;
+    }
+    
+    let tracks = tracksInput.split(',').map(item => item.trim()).map(Number).filter(num => !isNaN(num));
 
+    // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
+    if (tracks.length === 0) {
+        alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
+        return;
+    }
+
+    // Εξασφάλιση ότι το 0 περιλαμβάνεται
     if (!tracks.includes(0)) {
         tracks.push(0);
     }

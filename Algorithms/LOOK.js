@@ -1,9 +1,19 @@
-// JavaScript program to demonstrate 
-// LOOK Disk Scheduling algorithm 
-
 let size = 8; 
 
+/**
+ * Εκτελεί τον αλγόριθμο LOOK για χρονοπρογραμματισμό δίσκου.
+ * 
+ * @param {Array} arr - Λίστα αιτημάτων (tracks) που πρέπει να εξυπηρετηθούν.
+ * @param {number} head - Η τρέχουσα θέση της κεφαλής του δίσκου.
+ * @param {string} direction - Η κατεύθυνση της κίνησης της κεφαλής ("left" ή "right").
+ */
 function LOOK(arr, head, direction) { 
+    // Έλεγχος εγκυρότητας των τιμών
+    if (!Array.isArray(arr) || arr.length === 0 || arr.some(num => typeof num !== 'number' || isNaN(num))) {
+        alert("Παρακαλώ εισάγετε έγκυρους αριθμούς για τα αιτήματα.");
+        return;
+    }
+
     let seek_count = 0; 
     let distance, cur_track; 
 
@@ -12,20 +22,20 @@ function LOOK(arr, head, direction) {
     let seek_sequence = []; 
 
     // Διαχωρισμός αριστερών και δεξιών κομματιών 
-    for(let i = 0; i < size; i++) { 
+    for(let i = 0; i < arr.length; i++) { 
         if (arr[i] < head) 
             left.push(arr[i]); 
         if (arr[i] > head) 
             right.push(arr[i]); 
     } 
 
-    left.sort(function(a, b){return a - b}); 
-    right.sort(function(a, b){return a - b}); 
+    left.sort((a, b) => a - b); 
+    right.sort((a, b) => a - b); 
 
     // Εκτέλεση του αλγορίθμου LOOK
     let run = 2; 
     while (run-- > 0) { 
-        if (direction == "left") { 
+        if (direction === "left") { 
             for(let i = left.length - 1; i >= 0; i--) { 
                 cur_track = left[i]; 
                 seek_sequence.push(cur_track); 
@@ -34,7 +44,7 @@ function LOOK(arr, head, direction) {
                 head = cur_track; 
             } 
             direction = "right"; 
-        } else if (direction == "right") { 
+        } else if (direction === "right") { 
             for(let i = 0; i < right.length; i++) { 
                 cur_track = right[i]; 
                 seek_sequence.push(cur_track); 
@@ -53,6 +63,7 @@ function LOOK(arr, head, direction) {
     // Κλήση της συνάρτησης drawLook για να απεικονίσει την ακολουθία
     drawLook(seek_sequence, direction);
 }
+
 
 // Συνάρτηση που απεικονίζει την ακολουθία του LOOK σε καμβά
 // Συνάρτηση που απεικονίζει την ακολουθία του LOOK σε καμβά

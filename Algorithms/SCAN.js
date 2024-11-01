@@ -1,14 +1,46 @@
 // Ορισμός του μεγέθους του δίσκου
 let disk_size = 199;
-
-// Συνάρτηση εκτέλεσης του SCAN
+/**
+ * Εκτελεί τον αλγόριθμο SCAN για την αναζήτηση κομματιών σε μια μονάδα δίσκου.
+ * Ο αλγόριθμος SCAN κινείται σε μια κατεύθυνση (αριστερά ή δεξιά) και εξυπηρετεί
+ * τα αιτήματα σε αυτήν την κατεύθυνση, αναστρέφει την κατεύθυνση όταν φτάσει 
+ * στο τέλος των κομματιών.
+ *
+ * @function
+ * @returns {void} Δεν επιστρέφει τίποτα. Ενημερώνει το DOM με τα αποτελέσματα
+ *                και σχεδιάζει την ακολουθία SCAN.
+ *
+ * @throws {Alert} Εμφανίζει μηνύματα προειδοποίησης αν η είσοδος δεν είναι
+ *                 έγκυρη ή αν δεν πληρούνται οι προϋποθέσεις εισόδου.
+ *
+ * @example
+ * // Χρήση της συνάρτησης για την εκτέλεση του SCAN
+ * executeSCAN();
+ */
 function executeSCAN() {
     let tracksInput = document.getElementById("process-queue").value;
     let head = parseInt(document.getElementById("head-position").value);
     let direction = document.getElementById("direction").value;
 
-    // Μετατροπή των εισαγόμενων κομματιών (tracks) σε πίνακα αριθμών
+    // Έλεγχος εγκυρότητας εισόδου για την σειρά αιτήσεων
     let tracks = tracksInput.split(',').map(Number).filter(num => !isNaN(num));
+    
+    if (tracks.length === 0) {
+        alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό για τη σειρά αιτήσεων.");
+        return;
+    }
+
+    // Έλεγχος εγκυρότητας για τη θέση της κεφαλής
+    if (isNaN(head) || head < 0) {
+        alert("Η θέση της κεφαλής πρέπει να είναι ένας θετικός αριθμός.");
+        return;
+    }
+
+    // Έλεγχος για επιλεγμένη κατεύθυνση
+    if (direction !== "left" && direction !== "right") {
+        alert("Παρακαλώ επιλέξτε έγκυρη κατεύθυνση: Left ή Right.");
+        return;
+    }
 
     // Προσθέτουμε το 0 αν δεν υπάρχει
     if (!tracks.includes(0)) {
@@ -32,7 +64,7 @@ function executeSCAN() {
         left.reverse(); // Αν η κατεύθυνση είναι αριστερά, αναστρέφουμε τα αριστερά κομμάτια
         seekSequence = [...left, 0, ...right]; // Πρώτα τα αριστερά, μετά το 0, μετά τα δεξιά
     } else {
-        seekSequence = [...right, disk_size, ...left.reverse()]; // Δεξιά πρώτα, μετά το μέγεθος του δίσκου, μετά τα αριστερά
+        seekSequence = [...right, 0, ...left.reverse()]; // Δεξιά πρώτα, μετά το 0, μετά τα αριστερά
     }
 
     // Υπολογισμός του συνολικού κόστους αναζήτησης
@@ -48,6 +80,7 @@ function executeSCAN() {
     
     drawScan(seekSequence, direction); // Σχεδίαση της ακολουθίας SCAN
 }
+
 
 // Συνάρτηση που απεικονίζει την ακολουθία του SCAN σε καμβά
 function drawScan(sequence, direction) {

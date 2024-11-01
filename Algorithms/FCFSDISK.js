@@ -1,16 +1,38 @@
+/**
+ * Υλοποιεί τον αλγόριθμο FCFS (First Come, First Serve) για την εξυπηρέτηση αιτημάτων σε σκληρό δίσκο.
+ * Διαβάζει τα δεδομένα εισόδου από πεδία HTML, υπολογίζει τις συνολικές κινήσεις και 
+ * τη σειρά εξυπηρέτησης, και εμφανίζει τα αποτελέσματα στον χρήστη.
+ * 
+ * Διαδικασία:
+ * - Λαμβάνει την ουρά αιτημάτων και τη θέση κεφαλής από στοιχεία HTML.
+ * - Ελέγχει αν οι είσοδοι είναι έγκυρες και ειδοποιεί τον χρήστη σε περίπτωση μη έγκυρων δεδομένων.
+ * - Υπολογίζει τη συνολική απόσταση (κινήσεις κεφαλής) και τη σειρά εξυπηρέτησης των αιτημάτων.
+ * - Προβάλλει τα αποτελέσματα και καλεί μια συνάρτηση για την οπτικοποίηση της σειράς εξυπηρέτησης.
+ * 
+ * @function
+ * @throws {Error} Εμφανίζει ειδοποίηση αν οι είσοδοι δεν είναι έγκυρες.
+ */
 function runFCFS() {
-    // Λάβετε τις τιμές εισόδου
-    const inputQueue = document.getElementById("process-queue").value.trim();
-    const headPosition = parseInt(document.getElementById("head-position").value);
-    
-    // Έλεγχος αν οι είσοδοι είναι έγκυροι
-    if (!inputQueue || isNaN(headPosition)) {
-        alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
-        return;
-    }
+   // Λάβετε τις τιμές εισόδου
+const inputQueue = document.getElementById("process-queue").value.trim();
+const headPosition = parseInt(document.getElementById("head-position").value);
 
-    // Ανάλυση της ουράς εισόδου σε πίνακα αιτημάτων
-    const requestQueue = inputQueue.split(",").map(Number);
+// Έλεγχος αν οι είσοδοι είναι έγκυροι
+if (!inputQueue || isNaN(headPosition)) {
+    alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
+    return;
+}
+
+// Ανάλυση της ουράς εισόδου σε πίνακα αιτημάτων με επιπλέον έλεγχο
+const requestQueue = inputQueue.split(",").map(item => {
+    const num = Number(item.trim());
+    if (isNaN(num)) {
+        alert("Παρακαλώ εισάγετε έγκυρους αριθμούς διαχωρισμένους με κόμματα στην ουρά διεργασιών!");
+        throw new Error("Invalid input in process queue");
+    }
+    return num;
+});
+
     
     // Υλοποίηση του αλγορίθμου FCFS
     let seekCount = 0; // Μετρητής κινήσεων
@@ -33,6 +55,17 @@ function runFCFS() {
     visualizeSeekSequence(seekSequence);
 }
 
+
+/**
+ * Οπτικοποιεί μια ακολουθία κινήσεων κεφαλής (seek sequence) σε έναν καμβά,
+ * σχεδιάζοντας γραμμές και βέλη που αναπαριστούν κάθε κίνηση.
+ * Κάθε σημείο στην ακολουθία χαρτογραφείται σε μια x-συντεταγμένη στον καμβά,
+ * ενώ τα βέλη δείχνουν την κατεύθυνση κάθε κίνησης.
+ *
+ * @param {number[]} seekSequence - Πίνακας με αριθμούς τροχιών (tracks) που
+ * αναπαριστούν την ακολουθία κινήσεων. Οι τροχιές κυμαίνονται από 0 έως 199,
+ * αντιστοιχώντας σε θέσεις πάνω στον καμβά.
+ */
 function visualizeSeekSequence(seekSequence) {
     // Λάβετε το στοιχείο καμβά
     const canvas = document.getElementById("seekCanvas");

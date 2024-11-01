@@ -106,25 +106,37 @@
     </div>
     <div class="content">
         <div class="container">
-            <div class="input-steps">
-                <p>Η σειρά των αιτήσεων:</p>
-                <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...).Προσοχή στα κενά !">
-                <p>Η θέση της κεφαλής :</p>
-                <input type="number" id="head-position" placeholder="π.χ. 50">
-                <p>Αρχική κατεύθυνση :</p>
-                <select id="direction">
-                    <option value="left">Left</option>
-                    <option value="right">Right</option>
-                </select>
-                
-                <button onclick="executeSCAN()">Εκτέλεση</button>
+          <div class="input-steps">
+            <p>Η σειρά των αιτήσεων:</p>
+            <div class="popup">
+              <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
+              <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
             </div>
-            <p id="seek-count"></p>
-            <div id="seek-sequence" class="seek-sequence"></div>
-            <canvas id="seekCanvas" width="800" height="400" style="border: 1px solid #000; margin-top: 20px;"></canvas>
+      
+            <p>Η θέση της κεφαλής:</p>
+            <div class="popup">
+              <input type="number" id="head-position" placeholder="π.χ. 50">
+              <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
+            </div>
+      
+            <p>Αρχική κατεύθυνση:</p>
+            <div class="popup">
+              <select id="direction">
+                <option value="left">Left</option>
+                <option value="right">Right</option>
+              </select>
+              <span class="popuptext">Επιλέξτε την κατεύθυνση: Left ή Right.</span>
+            </div>
+            
+            <button onclick="executeSCAN()">Εκτέλεση</button>
+          </div>
+          
+          <p id="seek-count"></p>
+          <div id="seek-sequence" class="seek-sequence"></div>
+          <canvas id="seekCanvas" width="800" height="400" style="border: 1px solid #000; margin-top: 20px;"></canvas>
         </div>
-    </div>
-    <br>
+      </div>
+      <br>
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
