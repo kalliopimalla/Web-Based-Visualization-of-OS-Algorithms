@@ -603,7 +603,8 @@ body {
   background-color: rgb(2, 172, 172);
 }
 
-
+ 
+/*Pop up Κουτακια για valid inputs*/
 .popup {
   position: relative;
   display: inline-block;
@@ -642,4 +643,29 @@ body {
   visibility: visible;
   opacity: 1;
 }
+/**Page replacement πίνακας */
+
+.visual-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.visual-table th,
+.visual-table td {
+  border: 1px solid #ccc;
+  padding: 15px; /* Αυξάνει το μέγεθος των κελιών */
+  font-size: 18px; /* Μεγαλύτερη γραμματοσειρά */
+  text-align: center;
+}
+
+.visual-table th {
+  background-color: #f2f2f2;
+}
+
+.result-text {
+  font-size: 20px;
+  margin-top: 10px;
+}
+
 
