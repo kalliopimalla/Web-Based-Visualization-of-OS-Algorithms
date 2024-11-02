@@ -88,35 +88,46 @@ function createTable() {
 
 function updateTable() {
     let faultCount = 0;
+    let hitCount = 0;
     const pageFrames = Array(maxFrames).fill(null);
     const pageTable = Array.from(table.getElementsByTagName("td"));
 
-    // Εξακρίβωση των faults/hits
     pages.forEach((page, i) => {
         if (!search(page, pageFrames)) { // page fault
             faultCount++;
             if (pageFrames.includes(null)) {
                 const emptyIndex = pageFrames.indexOf(null);
-                pageFrames[emptyIndex] = page; // Γεμίστε το κενό πλαίσιο
+                pageFrames[emptyIndex] = page;
             } else {
                 const replaceIndex = predict(pages, pageFrames, pages.length, i + 1);
-                pageFrames[replaceIndex] = page; // Αντικαταστήστε την κατάλληλη σελίδα
+                pageFrames[replaceIndex] = page;
             }
-        }
 
-        // Ενημέρωση του πίνακα
-        pageTable.forEach(cell => {
-            if (cell.getAttribute("data-step") == i) {
-                const frameIndex = cell.getAttribute("data-frame");
-                cell.innerText = pageFrames[frameIndex] ?? '';
-                cell.style.backgroundColor = pageFrames[frameIndex] === page ? '#d4edda' : '#f8d7da'; // Πράσινο για hit, κόκκινο για fault
-            }
-        });
+            // Χρωματισμός του κελιού για page fault
+            pageTable.forEach(cell => {
+                if (cell.getAttribute("data-step") == i) {
+                    const frameIndex = cell.getAttribute("data-frame");
+                    cell.innerText = pageFrames[frameIndex] ?? '';
+                    cell.style.backgroundColor = pageFrames[frameIndex] === page ? '#f8d7da' : '';
+                }
+            });
+        } else { // hit
+            hitCount++;
+            // Χρωματισμός του κελιού για hit
+            pageTable.forEach(cell => {
+                if (cell.getAttribute("data-step") == i) {
+                    const frameIndex = cell.getAttribute("data-frame");
+                    cell.innerText = pageFrames[frameIndex] ?? '';
+                    cell.style.backgroundColor = pageFrames[frameIndex] === page ? '#d4edda' : '';
+                }
+            });
+        }
     });
 
     // Ενημέρωση του κειμένου αποτελεσμάτων
-    resultText.innerText = `Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}`;
+    resultText.innerText = `Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}\nΣυνολικός αριθμός hits: ${hitCount}`;
 }
+
 
 // Συνάρτηση για την έναρξη της προσομοίωσης
 function runOPTIMAL() {
@@ -131,21 +142,23 @@ function search(key, fr) {
 
 // Function to find the frame that will not be used recently in future
 function predict(pg, fr, pn, index) {
-    let res = -1, farthest = index;
+    let farthest = -1;
+    let replaceIndex = -1;
     for (let i = 0; i < fr.length; i++) {
         let j;
         for (j = index; j < pn; j++) {
             if (fr[i] === pg[j]) {
                 if (j > farthest) {
                     farthest = j;
-                    res = i;
+                    replaceIndex = i;
                 }
                 break;
             }
         }
-        if (j === pn) {
-            return i; // Αν η σελίδα δεν χρησιμοποιηθεί στο μέλλον
+        if (j === pn) { // Σελίδα δεν ξαναχρησιμοποιείται στο μέλλον
+            return i;
         }
     }
-    return (res === -1) ? 0 : res; // Αν δεν υπάρχει καμία, επιστρέφει το 0
+    return replaceIndex === -1 ? 0 : replaceIndex; // Σε περίπτωση που όλες οι σελίδες χρησιμοποιούνται
 }
+
