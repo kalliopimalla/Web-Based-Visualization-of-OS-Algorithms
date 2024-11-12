@@ -43,7 +43,7 @@ function runFCFSCPU() {
 
     drawGanttChart(processes, burstTime, arrivalTime, wt);
 }
-
+ 
 
 function drawGanttChart(processes, bt, at, wt) {
     const canvas = document.getElementById('seekCanvas');
