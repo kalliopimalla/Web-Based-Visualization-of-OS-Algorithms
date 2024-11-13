@@ -603,6 +603,45 @@ body {
   background-color: rgb(2, 172, 172);
 }
 
+ /* Στυλ για τα βήματα */
+ .step-box {
+  border: 1px solid #333;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  background-color: #f0f0f0;
+}
+.step-time {
+  font-weight: bold;
+  color: #333;
+}
+.queue-state {
+  margin-top: 5px;
+  display: flex;
+  gap: 5px;
+}
+.queue-process {
+  padding: 5px 10px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  background-color: #e1e7f7;
+}
+.step-box div:nth-child(3) {
+  margin-top: 10px; /* Δημιουργεί κενό μεταξύ της "Εκτελείται" και της "Αναμονή" */
+}
+
+.queue-process {
+  padding: 5px 10px;
+  border: 1px solid #333;
+  border-radius: 3px;
+  background-color: #e1e7f7;
+}
+
+.queue-process.active {
+  background-color: #ffcccb;
+  font-weight: bold;
+  border-color: #ff0000;
+}
 
  
 /*Pop up Κουτακια για valid inputs*/

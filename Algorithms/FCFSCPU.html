@@ -108,13 +108,14 @@
         <div class="container">
             <div class="input-steps">
                 <p>Χρόνοι εκτέλεσης διεργασιών :</p>
-                <input type="text" id="burst-time" placeholder="(π.χ. 8,9,4,...).Προσοχή στα κενά !">
+                <input type="text" id="burst-time" placeholder="(π.χ. 8,9,4,...)">
                 <p>Χρόνοι άφιξης διεργασιών :</p>
-                <input type="text" id="arrival-time" placeholder="π.χ. 4,6,8,....">
+                <input type="text" id="arrival-time" placeholder="π.χ. 4,6,8,...">
                 <button onclick="runFCFSCPU()">Εκτέλεση</button>
+                <button onclick="startStepByStep()" id="stepByStepBtn" style="display:none;">Step by Step</button>
             </div>
-            <div id="seek-count"></div> <!-- Αυτό το div θα περιέχει τον πίνακα -->
-            <div id="seek-sequence" class="seek-sequence"></div>
+            <div id="seek-count"></div> <!-- Πίνακας αποτελεσμάτων -->
+            <div id="stepHistory"></div> <!-- Ιστορικό βημάτων -->
             <canvas id="seekCanvas" width="800" height="400" style="border: 1px solid #000; margin-top: 20px;"></canvas>
         </div>
     </div>
