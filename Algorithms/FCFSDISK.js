@@ -4,17 +4,14 @@
  * τη σειρά εξυπηρέτησης, και εμφανίζει τα αποτελέσματα στον χρήστη.
  */
 function runFCFS() {
-    // Λάβετε τις τιμές εισόδου
     const inputQueue = document.getElementById("process-queue").value.trim();
     const headPosition = parseInt(document.getElementById("head-position").value);
 
-    // Έλεγχος αν οι είσοδοι είναι έγκυροι
     if (!inputQueue || isNaN(headPosition)) {
         alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
 
-    // Ανάλυση της ουράς εισόδου σε πίνακα αιτημάτων με επιπλέον έλεγχο
     const requestQueue = inputQueue.split(",").map(item => {
         const num = Number(item.trim());
         if (isNaN(num)) {
@@ -24,7 +21,6 @@ function runFCFS() {
         return num;
     });
 
-    // Υλοποίηση του αλγορίθμου FCFS
     let seekCount = 0;
     let seekSequence = [headPosition];
     let currentPosition = headPosition;
@@ -35,14 +31,50 @@ function runFCFS() {
         currentPosition = requestQueue[i];
         seekSequence.push(currentPosition);
     }
+ 
+// Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού
+const seekCountDisplay = document.getElementById("seek-count-display");
+seekCountDisplay.innerHTML = ""; // Καθαρισμός του περιεχομένου
+let currentCount = 0;
+const incrementSpeed = 50; // ταχύτητα αύξησης του αριθμού
+const incrementValue = Math.ceil(seekCount / 20); // τιμή αύξησης ανά βήμα
 
-    // Εμφάνιση των αποτελεσμάτων
-    document.getElementById("seek-count").innerText = `Σύνολο κινήσεων: ${seekCount}`;
-    document.getElementById("seek-sequence").innerText = `Σειρά εξυπηρέτησης: ${seekSequence.join(" -> ")}`;
+const interval = setInterval(() => {
+    if (currentCount + incrementValue >= seekCount) {
+        currentCount = seekCount; // Θέτει ακριβώς την τιμή στο seekCount όταν πλησιάζει
+        seekCountDisplay.innerText = `Σύνολο Κινήσεων: ${currentCount}`;
+        clearInterval(interval); // Σταματά την αύξηση
+    } else {
+        currentCount += incrementValue;
+        seekCountDisplay.innerText = `Σύνολο Κινήσεων: ${currentCount}`;
+    }
+}, incrementSpeed);
 
-    // Οπτικοποίηση της σειράς κινήσεων
+
+    // Δημιουργία κουτιών με βελάκια για τη σειρά εξυπηρέτησης
+    const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
+    seekSequenceBoxes.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
+
+    seekSequence.forEach((position, index) => {
+        const box = document.createElement("div");
+        box.className = "sequence-box";
+        box.textContent = position;
+
+        seekSequenceBoxes.appendChild(box);
+
+        // Προσθέστε ένα βέλος αν δεν είναι το τελευταίο στοιχείο
+        if (index < seekSequence.length - 1) {
+            const arrow = document.createElement("span");
+            arrow.className = "arrow";
+            arrow.textContent = "→";
+            seekSequenceBoxes.appendChild(arrow);
+        }
+    });
+
+    // Οπτικοποίηση της σειράς
     visualizeSeekSequence(seekSequence);
 }
+
 
 let showNumbersOnArrows = true; // Αρχική κατάσταση για την εμφάνιση αριθμών
 

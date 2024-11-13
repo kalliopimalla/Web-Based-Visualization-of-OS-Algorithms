@@ -630,6 +630,54 @@ body {
   margin-top: 10px; /* Δημιουργεί κενό μεταξύ της "Εκτελείται" και της "Αναμονή" */
 }
 
+.seek-sequence-boxes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.sequence-box {
+  padding: 10px 15px;
+  background-color: #f0f0f0;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}
+.seek-count-display {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+  text-align: center;
+  box-shadow: 0px 4px 8px rgba(0, 123, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+
+.arrow {
+  font-size: 20px;
+  color: #007bff;
+}
+
+
+.seek-sequence ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+.seek-sequence ul li {
+  padding: 5px;
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
+}
+
+
 .queue-process {
   padding: 5px 10px;
   border: 1px solid #333;

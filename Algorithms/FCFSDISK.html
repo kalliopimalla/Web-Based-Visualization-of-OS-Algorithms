@@ -25,7 +25,6 @@
                         <li class="dropdown-submenu">
                             <a href="#">Αλγόριθμοι αντικατάστασης δίσκου</a>
                             <ul class="submenu-content">
-                                <!--Disk Scheduling Algorithms Submenu -->
                                 <li><a href="FCFSDISK.html">FCFS</a></li>
                                 <li><a href="SSTF.html">SSTF</a></li>
                                 <li><a href="SCAN.html">SCAN</a></li>
@@ -34,7 +33,6 @@
                                 <li><a href="CLOOK.html">C-LOOK</a></li>
                             </ul>
                         </li>
-
                         <!-- Page Replacement Algorithms Submenu -->
                         <li class="dropdown-submenu">
                             <a href="#">Αλγόριθμοι αντικατάστασης σελιδών</a>
@@ -46,7 +44,6 @@
                                 <li><a href="CLOCK.html">CLOCK</a></li>
                             </ul>
                         </li>
-
                         <!-- CPU Scheduling Algorithms Submenu -->
                         <li class="dropdown-submenu">
                             <a href="#">Αλγόριθμοι αντικατάστασης CPU</a>
@@ -58,7 +55,6 @@
                                 <li><a href="RR.html">RR</a></li>
                             </ul>
                         </li>
-
                     </ul>
                 </li>
             </ul>
@@ -67,79 +63,79 @@
 
     <!-- Hero Section -->
     <div class="content">
-
         <div class="theory">
           <div class="theory-heading">
             <div>First Come First Served</div>
             <div>F.C.F.S.</div>
           </div>
-
           <div class="theory-text">
             <div>Αλγόριθμος FCFS: Λειτουργία και Χαρακτηριστικά</div>
             <div></div>
             <div>
                 Ο αλγόριθμος First Come First Served είναι ο απλούστερος αλγόριθμος προγραμματισμού δίσκων, καθώς εξυπηρετεί τα αιτήματα
-                 εισόδου/εξόδου με τη σειρά που καταφθάνουν, χωρίς να δίνει προτεραιότητα σε κανένα από αυτά. Αυτό σημαίνει ότι τα αιτήματα 
-                 εξυπηρετούνται με βάση τη χρονολογική τους άφιξη, διασφαλίζοντας έτσι ότι κάθε αίτημα θα εξυπηρετηθεί χωρίς τον κίνδυνο να 
-                 αγνοηθεί ή να καθυστερήσει αόριστα, αποτρέποντας το φαινόμενο της πείνας starvation. Ωστόσο, ο αλγόριθμος αυτός δεν είναι
-                  βέλτιστος ως προς την αποδοτικότητα, καθώς δεν λαμβάνει υπόψη την τοποθεσία των αιτημάτων στον δίσκο, κάτι που μπορεί να 
-                  οδηγήσει σε αυξημένους χρόνους αναμονής και να μειώσει τη συνολική απόδοση του συστήματος. Αν και απλός στην υλοποίηση, 
-                  ο FCFS μπορεί να προκαλέσει μεγάλες καθυστερήσεις όταν τα αιτήματα βρίσκονται σε απομακρυσμένες θέσεις στον δίσκο, 
-                  με αποτέλεσμα να μην επιτυγχάνεται η βέλτιστη χρήση του χρόνου προγραμματισμού.
-                  <br>
-                  <a href="https://www.geeksforgeeks.org/disk-scheduling-algorithms/">Αναφορές</a>
-                  
+                εισόδου/εξόδου με τη σειρά που καταφθάνουν, χωρίς να δίνει προτεραιότητα σε κανένα από αυτά. Αυτό σημαίνει ότι τα αιτήματα 
+                εξυπηρετούνται με βάση τη χρονολογική τους άφιξη, διασφαλίζοντας έτσι ότι κάθε αίτημα θα εξυπηρετηθεί χωρίς τον κίνδυνο να 
+                αγνοηθεί ή να καθυστερήσει αόριστα, αποτρέποντας το φαινόμενο της πείνας starvation. Ωστόσο, ο αλγόριθμος αυτός δεν είναι
+                βέλτιστος ως προς την αποδοτικότητα, καθώς δεν λαμβάνει υπόψη την τοποθεσία των αιτημάτων στον δίσκο, κάτι που μπορεί να 
+                οδηγήσει σε αυξημένους χρόνους αναμονής και να μειώσει τη συνολική απόδοση του συστήματος. Αν και απλός στην υλοποίηση, 
+                ο FCFS μπορεί να προκαλέσει μεγάλες καθυστερήσεις όταν τα αιτήματα βρίσκονται σε απομακρυσμένες θέσεις στον δίσκο, 
+                με αποτέλεσμα να μην επιτυγχάνεται η βέλτιστη χρήση του χρόνου προγραμματισμού.
+                <br>
+                <a href="https://www.geeksforgeeks.org/disk-scheduling-algorithms/">Αναφορές</a>
             </div>
           </div>
           <div class="theory-step">
             <ul>
+              <label>ΒΗΜΑ 1 :</label>
+              <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο FCFS.</li>
 
-            <label>ΒΗΜΑ 1 :</label>
-            <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο FCFS.</li>
-
-            <label>ΒΗΜΑ 2 :</label>
-            <li>Εισάγετε τη τρέχουσα θέση της κεφαλής.</li>
-            
-           <label>ΒΗΜΑ 3 :</label>
-           <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
-
-          </ul>
+              <label>ΒΗΜΑ 2 :</label>
+              <li>Εισάγετε τη τρέχουσα θέση της κεφαλής.</li>
+              
+              <label>ΒΗΜΑ 3 :</label>
+              <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
+            </ul>
           </div>
         </div>
-      </div>
-
+    </div>
       
-      <div class="content">
+    <div class="content">
         <div class="container">
-          <div class="input-steps">
-            <p>Η σειρά των αιτήσεων:</p>
-            <div class="popup">
-              <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
-              <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-            </div>
-            <p>Η θέση της κεφαλής :</p>
-            <div class="popup">
-              <input type="number" id="head-position" placeholder="π.χ. 50">
-              <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
-            </div>
-            <button onclick="runFCFS()">Εκτέλεση</button>
-            <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
+            <div class="input-steps">
+                <p>Η σειρά των αιτήσεων:</p>
+                <div class="popup">
+                    <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
+                    <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+                </div>
+                <p>Η θέση της κεφαλής :</p>
+                <div class="popup">
+                    <input type="number" id="head-position" placeholder="π.χ. 50">
+                    <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
+                </div>
+                <button onclick="runFCFS()">Εκτέλεση</button>
+                <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
 
-          </div>
-          <p id="seek-count"></p>
-          <div id="seek-sequence" class="seek-sequence"></div>
-          <canvas id="seekCanvas" width="1200" height="600" style="border: 1px solid #000; padding: 15px;"></canvas>
+                <!-- Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού -->
+                <div id="seek-count-display" class="seek-count-display"></div>
+
+                <!-- Δημιουργία κουτιών με βελάκια για τη σειρά εξυπηρέτησης -->
+                <div id="seek-sequence" class="seek-sequence">
+                    <h3>Σειρά Εξυπηρέτησης:</h3>
+                    <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
+                </div>
+            </div>
+
+            <div id="seek-sequence" class="seek-sequence"></div>
+            <canvas id="seekCanvas" width="1200" height="600" style="border: 1px solid #000; padding: 15px;"></canvas>
         </div>
-      </div>
-      <br>
+    </div>
+    <br>
 
-    
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
     </footer>
     
     <script src="FCFSDISK.js"></script>
-
 </body>
 </html>
