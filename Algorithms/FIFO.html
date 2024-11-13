@@ -110,6 +110,7 @@
                 <p>Η ακολουθία σελιδών:</p>
                 <div class="popup">
                     <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
+                    <button onclick="generateSequence()">Generate</button> <!-- Νέο κουμπί Generate -->
                     <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
                 </div>
                 <p>Αριθμός πλαισίων:</p>
@@ -118,6 +119,7 @@
                     <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
                 </div>
                 <button onclick="runFIFO()">Εκτέλεση</button>
+                 <button onclick="nextStep()">Επόμενο Βήμα</button>
             </div>
             <p id="seek-count"></p>
             <div id="seek-sequence" class="seek-sequence"></div>

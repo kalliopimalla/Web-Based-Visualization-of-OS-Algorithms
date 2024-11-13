@@ -69,34 +69,101 @@ function executeCSCAN() {
 }
 
 
-// Συνάρτηση που απεικονίζει την ακολουθία του C-SCAN σε καμβά
+let showNumbersOnArrows = true; // Μεταβλητή για εναλλαγή εμφάνισης αριθμών
+
+function toggleShowNumbersOnArrows() {
+    showNumbersOnArrows = !showNumbersOnArrows;
+    executeCSCAN(); // Επανασχεδίαση για να γίνει εναλλαγή στην εμφάνιση αριθμών
+}
+
 function drawCSCAN(sequence) {
     let canvas = document.getElementById("seekCanvas");
     let ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let startX = 50; // Αρχική οριζόντια θέση
-    let startY = 50; // Αρχική κατακόρυφη θέση
-    let lineHeight = 40; // Αυξημένη απόσταση μεταξύ γραμμών
+    const disk_size = 199;
+    const lineLength = canvas.width - 100;
+    const trackHeight = canvas.height - 40;
+    const startX = 50;
+    const startY = 50;
+    const lineHeight = 40;
 
-    ctx.beginPath();
-    ctx.moveTo(startX, startY); // Ξεκινάμε από την αρχή του καμβά
+    // Draw grid lines
+    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
+    ctx.lineWidth = 1;
 
-    for (let i = 0; i < sequence.length; i++) {
-        let x = startX + (sequence[i] / disk_size) * (canvas.width - 100); // Υπολογισμός x
-        let y = startY + (i * lineHeight); // Κατακόρυφη μεταβολή με βάση τη σειρά της ακολουθίας
-
-        ctx.lineTo(x, y); // Δημιουργούμε τη γραμμή
-
-        // Σχεδιάζουμε βέλος
-        if (i > 0) {
-            drawArrow(ctx, startX + ((sequence[i-1] / disk_size) * (canvas.width - 100)), startY + ((i - 1) * lineHeight), x, y);
-        }
+    // Vertical grid lines
+    for (let mark = 0; mark <= disk_size; mark += 20) {
+        const xPosition = startX + ((mark / disk_size) * lineLength);
+        ctx.beginPath();
+        ctx.moveTo(xPosition, 0);
+        ctx.lineTo(xPosition, canvas.height);
+        ctx.stroke();
     }
 
-    ctx.strokeStyle = "blue"; // Χρώμα γραμμής
-    ctx.lineWidth = 2; // Πάχος γραμμής
-    ctx.stroke(); // Σχεδιάζουμε τη γραμμή
+    // Horizontal grid lines
+    for (let i = 0; i < sequence.length; i++) {
+        const yPosition = startY + (i * lineHeight);
+        ctx.beginPath();
+        ctx.moveTo(0, yPosition);
+        ctx.lineTo(canvas.width, yPosition);
+        ctx.stroke();
+    }
+
+    // Draw top gray line with scale numbers
+    ctx.strokeStyle = "gray";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(startX, 20);
+    ctx.lineTo(canvas.width - 20, 20);
+    ctx.stroke();
+
+    // Scale numbers on the top line
+    ctx.fillStyle = "green";
+    ctx.font = "12px Arial";
+    for (let mark = 0; mark <= disk_size; mark += 20) {
+        const xPosition = startX + ((mark / disk_size) * lineLength);
+        ctx.fillText(mark, xPosition - 10, 10);
+    }
+
+    // Draw vertical scale line on the left
+    ctx.beginPath();
+    ctx.moveTo(20, 20);
+    ctx.lineTo(20, canvas.height - 20);
+    ctx.stroke();
+
+    // Draw C-SCAN path with arrows and optional sequence numbers
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+
+    let currentX = startX;
+    let currentY = startY;
+
+    for (let i = 0; i < sequence.length; i++) {
+        let x = startX + (sequence[i] / disk_size) * lineLength;
+        let y = startY + (i * lineHeight);
+
+        ctx.lineTo(x, y);
+
+        // Draw arrow between points
+        if (i > 0) {
+            drawArrow(ctx, currentX, currentY, x, y);
+        }
+
+        // Display numbers on arrows if enabled
+        if (showNumbersOnArrows) {
+            ctx.fillStyle = "black";
+            ctx.font = "12px Arial";
+            ctx.fillText(sequence[i], x - 5, y - 10);
+        }
+
+        currentX = x;
+        currentY = y;
+    }
+
+    ctx.strokeStyle = "blue";
+    ctx.lineWidth = 2;
+    ctx.stroke();
 }
 
 // Συνάρτηση σχεδίασης βέλους
@@ -106,19 +173,19 @@ function drawArrow(ctx, fromX, fromY, toX, toY) {
     const dy = toY - fromY;
     const angle = Math.atan2(dy, dx);
 
-    ctx.lineWidth = 1; // Πάχος γραμμής για το βέλος
-    ctx.strokeStyle = "green"; // Χρώμα βέλους
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = "green";
     ctx.beginPath();
     ctx.moveTo(fromX, fromY);
     ctx.lineTo(toX, toY);
     ctx.stroke();
 
-    // Σχεδιάζουμε την κεφαλή του βέλους
+    // Σχεδιασμός της κεφαλής του βέλους
     ctx.beginPath();
     ctx.moveTo(toX, toY);
     ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
     ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
     ctx.lineTo(toX, toY);
-    ctx.fillStyle = "green"; // Χρώμα κεφαλής βέλους
+    ctx.fillStyle = "green";
     ctx.fill();
 }
