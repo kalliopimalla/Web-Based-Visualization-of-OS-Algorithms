@@ -105,6 +105,7 @@
                 <p>Η σειρά των αιτήσεων:</p>
                 <div class="popup">
                     <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
+                    <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
                     <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
                 </div>
                 <p>Η θέση της κεφαλής :</p>
@@ -113,7 +114,8 @@
                     <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
                 </div>
                 <button onclick="runFCFS()">Εκτέλεση</button>
-                <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
+                <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη θέσεων κεφαλής</button>
+                <button id="resetButton" style="display: none;">Επαναφορά</button>
 
                 <!-- Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού -->
                 <div id="seek-count-display" class="seek-count-display"></div>

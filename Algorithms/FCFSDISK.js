@@ -31,25 +31,26 @@ function runFCFS() {
         currentPosition = requestQueue[i];
         seekSequence.push(currentPosition);
     }
- 
-// Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού
-const seekCountDisplay = document.getElementById("seek-count-display");
-seekCountDisplay.innerHTML = ""; // Καθαρισμός του περιεχομένου
-let currentCount = 0;
-const incrementSpeed = 50; // ταχύτητα αύξησης του αριθμού
-const incrementValue = Math.ceil(seekCount / 20); // τιμή αύξησης ανά βήμα
 
-const interval = setInterval(() => {
-    if (currentCount + incrementValue >= seekCount) {
-        currentCount = seekCount; // Θέτει ακριβώς την τιμή στο seekCount όταν πλησιάζει
-        seekCountDisplay.innerText = `Σύνολο Κινήσεων: ${currentCount}`;
-        clearInterval(interval); // Σταματά την αύξηση
-    } else {
-        currentCount += incrementValue;
-        seekCountDisplay.innerText = `Σύνολο Κινήσεων: ${currentCount}`;
-    }
-}, incrementSpeed);
+    // Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού
+    const seekCountDisplay = document.getElementById("seek-count-display");
+    seekCountDisplay.innerHTML = ""; // Καθαρισμός του περιεχομένου
+    let currentCount = 0;
+    const incrementSpeed = 50; // ταχύτητα αύξησης του αριθμού
+    const incrementValue = Math.ceil(seekCount / 20); // τιμή αύξησης ανά βήμα
 
+    seekCountDisplay.style.color = "teal";
+
+    const interval = setInterval(() => {
+        if (currentCount + incrementValue >= seekCount) {
+            currentCount = seekCount; // Θέτει ακριβώς την τιμή στο seekCount όταν πλησιάζει
+            seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+            clearInterval(interval); // Σταματά την αύξηση
+        } else {
+            currentCount += incrementValue;
+            seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+        }
+    }, incrementSpeed);
 
     // Δημιουργία κουτιών με βελάκια για τη σειρά εξυπηρέτησης
     const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
@@ -73,7 +74,30 @@ const interval = setInterval(() => {
 
     // Οπτικοποίηση της σειράς
     visualizeSeekSequence(seekSequence);
+
+    // Εμφάνιση του κουμπιού "Επαναφορά"
+    document.getElementById("resetButton").style.display = "inline-block";
 }
+
+// Συνάρτηση για την επαναφορά του καμβά και των πεδίων εισόδου
+function resetCanvasAndInputs() {
+    // Καθαρισμός του καμβά
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Καθαρισμός των πεδίων εισόδου και των αποτελεσμάτων
+    document.getElementById("process-queue").value = "";
+    document.getElementById("head-position").value = "";
+    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("seek-sequence-boxes").innerHTML = "";
+
+    // Απόκρυψη του κουμπιού "Επαναφορά" ξανά
+    document.getElementById("resetButton").style.display = "none";
+}
+
+// Σύνδεση της λειτουργίας με το κουμπί "Επαναφορά"
+document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
 
 
 let showNumbersOnArrows = true; // Αρχική κατάσταση για την εμφάνιση αριθμών
@@ -104,80 +128,72 @@ function visualizeSeekSequence(seekSequence) {
     const startScale = Math.floor(minInput / 20) * 20;
     const endScale = Math.ceil(maxInput / 20) * 20;
 
-    // Σχεδιασμός του grid (πλέγμα) με απαλό χρώμα
-    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";  // Χρώμα grid (απαλό γκρι)
+    // Υπολογισμός του trackWidth και trackHeight για ευθυγράμμιση και μέγεθος καμβά
+    const padding = 30; // Εσωτερικό περιθώριο για να μην κόβονται τα στοιχεία
+    const lineLength = canvas.width - padding * 2;
+    const trackWidth = lineLength / (endScale - startScale);
+    const trackHeight = canvas.height - padding * 2;
+
+    // Σχεδιασμός του κάθετου grid με απαλό γκρι χρώμα
+    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
 
     // Σχεδιάστε κάθε κάθετη γραμμή του grid
-    const lineLength = canvas.width - 40;
     for (let mark = startScale; mark <= endScale; mark += 20) {
-        const xPosition = 20 + ((mark - startScale) / (endScale - startScale)) * lineLength;
+        const xPosition = padding + (mark - startScale) * trackWidth;
         ctx.beginPath();
-        ctx.moveTo(xPosition, 0);
-        ctx.lineTo(xPosition, canvas.height);
+        ctx.moveTo(xPosition, padding);
+        ctx.lineTo(xPosition, canvas.height - padding);
         ctx.stroke();
     }
 
     // Σχεδιάστε κάθε οριζόντια γραμμή του grid
-    const trackHeight = canvas.height - 40;
-    const trackWidth = canvas.width / (199 - 0);
-    for (let i = 0; i < seekSequence.length - 1; i++) {
-        const yPosition = i * (trackHeight / (seekSequence.length - 1));
+    const numHorizontalLines = seekSequence.length;
+    for (let i = 0; i < numHorizontalLines; i++) {
+        const yPosition = padding + (i * (trackHeight / (numHorizontalLines - 1)));
         ctx.beginPath();
-        ctx.moveTo(0, yPosition);
-        ctx.lineTo(canvas.width, yPosition);
+        ctx.moveTo(padding, yPosition);
+        ctx.lineTo(canvas.width - padding, yPosition);
         ctx.stroke();
     }
 
-    // Σχεδιασμός ευθείας γκρι γραμμής
+    // Σχεδιασμός ευθείας γκρι γραμμής για τους αριθμούς
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
-    const blackLineY = 20;
+    const blackLineY = padding;
     ctx.beginPath();
-    ctx.moveTo(20, blackLineY);
-    ctx.lineTo(canvas.width - 20, blackLineY);
+    ctx.moveTo(padding, blackLineY);
+    ctx.lineTo(canvas.width - padding, blackLineY);
     ctx.stroke();
 
-    // Σχεδιασμός των αριθμών πάνω στη γραμμή ανά 20
+    // Σχεδιασμός των αριθμών πάνω στη γραμμή ανά 20 μονάδες
     ctx.fillStyle = "green";
     ctx.font = "12px Arial";
     for (let mark = startScale; mark <= endScale; mark += 20) {
-        const xPosition = 20 + ((mark - startScale) / (endScale - startScale)) * lineLength;
+        const xPosition = padding + (mark - startScale) * trackWidth;
         ctx.fillText(mark, xPosition - 10, blackLineY - 10);
     }
 
-    // Σχεδιασμός της κάθετης γραμμής που ξεκινά από το τέλος της οριζόντιας γραμμής
-    const verticalLineX = 20;
-    const verticalLineYStart = blackLineY;
-    const verticalLineYEnd = canvas.height - 20;
-
-    // Σχεδιάστε την κάθετη γραμμή
-    ctx.beginPath();
-    ctx.moveTo(verticalLineX, verticalLineYStart);
-    ctx.lineTo(verticalLineX, verticalLineYEnd);
-    ctx.stroke();
-
-  
-
     // Σχεδιασμός της σειράς κινήσεων ως βέλη
-    const margin = 20;
-    const startY = margin;
+    const startY = blackLineY + 30;
     
     ctx.lineWidth = 2;
     ctx.strokeStyle = "green";
     ctx.fillStyle = "green";
 
     for (let i = 0; i < seekSequence.length - 1; i++) {
-        const x1 = seekSequence[i] * trackWidth + margin;
+        const x1 = padding + (seekSequence[i] - startScale) * trackWidth;
         const y1 = startY + (i * (trackHeight / (seekSequence.length - 1)));
-        const x2 = seekSequence[i + 1] * trackWidth + margin;
+        const x2 = padding + (seekSequence[i + 1] - startScale) * trackWidth;
         const y2 = startY + ((i + 1) * (trackHeight / (seekSequence.length - 1)));
 
+        // Σχεδίαση βελών
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
+        // Σχεδίαση κεφαλών στα βέλη
         const angle = Math.atan2(y2 - y1, x2 - x1);
         const arrowLength = 10;
         ctx.beginPath();
@@ -195,5 +211,25 @@ function visualizeSeekSequence(seekSequence) {
         }
     }
 }
+
+
+
+// Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
+function generateRandomSequence(length = 10, max = 200) {
+    let sequence = [];
+    for (let i = 0; i < length; i++) {
+        let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
+        sequence.push(randomNum);
+    }
+    return sequence;
+}
+
+// Σύνδεση της λειτουργίας με το κουμπί
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+
+});
+
 
 
