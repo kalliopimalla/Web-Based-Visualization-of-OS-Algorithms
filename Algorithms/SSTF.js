@@ -16,56 +16,84 @@
 function runSSTF() {
     const inputQueue = document.getElementById("process-queue").value.trim();
     const headPosition = parseInt(document.getElementById("head-position").value);
-    
-    // Έλεγχος για κενό input ή μη έγκυρη θέση κεφαλής
+
     if (!inputQueue || isNaN(headPosition)) {
         alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
-    
-    // Διαχωρισμός της εισόδου και έλεγχος για μη αριθμητικά στοιχεία
-    const requestQueue = inputQueue.split(",").map(item => item.trim()); // Καθαρισμός των κενών διαστημάτων
-    if (requestQueue.some(item => isNaN(Number(item)))) {
-        alert("Παρακαλώ εισάγετε μια λίστα αριθμών, χωρισμένων με κόμματα!");
-        return;
-    }
-    
-    // Μετατροπή των στοιχείων σε αριθμούς
-    const numericRequestQueue = requestQueue.map(Number);
 
-    let seekCount = 0; 
-    let seekSequence = [headPosition]; 
-    let currentPosition = headPosition; 
-    let remainingRequests = [...numericRequestQueue]; // Αντιγραφή της αριθμητικής ουράς αιτημάτων
-    // Αντιγραφή της ουράς αιτημάτων
+    const requestQueue = inputQueue.split(",").map(item => Number(item.trim()));
+    let seekCount = 0;
+    let seekSequence = [headPosition];
+    let currentPosition = headPosition;
+    let remainingRequests = [...requestQueue];
 
     while (remainingRequests.length > 0) {
-        // Εύρεση του πλησιέστερου αιτήματος
-        let closestRequest = remainingRequests[0];
-        let closestDistance = Math.abs(currentPosition - closestRequest);
-        
-        for (let i = 1; i < remainingRequests.length; i++) {
-            const distance = Math.abs(currentPosition - remainingRequests[i]);
-            if (distance < closestDistance) {
-                closestRequest = remainingRequests[i];
-                closestDistance = distance;
-            }
-        }
+        let closestRequest = remainingRequests.reduce((prev, curr) =>
+            Math.abs(curr - currentPosition) < Math.abs(prev - currentPosition) ? curr : prev
+        );
 
-        // Ενημέρωση των μετρητών
-        seekCount += closestDistance; 
-        currentPosition = closestRequest; 
-        seekSequence.push(currentPosition); 
-
-        // Αφαίρεση του επιλεγμένου αιτήματος από τη λίστα
+        seekCount += Math.abs(currentPosition - closestRequest);
+        currentPosition = closestRequest;
+        seekSequence.push(currentPosition);
         remainingRequests = remainingRequests.filter(req => req !== closestRequest);
     }
 
-    document.getElementById("seek-count").innerText = `Σύνολο κινήσεων: ${seekCount}`;
-    document.getElementById("seek-sequence").innerText = `Σειρά εξυπηρέτησης: ${seekSequence.join(" -> ")}`;
+    // Εμφάνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση
+    const seekCountDisplay = document.getElementById("seek-count-display");
+    seekCountDisplay.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
+    let currentCount = 0;
+    const incrementValue = Math.ceil(seekCount / 20); // Βήμα αύξησης
+    const interval = setInterval(() => {
+        if (currentCount + incrementValue >= seekCount) {
+            currentCount = seekCount;
+            seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+            clearInterval(interval);
+        } else {
+            currentCount += incrementValue;
+            seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+        }
+    }, 50);
+
+    // Δημιουργία κουτιών για τη σειρά εξυπηρέτησης
+    const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
+    seekSequenceBoxes.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
+    seekSequence.forEach((position, index) => {
+        const box = document.createElement("div");
+        box.className = "sequence-box";
+        box.textContent = position;
+
+        seekSequenceBoxes.appendChild(box);
+        if (index < seekSequence.length - 1) {
+            const arrow = document.createElement("span");
+            arrow.className = "arrow";
+            arrow.textContent = "→";
+            seekSequenceBoxes.appendChild(arrow);
+        }
+    });
 
     visualizeSeekSequence(seekSequence);
+
+    // Εμφάνιση του κουμπιού επαναφοράς
+    document.getElementById("resetButton").style.display = "inline-block";
 }
+
+// Συνάρτηση επαναφοράς
+function resetCanvasAndInputs() {
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    document.getElementById("process-queue").value = "";
+    document.getElementById("head-position").value = "";
+    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("seek-sequence-boxes").innerHTML = "";
+    document.getElementById("resetButton").style.display = "none";
+}
+
+// Σύνδεση κουμπιού επαναφοράς
+document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
+
 
 
 let showNumbersOnArrows = true; // Αρχική κατάσταση για την εμφάνιση αριθμών
@@ -103,32 +131,35 @@ function visualizeSeekSequence(seekSequence) {
     const startScale = Math.floor(minInput / 20) * 20;
     const endScale = Math.ceil(maxInput / 20) * 20;
 
-    // Σχεδιασμός του grid (πλέγμα) με απαλό χρώμα
-    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";  // Χρώμα grid (απαλό γκρι)
+    const lineLength = canvas.width - 40; // Μήκος της οριζόντιας γραμμής
+    const trackHeight = canvas.height - 40; // Ύψος του καμβά
+    const scaleStep = 20; // Βήμα της κλίμακας
+    const numMarks = Math.floor((endScale - startScale) / scaleStep) + 1; // Αριθμός σημείων στην κλίμακα
+
+    // Σχεδιασμός Grid (Κάθετες και Οριζόντιες γραμμές)
+    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Απαλό γκρι για το grid
     ctx.lineWidth = 1;
 
-    // Σχεδιάστε κάθε κάθετη γραμμή του grid
-    const lineLength = canvas.width - 40;
-    for (let mark = startScale; mark <= endScale; mark += 20) {
-        const xPosition = 20 + ((mark - startScale) / (endScale - startScale)) * lineLength;
+    // Σχεδιασμός κάθετων γραμμών του grid
+    for (let i = 0; i < numMarks; i++) {
+        const xPosition = 20 + (i / (numMarks - 1)) * lineLength;
         ctx.beginPath();
         ctx.moveTo(xPosition, 0);
         ctx.lineTo(xPosition, canvas.height);
         ctx.stroke();
     }
 
-    // Σχεδιάστε κάθε οριζόντια γραμμή του grid
-    const trackHeight = canvas.height - 40;
-    const trackWidth = canvas.width / (199 - 0);
-    for (let i = 0; i < seekSequence.length - 1; i++) {
-        const yPosition = i * (trackHeight / (seekSequence.length - 1));
+    // Σχεδιασμός οριζόντιων γραμμών του grid
+    const numHorizontalLines = seekSequence.length; // Ένας αριθμός γραμμών για κάθε αίτημα
+    for (let i = 0; i < numHorizontalLines; i++) {
+        const yPosition = 20 + (i / (numHorizontalLines - 1)) * trackHeight;
         ctx.beginPath();
         ctx.moveTo(0, yPosition);
         ctx.lineTo(canvas.width, yPosition);
         ctx.stroke();
     }
 
-    // Σχεδιασμός ευθείας γκρι γραμμής
+    // Σχεδιασμός ευθείας γκρι γραμμής για την κλίμακα
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
     const blackLineY = 20;
@@ -137,39 +168,34 @@ function visualizeSeekSequence(seekSequence) {
     ctx.lineTo(canvas.width - 20, blackLineY);
     ctx.stroke();
 
-    // Σχεδιασμός των αριθμών πάνω στη γραμμή ανά 20
+    // Σχεδιασμός αριθμών πάνω στην κλίμακα
     ctx.fillStyle = "green";
     ctx.font = "12px Arial";
-    for (let mark = startScale; mark <= endScale; mark += 20) {
-        const xPosition = 20 + ((mark - startScale) / (endScale - startScale)) * lineLength;
-        ctx.fillText(mark, xPosition - 10, blackLineY - 10);
+
+    for (let i = 0; i < numMarks; i++) {
+        const mark = startScale + i * scaleStep; // Τρέχουσα τιμή κλίμακας
+        const xPosition = 20 + (i / (numMarks - 1)) * lineLength; // Κατανομή τιμών ομοιόμορφα
+
+        ctx.fillText(mark, xPosition - 10, blackLineY - 10); // Σχεδίαση αριθμών
+        ctx.beginPath();
+        ctx.moveTo(xPosition, blackLineY);
+        ctx.lineTo(xPosition, blackLineY + 10); // Μικρή κάθετη γραμμή για το σημάδι της κλίμακας
+        ctx.stroke();
     }
-
-    // Σχεδιασμός της κάθετης γραμμής που ξεκινά από το τέλος της οριζόντιας γραμμής
-    const verticalLineX = 20;
-    const verticalLineYStart = blackLineY;
-    const verticalLineYEnd = canvas.height - 20;
-
-    // Σχεδιάστε την κάθετη γραμμή
-    ctx.beginPath();
-    ctx.moveTo(verticalLineX, verticalLineYStart);
-    ctx.lineTo(verticalLineX, verticalLineYEnd);
-    ctx.stroke();
-
-  
 
     // Σχεδιασμός της σειράς κινήσεων ως βέλη
     const margin = 20;
     const startY = margin;
-    
+    const trackWidth = lineLength / (endScale - startScale);
+
     ctx.lineWidth = 2;
     ctx.strokeStyle = "green";
     ctx.fillStyle = "green";
 
     for (let i = 0; i < seekSequence.length - 1; i++) {
-        const x1 = seekSequence[i] * trackWidth + margin;
+        const x1 = 20 + (seekSequence[i] - startScale) * trackWidth;
         const y1 = startY + (i * (trackHeight / (seekSequence.length - 1)));
-        const x2 = seekSequence[i + 1] * trackWidth + margin;
+        const x2 = 20 + (seekSequence[i + 1] - startScale) * trackWidth;
         const y2 = startY + ((i + 1) * (trackHeight / (seekSequence.length - 1)));
 
         ctx.beginPath();
@@ -195,3 +221,15 @@ function visualizeSeekSequence(seekSequence) {
     }
 }
 
+
+// Δημιουργεί μια τυχαία ακολουθία αριθμών και την τοποθετεί στο input πεδίο
+function generateRandomSequence() {
+    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Τυχαίο μήκος ακολουθίας (5-14)
+    const min = 0;
+    const max = 199;
+    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * (max - min + 1)) + min);
+    document.getElementById("process-queue").value = randomSequence.join(", ");
+}
+
+// Σύνδεση της λειτουργίας με το κουμπί
+document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
