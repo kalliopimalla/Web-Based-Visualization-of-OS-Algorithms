@@ -104,43 +104,50 @@
             </div>
         </div>
     </div>
+
+
+
     <div class="content">
-        <div class="container">
-          <div class="input-steps">
+    <div class="container">
+        <div class="input-steps">
             <p>Η σειρά των αιτήσεων:</p>
             <div class="popup">
-              <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
-              <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+                <input type="text" id="process-queue" placeholder="π.χ. 176,79,34,...">
+                <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα.</span>
+                <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
             </div>
-      
             <p>Η θέση της κεφαλής:</p>
             <div class="popup">
-              <input type="number" id="head-position" placeholder="π.χ. 50">
-              <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
+                <input type="number" id="head-position" placeholder="π.χ. 50">
             </div>
-      
             <p>Αρχική κατεύθυνση:</p>
             <div class="popup">
-              <select id="direction">
-                <option value="left">Left</option>
-                <option value="right">Right</option>
-              </select>
-              <span class="popuptext">Επιλέξτε την κατεύθυνση: Left ή Right.</span>
+                <select id="direction">
+                    <option value="left">Left</option>
+                    <option value="right">Right</option>
+                </select>
             </div>
-            
             <button onclick="executeSCAN()">Εκτέλεση</button>
-            <button onclick="toggleShowNumbersOnArrows()">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
-
-
-
-          </div>
-          
-          <p id="seek-count"></p>
-          <div id="seek-sequence" class="seek-sequence"></div>
-          <canvas id="seekCanvas" width="1200" height="600" style="border: 1px solid #000; padding: 15px;"></canvas>
+            <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
+        <button id="resetButton" style="display: none;">Επαναφορά</button>
+ 
+        <!-- Προσθήκη του συνολικού αριθμού κινήσεων -->
+        <div id="seek-count-display" class="seek-count-display"></div>
+    
+        <!-- Προσθήκη κουτιών για τη σειρά εξυπηρέτησης -->
+        <div id="seek-sequence" class="seek-sequence">
+            <h3>Σειρά Εξυπηρέτησης:</h3>
+            <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
         </div>
-      </div>
+    </div>
+     <canvas id="seekCanvas" width="1200" height="600" style="border: 1px solid #000; padding: 15px;"></canvas>
+</div>
+</div>
       <br>
+
+
+
+
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>

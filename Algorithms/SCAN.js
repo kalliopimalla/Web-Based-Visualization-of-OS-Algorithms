@@ -1,195 +1,146 @@
-// Ορισμός του μεγέθους του δίσκου
-let disk_size = 199;
+let showNumbersOnArrows = true; // Αρχική κατάσταση για εμφάνιση αριθμών
+const disk_size = 199; // Μέγεθος δίσκου
 
 /**
- * Εκτελεί τον αλγόριθμο SCAN για την αναζήτηση κομματιών σε μια μονάδα δίσκου.
- * Ο αλγόριθμος SCAN κινείται σε μια κατεύθυνση (αριστερά ή δεξιά) και εξυπηρετεί
- * τα αιτήματα σε αυτήν την κατεύθυνση, αναστρέφει την κατεύθυνση όταν φτάσει 
- * στο τέλος των κομματιών.
+ * Εκτελεί τον αλγόριθμο SCAN και σχεδιάζει την αναπαράσταση.
  */
 function executeSCAN() {
-    let tracksInput = document.getElementById("process-queue").value;
-    let head = parseInt(document.getElementById("head-position").value);
-    let direction = document.getElementById("direction").value;
+    const tracksInput = document.getElementById("process-queue").value;
+    const head = parseInt(document.getElementById("head-position").value);
+    const direction = document.getElementById("direction").value;
 
-    // Επεξεργασία εισόδου του χρήστη και μετατροπή σε αριθμούς
-    let tracks = tracksInput.split(',').map(Number).filter(num => !isNaN(num));
-    
-    if (tracks.length === 0) {
-        alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό για τη σειρά αιτήσεων.");
+    if (!tracksInput || isNaN(head) || (direction !== "left" && direction !== "right")) {
+        alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
 
-    if (isNaN(head) || head < 0) {
-        alert("Η θέση της κεφαλής πρέπει να είναι ένας θετικός αριθμός.");
-        return;
-    }
-
-    if (direction !== "left" && direction !== "right") {
-        alert("Παρακαλώ επιλέξτε έγκυρη κατεύθυνση: Left ή Right.");
-        return;
-    }
-
-    // Προσθέτουμε το 0 αν δεν υπάρχει
-    if (!tracks.includes(0)) {
-        tracks.push(0); 
-    }
-
-    // Ταξινόμηση των κομματιών
+    const tracks = tracksInput.split(",").map(Number).filter(num => !isNaN(num));
+    if (!tracks.includes(0)) tracks.push(0);
     tracks.sort((a, b) => a - b);
+
     let left = [], right = [];
     let seekSequence = [];
     let seekCount = 0;
 
-    // Διαχωρισμός των κομματιών σε δύο ομάδες (αριστερά και δεξιά από την κεφαλή)
     for (let i = 0; i < tracks.length; i++) {
         if (tracks[i] < head) left.push(tracks[i]);
         if (tracks[i] > head) right.push(tracks[i]);
     }
 
-    // Υπολογισμός της ακολουθίας αναζήτησης με βάση την κατεύθυνση
     if (direction === "left") {
-        left.reverse(); // Αν η κατεύθυνση είναι αριστερά, αναστρέφουμε τα αριστερά κομμάτια
+        left.reverse();
         seekSequence = [...left, 0, ...right];
     } else {
         seekSequence = [...right, 0, ...left.reverse()];
     }
 
-    // Υπολογισμός του συνολικού κόστους αναζήτησης
     let currentPos = head;
     for (let i = 0; i < seekSequence.length; i++) {
         seekCount += Math.abs(seekSequence[i] - currentPos);
         currentPos = seekSequence[i];
     }
 
-    // Εμφάνιση αποτελεσμάτων
-    document.getElementById("seek-count").innerText = `Συνολικός αριθμός αναζητήσεων = ${seekCount}`;
-    document.getElementById("seek-sequence").innerText = `Ακολουθία αναζήτησης: ${seekSequence.join(', ')}`;
-    
-    // Σχεδίαση της ακολουθίας SCAN με τα δεδομένα εισόδου του χρήστη
-    drawScan(seekSequence, direction, tracks);
+    document.getElementById("seek-count-display").innerText = `Συνολικός αριθμός αναζητήσεων = ${seekCount}`;
+    drawScan(seekSequence);
+    document.getElementById("resetButton").style.display = "inline-block";
 }
 
-// Συνάρτηση που απεικονίζει την ακολουθία του SCAN σε καμβά
-function drawScan(sequence, direction, inputTracks) {
-    let canvas = document.getElementById("seekCanvas");
-    let ctx = canvas.getContext("2d");
+/**
+ * Σχεδιάζει την αναπαράσταση του SCAN σε καμβά.
+ */
+function drawScan(sequence) {
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const disk_size = 199;
     const lineLength = canvas.width - 40;
     const trackHeight = canvas.height - 40;
-    const startX = direction === "left" ? 50 : canvas.width - 50;
-    const startY = 50;
-    const lineHeight = 40;
+    const padding = 20;
 
-    // Draw the light grid
-    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Light gray for grid
-    ctx.lineWidth = 1;
+    const startX = padding;
+    const trackWidth = lineLength / disk_size;
+    const stepY = trackHeight / (sequence.length - 1);
 
-    // Vertical grid lines
-    for (let mark = 0; mark <= disk_size; mark += 20) {
-        const xPosition = 20 + ((mark / disk_size) * lineLength);
-        ctx.beginPath();
-        ctx.moveTo(xPosition, 0);
-        ctx.lineTo(xPosition, canvas.height);
-        ctx.stroke();
-    }
-
-    // Horizontal grid lines based on the sequence length
-    for (let i = 0; i < sequence.length; i++) {
-        const yPosition = startY + (i * (trackHeight / (sequence.length - 1)));
-        ctx.beginPath();
-        ctx.moveTo(0, yPosition);
-        ctx.lineTo(canvas.width, yPosition);
-        ctx.stroke();
-    }
-
-    // Draw the top gray line with scale numbers
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(20, 20);
-    ctx.lineTo(canvas.width - 20, 20);
-    ctx.stroke();
 
-    // Scale numbers on the top line
-    ctx.fillStyle = "green";
-    ctx.font = "12px Arial";
-    for (let mark = 0; mark <= disk_size; mark += 20) {
-        const xPosition = 20 + ((mark / disk_size) * lineLength);
-        ctx.fillText(mark, xPosition - 10, 10); // Position numbers above the line
-    }
-
-    // Draw vertical scale line on the left
-    ctx.beginPath();
-    ctx.moveTo(20, 20);
-    ctx.lineTo(20, canvas.height - 20);
-    ctx.stroke();
-
-    // Original scan path drawing code
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-    let currentX = startX;
-    let currentY = startY;
-
-    for (let i = 0; i < sequence.length; i++) {
-        let x = direction === "left" 
-            ? startX + (sequence[i] / disk_size) * (canvas.width - 100)
-            : startX - (sequence[i] / disk_size) * (canvas.width - 100);
-        let y = startY + (i * lineHeight);
-        
-        ctx.lineTo(x, y);
-
-        // Draw arrow with optional numbers
-        let value = inputTracks.includes(sequence[i]) ? sequence[i] : "";
-        drawArrow(ctx, currentX, currentY, x, y, value, i > 0);
-        currentX = x;
-        currentY = y;
+    for (let i = 0; i <= disk_size; i += 20) {
+        const xPosition = startX + i * trackWidth;
+        ctx.beginPath();
+        ctx.moveTo(xPosition, padding);
+        ctx.lineTo(xPosition, canvas.height - padding);
+        ctx.stroke();
+        ctx.fillText(i, xPosition - 10, padding - 5);
     }
 
     ctx.strokeStyle = "green";
     ctx.lineWidth = 2;
-    ctx.stroke();
+
+    for (let i = 0; i < sequence.length - 1; i++) {
+        const x1 = startX + sequence[i] * trackWidth;
+        const y1 = padding + i * stepY;
+        const x2 = startX + sequence[i + 1] * trackWidth;
+        const y2 = padding + (i + 1) * stepY;
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        drawArrow(ctx, x1, y1, x2, y2, sequence[i + 1]);
+    }
 }
 
-
-// Μεταβλητή για εναλλαγή εμφάνισης αριθμών στα βέλη
-let showNumbersOnArrows = true;
-
-function toggleShowNumbersOnArrows() {
-    showNumbersOnArrows = !showNumbersOnArrows;
-    executeSCAN();
-}
-
-// Συνάρτηση σχεδίασης βέλους με την δυνατότητα εμφάνισης αριθμών
-function drawArrow(ctx, fromX, fromY, toX, toY, value, showArrow) {
+/**
+ * Σχεδιάζει βέλος με δυνατότητα εμφάνισης αριθμών.
+ */
+function drawArrow(ctx, fromX, fromY, toX, toY, value) {
     const headLength = 10;
     const dx = toX - fromX;
     const dy = toY - fromY;
     const angle = Math.atan2(dy, dx);
 
-    if (showArrow) {
-        ctx.lineWidth = 1;
-        ctx.strokeStyle = "green";
-        ctx.beginPath();
-        ctx.moveTo(fromX, fromY);
-        ctx.lineTo(toX, toY);
-        ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(toX, toY);
+    ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
+    ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
+    ctx.lineTo(toX, toY);
+    ctx.fillStyle = "green";
+    ctx.fill();
 
-        ctx.beginPath();
-        ctx.moveTo(toX, toY);
-        ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
-        ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
-        ctx.lineTo(toX, toY);
+    if (showNumbersOnArrows) {
         ctx.fillStyle = "green";
-        ctx.fill();
-    }
-
-    // Εμφάνιση αριθμού μόνο αν το κουμπί είναι ενεργοποιημένο
-    if (showNumbersOnArrows && value !== "") {
-        ctx.fillStyle = "black";
         ctx.font = "12px Arial";
         ctx.fillText(value, (fromX + toX) / 2, (fromY + toY) / 2 - 10);
     }
+}
+
+/**
+ * Δημιουργεί μια τυχαία ακολουθία αριθμών και την εισάγει στο πεδίο.
+ */
+function generateRandomSequence() {
+    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Μήκος 5-14
+    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * disk_size));
+    document.getElementById("process-queue").value = randomSequence.join(", ");
+}
+
+// Συνδέσεις κουμπιών
+document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
+document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
+document.getElementById("toggleNumbersButton").addEventListener("click", () => {
+    showNumbersOnArrows = !showNumbersOnArrows;
+    executeSCAN();
+});
+
+/**
+ * Συνάρτηση επαναφοράς.
+ */
+function resetCanvasAndInputs() {
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    document.getElementById("process-queue").value = "";
+    document.getElementById("head-position").value = "";
+    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("resetButton").style.display = "none";
 }
