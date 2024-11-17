@@ -55,16 +55,29 @@ function executeSCAN() {
     // Αφαίρεση της κεφαλής (προστέθηκε μόνο για ταξινόμηση)
     seekSequence = seekSequence.filter(position => position !== head);
 
-    // Υπολογισμός των συνολικών κινήσεων κεφαλής
-    let currentPos = head;
-    for (let i = 0; i < seekSequence.length; i++) {
-        seekCount += Math.abs(seekSequence[i] - currentPos);
-        currentPos = seekSequence[i];
-    }
+// Υπολογισμός των συνολικών κινήσεων κεφαλής με σταδιακή αύξηση
+let currentPos = head;
+for (let i = 0; i < seekSequence.length; i++) {
+    seekCount += Math.abs(seekSequence[i] - currentPos);
+    currentPos = seekSequence[i];
+}
 
-    // Εμφάνιση του συνολικού αριθμού κινήσεων
-    const seekCountDisplay = document.getElementById("seek-count-display");
-    seekCountDisplay.innerHTML = `Συνολική μετακίνηση κεφαλής: ${seekCount}`;
+// Εμφάνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση
+const seekCountDisplay = document.getElementById("seek-count-display");
+seekCountDisplay.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
+let currentCount = 0;
+const incrementValue = Math.ceil(seekCount / 20); // Βήμα αύξησης
+const interval = setInterval(() => {
+    if (currentCount + incrementValue >= seekCount) {
+        currentCount = seekCount;
+        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+        clearInterval(interval); // Τερματισμός του interval
+    } else {
+        currentCount += incrementValue;
+        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+    }
+}, 50); // Χρονικό διάστημα ενημέρωσης (50ms)
+
 
     // Δημιουργία κουτιών για τη σειρά εξυπηρέτησης
     const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
@@ -187,13 +200,13 @@ function drawScan(sequence) {
  * Σχεδιάζει βέλος με δυνατότητα εμφάνισης αριθμών.
  */
 /**
- * Σχεδιάζει βέλος με δυνατότητα εμφάνισης αριθμών.
+ * Σχεδιάζει βέλος με δυνατότητα εμφάνισης αριθμών πάνω από την άκρη του βέλους.
  */
 /**
- * Σχεδιάζει βέλος με δυνατότητα εμφάνισης αριθμών.
+ * Σχεδιάζει βέλος με δυνατότητα εμφάνισης αριθμών στην άκρη του βέλους (πάνω από το σημείο του).
  */
 function drawArrow(ctx, fromX, fromY, toX, toY, value) {
-    const headLength = 10;
+    const headLength = 10; // Μήκος της κεφαλής του βέλους
     const dx = toX - fromX;
     const dy = toY - fromY;
     const angle = Math.atan2(dy, dx);
@@ -207,22 +220,23 @@ function drawArrow(ctx, fromX, fromY, toX, toY, value) {
     ctx.fillStyle = "green";
     ctx.fill();
 
-    // Εμφάνιση αριθμών ακριβώς πάνω από τα βέλη
+    // Εμφάνιση αριθμών πάνω από την άκρη του βέλους
     if (showNumbersOnArrows) {
-        // Υπολογισμός θέσης αριθμών
-        const midX = (fromX + toX) / 2; // Μέσο X
-        const midY = (fromY + toY) / 2; // Μέσο Y
+        const textOffset = 15; // Πόσο μακριά πάνω από την άκρη του βέλους (σε pixels)
 
-        // Προσαρμογή της θέσης των αριθμών
-        const offset = 15; // Πόσο μακριά να είναι από το βέλος
-        const textX = midX - offset * Math.sin(angle); // Μετακίνηση κάθετα στο βέλος
-        const textY = midY + offset * Math.cos(angle);
+        // Υπολογισμός θέσης αριθμών
+        const textX = toX + textOffset * Math.cos(angle - Math.PI / 2); // Θέση X πάνω από το τέλος του βέλους
+        const textY = toY + textOffset * Math.sin(angle - Math.PI / 2); // Θέση Y πάνω από το τέλος του βέλους
 
         ctx.fillStyle = "green";
         ctx.font = "12px Arial";
+        ctx.textAlign = "center"; // Ευθυγράμμιση στο κέντρο του αριθμού
         ctx.fillText(value, textX, textY);
     }
 }
+
+
+
 
 
 
