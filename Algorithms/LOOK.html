@@ -128,14 +128,19 @@
             </div>
             <button onclick="executeLOOK()">Εκτέλεση</button>
             <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
-          </div>
-          <p id="seek-count"></p>
-          <div id="seek-sequence" class="seek-sequence"></div>
-          <canvas id="seekCanvas" width="1200" height="600" style="border: 1px solid #000; padding: 15px;"></canvas>
+         <!-- Προσθήκη του συνολικού αριθμού κινήσεων -->
+        <div id="seek-count-display" class="seek-count-display"></div>
+    
+        <!-- Προσθήκη κουτιών για τη σειρά εξυπηρέτησης -->
+        <div id="seek-sequence" class="seek-sequence">
+            <h3>Σειρά Εξυπηρέτησης:</h3>
+            <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
         </div>
-      </div>
-      
-    <br>
+    </div>
+     <canvas id="seekCanvas" width="1200" height="600" style="border: 1px solid #000; padding: 15px;"></canvas>
+</div>
+</div>
+      <br>
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
