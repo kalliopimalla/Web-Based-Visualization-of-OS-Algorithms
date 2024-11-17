@@ -47,12 +47,16 @@ function executeCSCAN() {
     }
 
     if (direction === "right") {
-        right.push(disk_size); // Προσθέτουμε το μέγιστο κομμάτι αν πάμε δεξιά
+        right.push(disk_size); // Προσθέτουμε το μέγιστο κομμάτι στο τέλος των δεξιών
         seekSequence = [...right, 0, ...left]; // Δεξιά πρώτα, μετά 0, μετά αριστερά
     } else {
-        left.unshift(0); // Προσθέτουμε το 0 αν πάμε αριστερά
+        left.unshift(0); // Προσθέτουμε το 0 στην αρχή των αριστερών
         seekSequence = [...left.reverse(), disk_size, ...right.reverse()]; // Αριστερά πρώτα, μετά max, μετά δεξιά
     }
+    
+    // Αφαίρεση τυχόν διπλοεμφανίσεων του 0
+    seekSequence = seekSequence.filter((value, index, self) => value !== 0 || self.indexOf(0) === index);
+    
 
     // Υπολογισμός του συνολικού κόστους αναζήτησης
     let currentPos = head;
@@ -61,11 +65,46 @@ function executeCSCAN() {
         currentPos = seekSequence[i];
     }
 
-    // Εμφάνιση αποτελεσμάτων
-    document.getElementById("seek-count").innerText = `Συνολικός αριθμός αναζητήσεων = ${seekCount}`;
-    document.getElementById("seek-sequence").innerText = `Ακολουθία αναζήτησης: ${seekSequence.join(', ')}`;
+ 
+
+    // Εμφάνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση
+    const seekCountDisplay = document.getElementById("seek-count-display");
+seekCountDisplay.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
+let currentCount = 0;
+const incrementValue = Math.ceil(seekCount / 20); // Βήμα αύξησης
+const interval = setInterval(() => {
+    if (currentCount + incrementValue >= seekCount) {
+        currentCount = seekCount;
+        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+        clearInterval(interval); // Τερματισμός του interval
+    } else {
+        currentCount += incrementValue;
+        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+    }
+}, 50); // Χρονικό διάστημα ενημέρωσης (50ms)
+
+
+    // Δημιουργία κουτιών για τη σειρά εξυπηρέτησης
+    const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
+    seekSequenceBoxes.innerHTML = "";
+    seekSequence.forEach((position, index) => {
+        const box = document.createElement("div");
+        box.className = "sequence-box";
+        box.textContent = position;
+
+        seekSequenceBoxes.appendChild(box);
+        if (index < seekSequence.length - 1) {
+            const arrow = document.createElement("span");
+            arrow.className = "arrow";
+            arrow.textContent = "→";
+            seekSequenceBoxes.appendChild(arrow);
+        }
+    });
+
+
     
     drawCSCAN(seekSequence); // Σχεδίαση της ακολουθίας C-SCAN
+    document.getElementById("resetButton").style.display = "inline-block";
 }
 
 
@@ -77,94 +116,107 @@ function toggleShowNumbersOnArrows() {
 }
 
 function drawCSCAN(sequence) {
-    let canvas = document.getElementById("seekCanvas");
-    let ctx = canvas.getContext("2d");
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Καθαρισμός του καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const disk_size = 199;
-    const lineLength = canvas.width - 100;
-    const trackHeight = canvas.height - 40;
-    const startX = 50;
-    const startY = 50;
-    const lineHeight = 40;
+    // Υπολογισμός τιμών για την κλίμακα
+    const maxInput = Math.max(...sequence);
+    const disk_size = Math.max(199, maxInput + 20); // Επεκτείνουμε την κλίμακα αν χρειαστεί
+    const scaleStep = 20; // Βήμα κλίμακας
+    const numMarks = Math.ceil(disk_size / scaleStep) + 1;
 
-    // Draw grid lines
+    const margin = 20; // Περιθώριο από τις άκρες του καμβά
+    const lineLength = canvas.width - 2 * margin; // Μήκος της κλίμακας
+    const trackHeight = canvas.height - 2 * margin; // Ύψος του grid
+    const trackWidth = lineLength / disk_size; // Πλάτος κάθε κομματιού
+    const startX = margin; // Αρχή του grid στον οριζόντιο άξονα
+    const startY = margin; // Αρχή του grid στον κάθετο άξονα
+
+    // Σχεδιασμός κάθετων γραμμών του grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
 
-    // Vertical grid lines
-    for (let mark = 0; mark <= disk_size; mark += 20) {
-        const xPosition = startX + ((mark / disk_size) * lineLength);
+    for (let i = 0; i < numMarks; i++) {
+        const xPosition = startX + (i * scaleStep / disk_size) * lineLength;
         ctx.beginPath();
-        ctx.moveTo(xPosition, 0);
-        ctx.lineTo(xPosition, canvas.height);
+        ctx.moveTo(xPosition, startY); // Ξεκινά από την πρώτη οριζόντια γραμμή
+        ctx.lineTo(xPosition, startY + trackHeight); // Μέχρι το τέλος του grid
         ctx.stroke();
     }
 
-    // Horizontal grid lines
-    for (let i = 0; i < sequence.length; i++) {
-        const yPosition = startY + (i * lineHeight);
+    // Σχεδιασμός οριζόντιων γραμμών του grid
+    const numHorizontalLines = sequence.length;
+    for (let i = 0; i < numHorizontalLines; i++) {
+        const yPosition = startY + (i / (numHorizontalLines - 1)) * trackHeight;
         ctx.beginPath();
-        ctx.moveTo(0, yPosition);
-        ctx.lineTo(canvas.width, yPosition);
+        ctx.moveTo(startX, yPosition);
+        ctx.lineTo(startX + lineLength, yPosition);
         ctx.stroke();
     }
 
-    // Draw top gray line with scale numbers
+    // Σχεδιασμός της πάνω γραμμής με την κλίμακα (στην πρώτη οριζόντια γραμμή)
     ctx.strokeStyle = "gray";
     ctx.lineWidth = 1;
+    const scaleY = startY; // Ύψος της πάνω γραμμής
     ctx.beginPath();
-    ctx.moveTo(startX, 20);
-    ctx.lineTo(canvas.width - 20, 20);
+    ctx.moveTo(startX, scaleY);
+    ctx.lineTo(startX + lineLength, scaleY);
     ctx.stroke();
 
-    // Scale numbers on the top line
+    // Σχεδιασμός αριθμών της κλίμακας
     ctx.fillStyle = "green";
     ctx.font = "12px Arial";
-    for (let mark = 0; mark <= disk_size; mark += 20) {
-        const xPosition = startX + ((mark / disk_size) * lineLength);
-        ctx.fillText(mark, xPosition - 10, 10);
+
+    for (let i = 0; i < numMarks; i++) {
+        const mark = i * scaleStep;
+        const xPosition = startX + (i * scaleStep / disk_size) * lineLength;
+
+        ctx.fillText(mark, xPosition - 10, scaleY - 5); // Τοποθέτηση αριθμών
+        ctx.beginPath();
+        ctx.moveTo(xPosition, scaleY);
+        ctx.lineTo(xPosition, scaleY + 10); // Μικρή κάθετη γραμμή για την κλίμακα
+        ctx.stroke();
     }
 
-    // Draw vertical scale line on the left
-    ctx.beginPath();
-    ctx.moveTo(20, 20);
-    ctx.lineTo(20, canvas.height - 20);
-    ctx.stroke();
-
-    // Draw C-SCAN path with arrows and optional sequence numbers
-    ctx.beginPath();
-    ctx.moveTo(startX, startY);
-
-    let currentX = startX;
-    let currentY = startY;
-
-    for (let i = 0; i < sequence.length; i++) {
-        let x = startX + (sequence[i] / disk_size) * lineLength;
-        let y = startY + (i * lineHeight);
-
-        ctx.lineTo(x, y);
-
-        // Draw arrow between points
-        if (i > 0) {
-            drawArrow(ctx, currentX, currentY, x, y);
-        }
-
-        // Display numbers on arrows if enabled
-        if (showNumbersOnArrows) {
-            ctx.fillStyle = "black";
-            ctx.font = "12px Arial";
-            ctx.fillText(sequence[i], x - 5, y - 10);
-        }
-
-        currentX = x;
-        currentY = y;
-    }
-
-    ctx.strokeStyle = "blue";
+    // Σχεδιασμός της διαδρομής C-SCAN
     ctx.lineWidth = 2;
-    ctx.stroke();
+    ctx.strokeStyle = "green";
+    ctx.fillStyle = "green";
+
+    for (let i = 0; i < sequence.length - 1; i++) {
+        const x1 = startX + (sequence[i] / disk_size) * lineLength;
+        const y1 = startY + (i * (trackHeight / (sequence.length - 1)));
+        const x2 = startX + (sequence[i + 1] / disk_size) * lineLength;
+        const y2 = startY + ((i + 1) * (trackHeight / (sequence.length - 1)));
+
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const arrowLength = 10;
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fill();
+
+        if (showNumbersOnArrows) {
+            ctx.fillStyle = "green";
+            ctx.font = "12px Arial";
+            ctx.fillText(sequence[i + 1], x2 - 5, y2 - 10);
+        }
+    }
 }
+
+
+
+
 
 // Συνάρτηση σχεδίασης βέλους
 function drawArrow(ctx, fromX, fromY, toX, toY) {
@@ -189,3 +241,36 @@ function drawArrow(ctx, fromX, fromY, toX, toY) {
     ctx.fillStyle = "green";
     ctx.fill();
 }
+
+/**
+ * Δημιουργεί μια τυχαία ακολουθία αριθμών και την εισάγει στο πεδίο.
+ */
+function generateRandomSequence() {
+    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Μήκος 5-14
+    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * disk_size));
+    document.getElementById("process-queue").value = randomSequence.join(", ");
+}
+
+// Συνδέσεις κουμπιών
+document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
+document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
+document.getElementById("toggleNumbersButton").addEventListener("click", () => {
+    showNumbersOnArrows = !showNumbersOnArrows;
+    executeCSCAN();
+});
+
+/**
+ * Συνάρτηση επαναφοράς.
+ */
+function resetCanvasAndInputs() {
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    document.getElementById("process-queue").value = "";
+    document.getElementById("head-position").value = "";
+    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("seek-sequence-boxes").innerHTML = "";
+    document.getElementById("resetButton").style.display = "none";
+}
+
