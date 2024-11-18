@@ -56,18 +56,45 @@ function executeCLOOK() {
         currentPos = seekSequence[i];
     }
 
-    // Εμφάνιση αποτελεσμάτων
-    document.getElementById("seek-count").innerText = `Συνολικός αριθμός αναζητήσεων = ${seekCount}`;
-    document.getElementById("seek-sequence").innerText = `Ακολουθία αναζήτησης: ${seekSequence.join(', ')}`;
-    
-    // Κλήση της συνάρτησης οπτικοποίησης
-    drawCLOOK(seekSequence);
 
-    if (showNumbersOnArrows) {
-        ctx.fillStyle = "green";
-        ctx.font = "12px Arial";
-        ctx.fillText(sequence[i + 1], x2 - 5, y2 - 10);
-    }
+
+  // Εμφάνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση
+  const seekCountDisplay = document.getElementById("seek-count-display");
+  seekCountDisplay.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
+  let currentCount = 0;
+  const incrementValue = Math.ceil(seekCount / 20); // Βήμα αύξησης
+  const interval = setInterval(() => {
+      if (currentCount + incrementValue >= seekCount) {
+          currentCount = seekCount;
+          seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+          clearInterval(interval); // Τερματισμός του interval
+      } else {
+          currentCount += incrementValue;
+          seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+      }
+  }, 50); // Χρονικό διάστημα ενημέρωσης (50ms)
+  
+  
+      // Δημιουργία κουτιών για τη σειρά εξυπηρέτησης
+      const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
+      seekSequenceBoxes.innerHTML = "";
+      seekSequence.forEach((position, index) => {
+          const box = document.createElement("div");
+          box.className = "sequence-box";
+          box.textContent = position;
+  
+          seekSequenceBoxes.appendChild(box);
+          if (index < seekSequence.length - 1) {
+              const arrow = document.createElement("span");
+              arrow.className = "arrow";
+              arrow.textContent = "→";
+              seekSequenceBoxes.appendChild(arrow);
+          }
+      });
+
+      drawCLOOK(seekSequence);
+      document.getElementById("resetButton").style.display = "inline-block";
+
 }
 
 // Συνάρτηση που απεικονίζει την ακολουθία του C-LOOK σε καμβά
@@ -89,7 +116,7 @@ function drawCLOOK(sequence) {
 
         ctx.lineTo(x, y);
 
-        // Προσθήκη αριθμών μόνο αν το showNumbersOnArrows είναι true
+        // Ελέγξτε την κατάσταση του showNumbersOnArrows εδώ
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
             ctx.font = "12px Arial";
@@ -105,6 +132,7 @@ function drawCLOOK(sequence) {
     ctx.lineWidth = 2;
     ctx.stroke();
 }
+
 
 
 // Συνάρτηση σχεδίασης βέλους
@@ -145,10 +173,32 @@ document.getElementById("generateSequenceButton").addEventListener("click", gene
 
 function toggleShowNumbersOnArrows() {
     showNumbersOnArrows = !showNumbersOnArrows;
-    executeCLOOK(); // Επανασχεδίαση για να γίνει εναλλαγή στην εμφάνιση αριθμών
+    executeCLOOK(); // Επανασχεδίαση για να αντικατοπτρίζεται η αλλαγή
 }
 
+
+
+
+/**
+ * Συνάρτηση επαναφοράς.
+ */
+function resetCanvasAndInputs() {
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    document.getElementById("process-queue").value = "";
+    document.getElementById("head-position").value = "";
+    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("seek-sequence-boxes").innerHTML = "";
+    document.getElementById("resetButton").style.display = "none";
+}
+
+// Συνδέσεις κουμπιών
+document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
+document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
 document.getElementById("toggleNumbersButton").addEventListener("click", () => {
     showNumbersOnArrows = !showNumbersOnArrows;
     executeCLOOK();
 });
+
