@@ -120,9 +120,9 @@ function drawLook(sequence) {
     const startY = padding + 30;
     for (let i = 0; i < sequence.length - 1; i++) {
         const x1 = padding + (sequence[i] - startScale) * trackWidth;
-        const y1 = startY + (i * (trackHeight / (sequence.length - 1)));
+        const y1 = padding + (i * (trackHeight / (sequence.length - 1)));
         const x2 = padding + (sequence[i + 1] - startScale) * trackWidth;
-        const y2 = startY + ((i + 1) * (trackHeight / (sequence.length - 1)));
+        const y2 = padding + ((i + 1) * (trackHeight / (sequence.length - 1)));
 
         // Χρήση της drawArrow για κάθε διαδοχικό ζεύγος
         drawArrow(ctx, x1, y1, x2, y2);
@@ -135,12 +135,8 @@ function drawLook(sequence) {
         }
     }
 }
-
 /**
  * Σχεδιάζει ένα βέλος από ένα σημείο σε άλλο.
- */
-/**
- * Σχεδιάζει ένα βέλος μεταξύ δύο σημείων στον καμβά.
  */
 function drawArrow(ctx, fromX, fromY, toX, toY) {
     const headLength = 10; // Μήκος κεφαλής του βέλους
@@ -175,4 +171,15 @@ function executeLOOK() {
     const tracks = tracksInput.split(',').map(Number).filter(num => !isNaN(num));
     LOOK(tracks, head, direction);
 }
+
+/**
+ * Δημιουργεί μια τυχαία ακολουθία αριθμών και την εισάγει στο πεδίο.
+ */
+function generateRandomSequence() {
+    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Μήκος 5-14
+    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * disk_size));
+    document.getElementById("process-queue").value = randomSequence.join(", ");
+}
+
+document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
 

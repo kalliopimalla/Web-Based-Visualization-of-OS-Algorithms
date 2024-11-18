@@ -1,5 +1,6 @@
 // Ορισμός του μεγέθους του δίσκου
 let disk_size = 200;
+let showNumbersOnArrows = true; // Μεταβλητή για εναλλαγή εμφάνισης αριθμών
 
 /**
  * Εκτελεί τον αλγόριθμο C-LOOK για χρονοπρογραμματισμό δίσκου.
@@ -61,6 +62,12 @@ function executeCLOOK() {
     
     // Κλήση της συνάρτησης οπτικοποίησης
     drawCLOOK(seekSequence);
+
+    if (showNumbersOnArrows) {
+        ctx.fillStyle = "green";
+        ctx.font = "12px Arial";
+        ctx.fillText(sequence[i + 1], x2 - 5, y2 - 10);
+    }
 }
 
 // Συνάρτηση που απεικονίζει την ακολουθία του C-LOOK σε καμβά
@@ -69,29 +76,36 @@ function drawCLOOK(sequence) {
     let ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let startX = 50; // Αρχική οριζόντια θέση
-    let startY = 50; // Αρχική κατακόρυφη θέση
-    let lineHeight = 40; // Αυξημένη απόσταση μεταξύ γραμμών
+    let startX = 50;
+    let startY = 50;
+    let lineHeight = 40;
 
     ctx.beginPath();
-    ctx.moveTo(startX, startY); // Ξεκινάμε από την αρχή του καμβά
+    ctx.moveTo(startX, startY);
 
     for (let i = 0; i < sequence.length; i++) {
-        let x = startX + (sequence[i] / disk_size) * (canvas.width - 100); // Υπολογισμός x
-        let y = startY + (i * lineHeight); // Κατακόρυφη μεταβολή με βάση τη σειρά της ακολουθίας
+        let x = startX + (sequence[i] / disk_size) * (canvas.width - 100);
+        let y = startY + (i * lineHeight);
 
-        ctx.lineTo(x, y); // Δημιουργούμε τη γραμμή
+        ctx.lineTo(x, y);
 
-        // Σχεδιάζουμε βέλος
+        // Προσθήκη αριθμών μόνο αν το showNumbersOnArrows είναι true
+        if (showNumbersOnArrows) {
+            ctx.fillStyle = "green";
+            ctx.font = "12px Arial";
+            ctx.fillText(sequence[i], x + 5, y - 10); // Αριθμός πάνω από κάθε βέλος
+        }
+
         if (i > 0) {
             drawArrow(ctx, startX + ((sequence[i - 1] / disk_size) * (canvas.width - 100)), startY + ((i - 1) * lineHeight), x, y);
         }
     }
 
-    ctx.strokeStyle = "green"; // Χρώμα γραμμής
-    ctx.lineWidth = 2; // Πάχος γραμμής
-    ctx.stroke(); // Σχεδιάζουμε τη γραμμή
+    ctx.strokeStyle = "green";
+    ctx.lineWidth = 2;
+    ctx.stroke();
 }
+
 
 // Συνάρτηση σχεδίασης βέλους
 function drawArrow(ctx, fromX, fromY, toX, toY) {
@@ -116,3 +130,25 @@ function drawArrow(ctx, fromX, fromY, toX, toY) {
     ctx.fillStyle = "green"; // Χρώμα κεφαλής βέλους
     ctx.fill();
 }
+
+
+/**
+ * Δημιουργεί μια τυχαία ακολουθία αριθμών και την εισάγει στο πεδίο.
+ */
+function generateRandomSequence() {
+    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Μήκος 5-14
+    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * disk_size));
+    document.getElementById("process-queue").value = randomSequence.join(", ");
+}
+
+document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
+
+function toggleShowNumbersOnArrows() {
+    showNumbersOnArrows = !showNumbersOnArrows;
+    executeCLOOK(); // Επανασχεδίαση για να γίνει εναλλαγή στην εμφάνιση αριθμών
+}
+
+document.getElementById("toggleNumbersButton").addEventListener("click", () => {
+    showNumbersOnArrows = !showNumbersOnArrows;
+    executeCLOOK();
+});
