@@ -115,7 +115,6 @@ function visualizeSeekSequence(seekSequence) {
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
 
-    // Κάθετες γραμμές του grid
     for (let mark = startScale; mark <= endScale; mark += 20) {
         const x = padding + (mark - startScale) * trackWidth;
         ctx.beginPath();
@@ -124,10 +123,11 @@ function visualizeSeekSequence(seekSequence) {
         ctx.stroke();
     }
 
-    // Οριζόντιες γραμμές του grid
     const numHorizontalLines = seekSequence.length;
+    const horizontalStep = trackHeight / (numHorizontalLines - 1);
+
     for (let i = 0; i < numHorizontalLines; i++) {
-        const y = padding + i * (trackHeight / (numHorizontalLines - 1));
+        const y = padding + i * horizontalStep;
         ctx.beginPath();
         ctx.moveTo(padding, y);
         ctx.lineTo(canvas.width - padding, y);
@@ -143,7 +143,6 @@ function visualizeSeekSequence(seekSequence) {
     ctx.lineTo(canvas.width - padding, scaleY);
     ctx.stroke();
 
-    // Αριθμοί της κλίμακας
     ctx.fillStyle = "black";
     ctx.font = "12px Arial";
     for (let mark = startScale; mark <= endScale; mark += 20) {
@@ -152,17 +151,16 @@ function visualizeSeekSequence(seekSequence) {
     }
 
     // Σχεδιασμός βελών για τη σειρά εξυπηρέτησης
-    const startY = scaleY + 30;
     ctx.strokeStyle = "green";
     ctx.fillStyle = "green";
     ctx.lineWidth = 2;
 
-    let x1 = padding + (seekSequence[0] - startScale) * trackWidth; // Ευθυγράμμιση με την αρχική θέση
-    let y1 = startY;
+    let x1 = padding + (seekSequence[0] - startScale) * trackWidth;
+    let y1 = scaleY; // Ξεκινά από τη γραμμή της κλίμακας
 
     for (let i = 1; i < seekSequence.length; i++) {
         const x2 = padding + (seekSequence[i] - startScale) * trackWidth;
-        const y2 = startY + i * (trackHeight / (seekSequence.length - 1));
+        const y2 = scaleY + i * horizontalStep;
 
         // Σχεδιασμός γραμμών
         ctx.beginPath();
@@ -173,18 +171,17 @@ function visualizeSeekSequence(seekSequence) {
         // Σχεδιασμός κεφαλών στα βέλη
         drawArrow(ctx, x1, y1, x2, y2);
 
-        // Εμφάνιση αριθμών στα βέλη, αν το επιτρέπει η ρύθμιση
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
             ctx.font = "12px Arial";
             ctx.fillText(seekSequence[i], x2 - 10, y2 - 10);
         }
 
-        // Ενημέρωση του x1, y1 για το επόμενο βέλος
         x1 = x2;
         y1 = y2;
     }
 }
+
 
 
 /**

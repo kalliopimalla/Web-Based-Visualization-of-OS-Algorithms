@@ -1,5 +1,35 @@
+let disk_size = 200;
+let showNumbersOnArrows = true; // Εναλλαγή εμφάνισης αριθμών
+
+
+
 /**
  * Εκτελεί τον αλγόριθμο LOOK για χρονοπρογραμματισμό δίσκου.
+ */
+function executeLOOK() {
+    let tracksInput = document.getElementById("process-queue").value;
+    let head = parseInt(document.getElementById("head-position").value);
+    let direction = document.getElementById("direction").value;
+
+    if (!tracksInput || isNaN(head)) {
+        alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
+        return;
+    }
+
+    // Μετατροπή των αιτημάτων σε πίνακα αριθμών
+    let tracks = tracksInput.split(',').map(item => Number(item.trim())).filter(num => !isNaN(num));
+
+    if (tracks.length === 0) {
+        alert("Παρακαλώ εισάγετε έγκυρους αριθμούς χωρισμένους με κόμματα.");
+        return;
+    }
+
+    // Κλήση της συνάρτησης LOOK
+    LOOK(tracks, head, direction);
+}
+
+/**
+ * Υλοποιεί τον αλγόριθμο LOOK.
  */
 function LOOK(arr, head, direction) {
     if (!Array.isArray(arr) || arr.length === 0 || arr.some(num => typeof num !== 'number' || isNaN(num))) {
@@ -13,7 +43,7 @@ function LOOK(arr, head, direction) {
     let right = [];
     let seek_sequence = [];
 
-    // Διαχωρισμός αριστερών και δεξιών κομματιών
+    // Διαχωρισμός αιτημάτων σε αριστερά και δεξιά
     for (let i = 0; i < arr.length; i++) {
         if (arr[i] < head) left.push(arr[i]);
         if (arr[i] > head) right.push(arr[i]);
@@ -47,139 +77,190 @@ function LOOK(arr, head, direction) {
     }
 
     // Εμφάνιση του συνολικού αριθμού κινήσεων
-    const seekCountDisplay = document.getElementById("seek-count-display");
-    seekCountDisplay.innerHTML = `Συνολική μετακίνηση κεφαλής: ${seek_count}`;
+    animateSeekCount(seek_count);
 
     // Δημιουργία κουτιών για τη σειρά εξυπηρέτησης
+    createSeekSequenceBoxes(seek_sequence);
+
+    // Κλήση της συνάρτησης για την οπτικοποίηση
+    visualizeSeekSequence(seek_sequence);
+}
+
+// Οι υπόλοιπες συναρτήσεις παραμένουν ίδιες.
+
+
+/**
+ * Δημιουργεί κουτιά για τη σειρά εξυπηρέτησης και τα βέλη μεταξύ τους.
+ */
+function createSeekSequenceBoxes(seekSequence) {
     const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
     seekSequenceBoxes.innerHTML = "";
-    seek_sequence.forEach((position, index) => {
+
+    seekSequence.forEach((position, index) => {
         const box = document.createElement("div");
         box.className = "sequence-box";
         box.textContent = position;
 
         seekSequenceBoxes.appendChild(box);
-        if (index < seek_sequence.length - 1) {
+
+        if (index < seekSequence.length - 1) {
             const arrow = document.createElement("span");
             arrow.className = "arrow";
             arrow.textContent = "→";
             seekSequenceBoxes.appendChild(arrow);
         }
     });
-
-    // Κλήση της συνάρτησης για την οπτικοποίηση
-    drawLook(seek_sequence);
 }
 
 /**
- * Οπτικοποιεί την ακολουθία του LOOK σε καμβά με grid, βέλη και αριθμούς.
+ * Σταδιακή εμφάνιση του συνολικού αριθμού κινήσεων.
  */
-function drawLook(sequence) {
+function animateSeekCount(seekCount) {
+    const seekCountDisplay = document.getElementById("seek-count-display");
+    seekCountDisplay.innerHTML = "";
+    let currentCount = 0;
+    const incrementValue = Math.ceil(seekCount / 20);
+
+    const interval = setInterval(() => {
+        if (currentCount + incrementValue >= seekCount) {
+            currentCount = seekCount;
+            clearInterval(interval);
+        } else {
+            currentCount += incrementValue;
+        }
+        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+    }, 50);
+}
+
+/**
+ * Οπτικοποιεί την ακολουθία αναζήτησης με grid, βέλη και ευθυγραμμισμένη κλίμακα.
+ */
+function visualizeSeekSequence(seekSequence) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const minInput = Math.min(...sequence);
-    const maxInput = Math.max(...sequence);
-    const startScale = Math.floor(minInput / 20) * 20;
-    const endScale = Math.ceil(maxInput / 20) * 20;
-
     const padding = 30;
     const lineLength = canvas.width - padding * 2;
-    const trackWidth = lineLength / (endScale - startScale);
+    const trackWidth = lineLength / disk_size;
     const trackHeight = canvas.height - padding * 2;
+
+    const minInput = Math.min(...seekSequence);
+    const maxInput = Math.max(...seekSequence);
+    const startScale = Math.floor(minInput / 20) * 20;
+    const endScale = Math.ceil(maxInput / 20) * 20;
 
     // Σχεδιασμός grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
+
     for (let mark = startScale; mark <= endScale; mark += 20) {
-        const xPosition = padding + (mark - startScale) * trackWidth;
+        const x = padding + (mark - startScale) * trackWidth;
         ctx.beginPath();
-        ctx.moveTo(xPosition, padding);
-        ctx.lineTo(xPosition, canvas.height - padding);
-        ctx.stroke();
-    }
-    const numHorizontalLines = sequence.length;
-    for (let i = 0; i < numHorizontalLines; i++) {
-        const yPosition = padding + (i * (trackHeight / (numHorizontalLines - 1)));
-        ctx.beginPath();
-        ctx.moveTo(padding, yPosition);
-        ctx.lineTo(canvas.width - padding, yPosition);
+        ctx.moveTo(x, padding);
+        ctx.lineTo(x, canvas.height - padding);
         ctx.stroke();
     }
 
-    // Αριθμοί κλίμακας
-    ctx.fillStyle = "green";
+    const numHorizontalLines = seekSequence.length;
+    const horizontalStep = trackHeight / (numHorizontalLines - 1);
+
+    for (let i = 0; i < numHorizontalLines; i++) {
+        const y = padding + i * horizontalStep;
+        ctx.beginPath();
+        ctx.moveTo(padding, y);
+        ctx.lineTo(canvas.width - padding, y);
+        ctx.stroke();
+    }
+
+    // Σχεδιασμός της κλίμακας
+    ctx.strokeStyle = "gray";
+    ctx.lineWidth = 1;
+    const scaleY = padding;
+    ctx.beginPath();
+    ctx.moveTo(padding, scaleY);
+    ctx.lineTo(canvas.width - padding, scaleY);
+    ctx.stroke();
+
+    ctx.fillStyle = "black";
     ctx.font = "12px Arial";
     for (let mark = startScale; mark <= endScale; mark += 20) {
-        const xPosition = padding + (mark - startScale) * trackWidth;
-        ctx.fillText(mark, xPosition - 10, padding - 10);
+        const x = padding + (mark - startScale) * trackWidth;
+        ctx.fillText(mark, x - 10, scaleY - 10);
     }
 
-    // Σχεδιασμός διαδρομής με βέλη
-    const startY = padding + 30;
-    for (let i = 0; i < sequence.length - 1; i++) {
-        const x1 = padding + (sequence[i] - startScale) * trackWidth;
-        const y1 = padding + (i * (trackHeight / (sequence.length - 1)));
-        const x2 = padding + (sequence[i + 1] - startScale) * trackWidth;
-        const y2 = padding + ((i + 1) * (trackHeight / (sequence.length - 1)));
+    // Σχεδιασμός βελών για τη σειρά εξυπηρέτησης
+    ctx.strokeStyle = "green";
+    ctx.fillStyle = "green";
+    ctx.lineWidth = 2;
 
-        // Χρήση της drawArrow για κάθε διαδοχικό ζεύγος
+    let x1 = padding + (seekSequence[0] - startScale) * trackWidth;
+    let y1 = scaleY; // Ξεκινά από τη γραμμή της κλίμακας
+
+    for (let i = 1; i < seekSequence.length; i++) {
+        const x2 = padding + (seekSequence[i] - startScale) * trackWidth;
+        const y2 = scaleY + i * horizontalStep;
+
+        // Σχεδιασμός γραμμών
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        // Σχεδιασμός κεφαλών στα βέλη
         drawArrow(ctx, x1, y1, x2, y2);
 
-        // Εμφάνιση αριθμών αν ενεργοποιηθεί η επιλογή
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
             ctx.font = "12px Arial";
-            ctx.fillText(sequence[i + 1], x2, y2 - 10);
+            ctx.fillText(seekSequence[i], x2 - 10, y2 - 10);
         }
+
+        x1 = x2;
+        y1 = y2;
     }
 }
+
+
+
 /**
- * Σχεδιάζει ένα βέλος από ένα σημείο σε άλλο.
+ * Σχεδίαση βέλους.
  */
 function drawArrow(ctx, fromX, fromY, toX, toY) {
-    const headLength = 10; // Μήκος κεφαλής του βέλους
-    const dx = toX - fromX;
-    const dy = toY - fromY;
-    const angle = Math.atan2(dy, dx);
+    const headLength = 10;
+    const angle = Math.atan2(toY - fromY, toX - fromX);
 
-    // Γραμμή βέλους
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = "green";
-    ctx.beginPath();
-    ctx.moveTo(fromX, fromY);
-    ctx.lineTo(toX, toY);
-    ctx.stroke();
-
-    // Κεφαλή βέλους
     ctx.beginPath();
     ctx.moveTo(toX, toY);
     ctx.lineTo(toX - headLength * Math.cos(angle - Math.PI / 6), toY - headLength * Math.sin(angle - Math.PI / 6));
     ctx.lineTo(toX - headLength * Math.cos(angle + Math.PI / 6), toY - headLength * Math.sin(angle + Math.PI / 6));
-    ctx.lineTo(toX, toY);
-    ctx.fillStyle = "green";
+    ctx.closePath();
     ctx.fill();
 }
 
-// Συνάρτηση εκτέλεσης του LOOK
-function executeLOOK() {
-    const tracksInput = document.getElementById("process-queue").value;
-    const head = parseInt(document.getElementById("head-position").value);
-    const direction = document.getElementById("direction").value;
-
-    const tracks = tracksInput.split(',').map(Number).filter(num => !isNaN(num));
-    LOOK(tracks, head, direction);
-}
+// Συνδέσεις κουμπιών
+document.getElementById("generateSequenceButton").addEventListener("click", () => {
+    const randomSequence = Array.from({ length: 10 }, () => Math.floor(Math.random() * disk_size));
+    document.getElementById("process-queue").value = randomSequence.join(", ");
+});
+document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
+document.getElementById("toggleNumbersButton").addEventListener("click", () => {
+    showNumbersOnArrows = !showNumbersOnArrows;
+    executeCLOOK();
+});
 
 /**
- * Δημιουργεί μια τυχαία ακολουθία αριθμών και την εισάγει στο πεδίο.
+ * Επαναφορά καμβά και πεδίων εισόδου.
  */
-function generateRandomSequence() {
-    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Μήκος 5-14
-    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * disk_size));
-    document.getElementById("process-queue").value = randomSequence.join(", ");
+function resetCanvasAndInputs() {
+    const canvas = document.getElementById("seekCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    document.getElementById("process-queue").value = "";
+    document.getElementById("head-position").value = "";
+    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("seek-sequence-boxes").innerHTML = "";
+
+    document.getElementById("resetButton").style.display = "none";
 }
-
-document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
-
