@@ -1,6 +1,6 @@
 /* Βασικά στυλ για τη σελίδα */
 body {
-    font-family: Arial, sans-serif;
+  font-family: "Work Sans", sans-serif;
     margin: 0;
     padding: 0;
     width: 100vw;
@@ -211,7 +211,7 @@ footer ul li a {
   }
   
   .nav > div > .logo {
-    font-family: "Chonburi", cursive;
+    font-family: "Work Sans", sans-serif;
     font-size: 28px;
     letter-spacing: 2px;
     width: 60%;
@@ -457,7 +457,7 @@ footer ul li a {
   .content {
     padding: 8vh 45px 0px 30px;
     width: 100%;
-    font-family: "Chonburi", serif;
+    font-family: "Work Sans", sans-serif;
     display: flex;
     justify-content: center;
   }
@@ -556,7 +556,7 @@ footer ul li a {
 
 /*Απο εδω κι κατω*/
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Work Sans", sans-serif;
   background-color: #f4f4f4;
   text-align: center;
   margin: 20px;

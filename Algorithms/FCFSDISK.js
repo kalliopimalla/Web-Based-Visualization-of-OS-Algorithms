@@ -232,4 +232,3 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 });
 
 
-
