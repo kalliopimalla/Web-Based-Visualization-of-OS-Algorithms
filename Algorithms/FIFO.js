@@ -26,7 +26,8 @@ function initializeSimulation() {
     pageFrames = Array(maxFrames).fill(null); // Επαναφορά frames για νέα εκτέλεση
 
     createTable();
-    resultText.innerText = ''; // Επαναφορά του κειμένου αποτελεσμάτων
+    //resultText.innerText = ''; // Επαναφορά του κειμένου αποτελεσμάτων
+   
 }
 
 function isValidInput(pageInput, maxFrames) {
@@ -80,6 +81,7 @@ function createTable() {
     }
 
     seekSequence.appendChild(table);
+    enableResetButton();
 
 
 }
@@ -118,7 +120,10 @@ function updateTable() {
             });
         }
     });
-
+    resultText.innerHTML = `
+        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
+    `;
 }
 
 function runFIFO() {
@@ -127,10 +132,7 @@ function runFIFO() {
         // Ενεργοποίηση του κουμπιού επαναφοράς
         enableResetButton();
         // Εμφάνιση αποτελεσμάτων στο resultText
-    resultText.innerHTML = `
-        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
-        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
-    `;
+
     
 }
 
@@ -170,11 +172,20 @@ function nextStep() {
         }
 
         step++;
+        
      
     
     } else {
-        alert("Η προσομοίωση ολοκληρώθηκε!");
+   
+        resultText.innerHTML = `
+        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
+    `;
+    
     }
+
+
+
 }
 
 // Λειτουργία για την τυχαία δημιουργία ακολουθίας σελίδων
