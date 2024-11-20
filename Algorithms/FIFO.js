@@ -26,8 +26,6 @@ function initializeSimulation() {
     pageFrames = Array(maxFrames).fill(null); // Επαναφορά frames για νέα εκτέλεση
 
     createTable();
-    //resultText.innerText = ''; // Επαναφορά του κειμένου αποτελεσμάτων
-   
 }
 
 function isValidInput(pageInput, maxFrames) {
@@ -131,7 +129,7 @@ function runFIFO() {
     updateTable();
         // Ενεργοποίηση του κουμπιού επαναφοράς
         enableResetButton();
-        // Εμφάνιση αποτελεσμάτων στο resultText
+     
 
     
 }
