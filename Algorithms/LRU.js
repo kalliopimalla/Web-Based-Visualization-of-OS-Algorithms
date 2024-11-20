@@ -1,4 +1,4 @@
-// JavaScript υλοποίηση του αλγορίθμου LRU
+
 
 let pages = [];
 let frames = [];
