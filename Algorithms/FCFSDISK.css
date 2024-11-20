@@ -398,6 +398,18 @@ footer ul li a {
   background-color: rgb(2, 172, 172);
 }
 
+.input-steps button, #resetButton {
+  padding: 10px 20px;
+  background-color: teal;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-steps button:hover, #resetButton:hover {
+  background-color: rgb(2, 172, 172);
+}
 
 
 
@@ -562,9 +574,22 @@ footer ul li a {
   background-color: #f2f2f2;
 }
 
-.result-text {
-  font-size: 20px;
-  margin-top: 10px;
+#resultText {
+  margin-top: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
 }
+
+#resultText .faults {
+  color: red;
+  font-weight: bold;
+}
+
+#resultText .hits {
+  color: green;
+  font-weight: bold;
+}
+
 
 

@@ -2,7 +2,9 @@ let pages = [];
 let frames = [];
 let maxFrames;
 let step = 0;
-let table, resultText;
+let table ;
+
+let resultText = document.getElementById('resultText');
 let faultCount = 0;
 let hitCount = 0;
 let pageFrames = [];
@@ -79,9 +81,7 @@ function createTable() {
 
     seekSequence.appendChild(table);
 
-    resultText = document.createElement("p");
-    resultText.classList.add("result-text");
-    seekSequence.appendChild(resultText);
+
 }
 
 // Πλήρης εκτέλεση της προσομοίωσης
@@ -119,12 +119,19 @@ function updateTable() {
         }
     });
 
-    resultText.innerText = `Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}\nΣυνολικός αριθμός hits: ${hitCount}`;
 }
 
 function runFIFO() {
     initializeSimulation();
     updateTable();
+        // Ενεργοποίηση του κουμπιού επαναφοράς
+        enableResetButton();
+        // Εμφάνιση αποτελεσμάτων στο resultText
+    resultText.innerHTML = `
+        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
+    `;
+    
 }
 
 // Προβολή ενός βήματος της προσομοίωσης
@@ -163,7 +170,8 @@ function nextStep() {
         }
 
         step++;
-        resultText.innerText = `Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}\nΣυνολικός αριθμός hits: ${hitCount}`;
+     
+    
     } else {
         alert("Η προσομοίωση ολοκληρώθηκε!");
     }
@@ -176,3 +184,44 @@ function generateSequence() {
     const sequence = Array.from({ length }, () => Math.floor(Math.random() * maxPageNumber) + 1);
     document.getElementById("pages").value = sequence.join(',');
 }
+
+// Κώδικας για το resetButton
+const resetButton = document.getElementById('resetButton');
+
+// Προσθέτουμε λειτουργικότητα επαναφοράς
+resetButton.addEventListener('click', () => {
+    // Επαναφορά των πεδίων εισόδου
+    document.getElementById('pages').value = '';
+    document.getElementById('frame-number').value = '';
+
+    // Επαναφορά των αποτελεσμάτων
+    document.getElementById('seek-count').innerText = '';
+    document.getElementById('seek-sequence').innerHTML = '';
+    resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
+
+    // Μηδενισμός μεταβλητών
+    pages = [];
+    frames = [];
+    maxFrames = 0;
+    step = 0;
+    faultCount = 0;
+    hitCount = 0;
+    pageFrames = [];
+
+    // Απόκρυψη του κουμπιού επαναφοράς
+    resetButton.style.display = 'none';
+
+    // Καταγραφή στο console για επαλήθευση
+    console.log('Η εφαρμογή επαναφέρθηκε στην αρχική κατάσταση.');
+});
+
+// Ενεργοποίηση του κουμπιού όταν χρειάζεται
+function enableResetButton() {
+    resetButton.style.display = 'block';
+}
+
+
+
+
+
+
