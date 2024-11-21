@@ -2,9 +2,14 @@ let pages = [];
 let frames = [];
 let maxFrames;
 let step = 0;
-let table, resultText;
+let table;
 let referenceBits = [];
 let pointer = 0;
+
+let resultText = document.getElementById('resultText');
+let faultCount = 0;
+let hitCount = 0;
+let pageFrames = [];
 
 function initializeSimulation() {
     const pageInput = document.getElementById("pages").value.trim();
@@ -17,11 +22,11 @@ function initializeSimulation() {
     pages = pageInput.split(',').map(Number);
     frames = Array(maxFrames).fill(null);
     referenceBits = Array(maxFrames).fill(0);
-    step = 0;
+    step = 0; // Μηδενισμός του step
     pointer = 0;
 
     createTable();
-    updateTable();
+    enableResetButton(); // Ενεργοποίηση κουμπιού επαναφοράς
 }
 
 function isValidInput(pageInput, maxFrames) {
@@ -75,10 +80,62 @@ function createTable() {
 
     seekSequence.appendChild(table);
 
-    resultText = document.createElement("p");
-    resultText.classList.add("result-text");
-    seekSequence.appendChild(resultText);
 }
+
+function nextStep() {
+    // Αν δεν έχουν αρχικοποιηθεί οι σελίδες ή τα πλαίσια, ξεκινήστε την προσομοίωση
+    if (pages.length === 0 || frames.length === 0) {
+        initializeSimulation(); // Αυτόματη εκκίνηση
+    }
+
+    if (step >= pages.length) {
+        alert("Η προσομοίωση ολοκληρώθηκε!");
+        return;
+    }
+
+    const page = pages[step]; // Τρέχουσα σελίδα
+    const pageTable = Array.from(table.getElementsByTagName("td"));
+    let hit = false;
+
+    // Έλεγχος για hit ή page fault
+    const frameIndex = frames.indexOf(page);
+    if (frameIndex !== -1) {
+        hit = true;
+        referenceBits[frameIndex] = 1; // Αναφορά στη σελίδα
+    } else {
+        while (true) {
+            if (referenceBits[pointer] === 0) {
+                frames[pointer] = page;
+                referenceBits[pointer] = 1;
+                pointer = (pointer + 1) % maxFrames;
+                faultCount++;
+                break;
+            } else {
+                referenceBits[pointer] = 0; // Μηδενισμός bit αναφοράς
+                pointer = (pointer + 1) % maxFrames;
+            }
+        }
+    }
+
+    // Ενημέρωση του πίνακα
+    pageTable.forEach(cell => {
+        if (cell.getAttribute("data-step") == step) {
+            const frameIndex = cell.getAttribute("data-frame");
+            cell.innerText = frames[frameIndex] ?? '';
+            cell.style.backgroundColor =
+                frames[frameIndex] === page ? (hit ? '#d4edda' : '#f8d7da') : '';
+        }
+    });
+
+    // Ενημέρωση των αποτελεσμάτων
+    resultText.innerHTML = `
+        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
+    `;
+
+    step++;
+}
+
 
 function updateTable() {
     let faultCount = 0;
@@ -122,13 +179,18 @@ function updateTable() {
         });
     });
 
-    resultText.innerText = `Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}\nΣυνολικός αριθμός hits: ${hitCount}`;
+    resultText.innerHTML = `
+    <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+    <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
+`;
 }
-
 function runCLOCK() {
     initializeSimulation();
-    updateTable();
+    while (step < pages.length) {
+        nextStep();
+    }
 }
+
 
 // Λειτουργία για την τυχαία δημιουργία ακολουθίας σελίδων
 function generateSequence() {
@@ -142,5 +204,29 @@ function generateSequence() {
     } else {
         console.error("Το πεδίο 'pages' δεν βρέθηκε στο DOM.");
     }
+}
+
+const resetButton = document.getElementById('resetButton');
+
+resetButton.addEventListener('click', () => {
+    // Επαναφορά όλων των δεδομένων
+    document.getElementById('pages').value = '';
+    document.getElementById('frame-number').value = '';
+    document.getElementById('seek-sequence').innerHTML = '';
+    document.getElementById('resultText').innerText = '';
+    document.getElementById('seek-count').innerText = '';
+    pages = [];
+    frames = [];
+    referenceBits = [];
+    modifiedBits = [];
+    step = 0;
+    pointer = 0;
+
+    // Απόκρυψη του κουμπιού επαναφοράς
+    resetButton.style.display = 'none';
+});
+
+function enableResetButton() {
+    resetButton.style.display = 'block';
 }
 
