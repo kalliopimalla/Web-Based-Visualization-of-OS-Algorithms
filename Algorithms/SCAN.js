@@ -257,13 +257,31 @@ document.getElementById("toggleNumbersButton").addEventListener("click", () => {
  * Συνάρτηση επαναφοράς.
  */
 function resetCanvasAndInputs() {
+    // Καθαρισμός του καμβά
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
+
+    // Καθαρισμός των πεδίων εισόδου και των αποτελεσμάτων
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
-    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("seek-count-display").innerText = "Συνολική μετακίνηση κεφαλής: 0"; // Μηδενισμός του πεδίου
     document.getElementById("seek-sequence-boxes").innerHTML = "";
+
+    // Μηδενισμός μεταβλητών
+    pages = [];
+    frames = [];
+    referenceBits = [];
+    pointer = 0;
+    faultCount = 0;
+    hitCount = 0;
+    step = 0;
+
+    // Μηδενισμός του currentCount
+    if (typeof currentCount !== "undefined") {
+        currentCount = 0; // Μηδενισμός της μεταβλητής currentCount
+    }
+
+    // Απόκρυψη του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "none";
 }

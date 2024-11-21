@@ -26,6 +26,8 @@ function executeLOOK() {
 
     // Κλήση της συνάρτησης LOOK
     LOOK(tracks, head, direction);
+      // Εμφάνιση κουμπιού επαναφοράς
+      document.getElementById("resetButton").style.display = "inline-block";
 }
 
 /**

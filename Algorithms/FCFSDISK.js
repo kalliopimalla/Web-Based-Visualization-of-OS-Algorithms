@@ -89,10 +89,24 @@ function resetCanvasAndInputs() {
     // Καθαρισμός των πεδίων εισόδου και των αποτελεσμάτων
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
-    document.getElementById("seek-count-display").innerText = "";
+    document.getElementById("seek-count-display").innerText = "Συνολική μετακίνηση κεφαλής: 0"; // Μηδενισμός του πεδίου
     document.getElementById("seek-sequence-boxes").innerHTML = "";
 
-    // Απόκρυψη του κουμπιού "Επαναφορά" ξανά
+    // Μηδενισμός μεταβλητών
+    pages = [];
+    frames = [];
+    referenceBits = [];
+    pointer = 0;
+    faultCount = 0;
+    hitCount = 0;
+    step = 0;
+
+    // Μηδενισμός του currentCount
+    if (typeof currentCount !== "undefined") {
+        currentCount = 0; // Μηδενισμός της μεταβλητής currentCount
+    }
+
+    // Απόκρυψη του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "none";
 }
 
@@ -128,17 +142,15 @@ function visualizeSeekSequence(seekSequence) {
     const startScale = Math.floor(minInput / 20) * 20;
     const endScale = Math.ceil(maxInput / 20) * 20;
 
-    // Υπολογισμός του trackWidth και trackHeight για ευθυγράμμιση και μέγεθος καμβά
     const padding = 30; // Εσωτερικό περιθώριο για να μην κόβονται τα στοιχεία
     const lineLength = canvas.width - padding * 2;
     const trackWidth = lineLength / (endScale - startScale);
     const trackHeight = canvas.height - padding * 2;
 
-    // Σχεδιασμός του κάθετου grid με απαλό γκρι χρώμα
+    // Σχεδιάστε κάθετες γραμμές του grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
 
-    // Σχεδιάστε κάθε κάθετη γραμμή του grid
     for (let mark = startScale; mark <= endScale; mark += 20) {
         const xPosition = padding + (mark - startScale) * trackWidth;
         ctx.beginPath();
@@ -147,45 +159,43 @@ function visualizeSeekSequence(seekSequence) {
         ctx.stroke();
     }
 
-    // Σχεδιάστε κάθε οριζόντια γραμμή του grid
+    // Σχεδιάστε οριζόντιες γραμμές του grid
     const numHorizontalLines = seekSequence.length;
+    const verticalSpacing = trackHeight / (numHorizontalLines - 1); // Απόσταση ανάμεσα στις γραμμές
     for (let i = 0; i < numHorizontalLines; i++) {
-        const yPosition = padding + (i * (trackHeight / (numHorizontalLines - 1)));
+        const yPosition = padding + i * verticalSpacing;
         ctx.beginPath();
         ctx.moveTo(padding, yPosition);
         ctx.lineTo(canvas.width - padding, yPosition);
+
+        // Χρώμα της πρώτης οριζόντιας γραμμής (εντονότερο γκρι)
+        if (i === 0) {
+            ctx.strokeStyle = "gray"; // Εντονότερο γκρι για την πρώτη γραμμή
+        } else {
+            ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Απαλό γκρι για τις υπόλοιπες
+        }
+
         ctx.stroke();
     }
 
-    // Σχεδιασμός ευθείας γκρι γραμμής για τους αριθμούς
-    ctx.strokeStyle = "gray";
-    ctx.lineWidth = 1;
-    const blackLineY = padding;
-    ctx.beginPath();
-    ctx.moveTo(padding, blackLineY);
-    ctx.lineTo(canvas.width - padding, blackLineY);
-    ctx.stroke();
-
-    // Σχεδιασμός των αριθμών πάνω στη γραμμή ανά 20 μονάδες
-    ctx.fillStyle = "green";
+    // Σχεδιάστε αριθμούς ανά 20 μονάδες στην πρώτη γραμμή του grid
+    ctx.fillStyle = "gray";
     ctx.font = "12px Arial";
     for (let mark = startScale; mark <= endScale; mark += 20) {
         const xPosition = padding + (mark - startScale) * trackWidth;
-        ctx.fillText(mark, xPosition - 10, blackLineY - 10);
+        ctx.fillText(mark, xPosition - 10, padding - 10);
     }
 
     // Σχεδιασμός της σειράς κινήσεων ως βέλη
-    const startY = blackLineY + 30;
-    
     ctx.lineWidth = 2;
     ctx.strokeStyle = "green";
     ctx.fillStyle = "green";
 
     for (let i = 0; i < seekSequence.length - 1; i++) {
         const x1 = padding + (seekSequence[i] - startScale) * trackWidth;
-        const y1 = startY + (i * (trackHeight / (seekSequence.length - 1)));
+        const y1 = padding + i * verticalSpacing; // Ξεκινά από την πρώτη οριζόντια γραμμή
         const x2 = padding + (seekSequence[i + 1] - startScale) * trackWidth;
-        const y2 = startY + ((i + 1) * (trackHeight / (seekSequence.length - 1)));
+        const y2 = padding + (i + 1) * verticalSpacing; // Επόμενη γραμμή
 
         // Σχεδίαση βελών
         ctx.beginPath();
@@ -207,10 +217,11 @@ function visualizeSeekSequence(seekSequence) {
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
             ctx.font = "12px Arial";
-            ctx.fillText(seekSequence[i + 1], x2, y2 - 10);
+            ctx.fillText(seekSequence[i + 1], x2 + 5, y2 - 5);
         }
     }
 }
+
 
 
 
