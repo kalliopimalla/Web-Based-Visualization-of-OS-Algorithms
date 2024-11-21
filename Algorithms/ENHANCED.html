@@ -114,6 +114,7 @@
         <div class="popup">
             <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
             <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+            <button onclick="generateSequence()">Δημιουργία τύχαιας ακολουθίας </button> 
         </div>
         <p>Αριθμός πλαισίων:</p>
         <div class="popup">
@@ -121,15 +122,25 @@
             <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
         </div>
           <button onclick="runENHANCED()">Εκτέλεση</button>
-      </div>
-      <p id="seek-count"></p>
-      <div id="seek-sequence" class="seek-sequence"></div>
-      
-  
-  </div>
-  </div>
+          <button onclick="nextStep()">Επόμενο Βήμα</button>
+        </div>
+        <br>
+        <button id="resetButton" class="input-steps" style="display: none;">Επαναφορά</button>
+
+
+        
+        <div id="resultText">
+            
+        </div>
+        
+
+        <p id="seek-count"></p>
+        <div id="seek-sequence" class="seek-sequence"></div>
+    </div>
+</div>
+
   <br>
-  
+
      <!-- Footer -->
      <footer>
         <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
