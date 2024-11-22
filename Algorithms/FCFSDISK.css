@@ -591,5 +591,45 @@ footer ul li a {
   font-weight: bold;
 }
 
+.input-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.input-group input {
+  margin-right: 10px;
+}
+.step-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+}
+
+.step-time {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.queue-process.active {
+  color: red;
+  font-weight: bold;
+}
+
+.queue-process {
+  display: inline-block;
+  margin-right: 5px;
+  padding: 2px 6px;
+  background-color: #ddd;
+  border-radius: 4px;
+}
+#ganttChart {
+  overflow-x: auto; /* Οριζόντιο scrolling */
+  white-space: nowrap;
+  padding: 10px;
+  border: 1px solid black;
+  background-color: #f9f9f9;
+}
+
 
 
