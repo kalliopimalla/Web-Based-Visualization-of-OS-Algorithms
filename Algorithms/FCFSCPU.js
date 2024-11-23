@@ -50,7 +50,7 @@ function runFCFSCPU() {
        document.getElementById("resetButton").style.display = "inline-block";
 }
 
-// Step-by-Step FCFS
+// Ξεκινά η "Step by Step" διαδικασία
 let stepIndex = 0;
 let stepCurrentTime = 0;
 let stepProcesses = [];
@@ -59,7 +59,6 @@ let stepArrivalTime = [];
 let stepWaitingTime = [];
 let stepTurnAroundTime = [];
 
-// Ξεκινά η "Step by Step" διαδικασία
 function startStepByStep() {
     // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
     const btInput = document.getElementById('burst-time').value;
@@ -92,6 +91,7 @@ function startStepByStep() {
     nextButton.textContent = 'Επόμενο';
     nextButton.onclick = stepByStepExecution;
     document.getElementById('stepHistory').appendChild(nextButton);
+    
 
     // Εμφάνιση του πρώτου βήματος
     stepByStepExecution();
@@ -120,7 +120,25 @@ function stepByStepExecution() {
         `;
         document.getElementById('stepHistory').appendChild(stepBox);
 
-        
+        // Ενημέρωση του πεντάστηλου πίνακα
+        const tableContainer = document.getElementById('seek-count');
+        if (!document.querySelector('#fcfs-table')) {
+            // Δημιουργία πίνακα αν δεν υπάρχει
+            let output = "<table id='fcfs-table' border='1' style='border-collapse: collapse; width: 100%;'>";
+            output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
+            tableContainer.innerHTML = output + "</table>";
+        }
+        // Προσθήκη γραμμής στον πίνακα
+        const table = document.querySelector('#fcfs-table');
+        const newRow = table.insertRow(-1); // Προσθήκη νέας γραμμής
+        newRow.innerHTML = `
+            <td>${stepProcesses[stepIndex]}</td>
+            <td>${stepBurstTime[stepIndex]}</td>
+            <td>${stepArrivalTime[stepIndex]}</td>
+            <td>${stepWaitingTime[stepIndex]}</td>
+            <td>${stepTurnAroundTime[stepIndex]}</td>
+        `;
+
         // Ενημέρωση χρόνου και δείκτη
         stepCurrentTime = end; // Ενημερώνουμε σωστά το stepCurrentTime
         stepIndex++; // Αυξάνουμε το index για να προχωρήσουμε στην επόμενη διεργασία
@@ -134,6 +152,7 @@ function stepByStepExecution() {
         alert('Η εκτέλεση έχει ήδη ολοκληρωθεί!');
     }
 }
+
 
 
 
@@ -158,7 +177,7 @@ function findTurnAroundTime(processes, n, bt, wt, tat) {
 
 
 
-
+//Δημιουργεί τον αρχικό πίνακα 
 function createThreeColumnTable() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;

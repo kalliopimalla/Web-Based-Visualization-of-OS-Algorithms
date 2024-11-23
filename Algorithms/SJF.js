@@ -1,4 +1,3 @@
-// Εκτέλεση SJF Scheduling
 function runSJFCPU() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
@@ -7,11 +6,11 @@ function runSJFCPU() {
     const arrivalTime = atInput.split(',').map(Number);
     const n = burstTime.length;
     const processes = Array.from({ length: n }, (_, i) => i + 1);
-    
+
     const wt = new Array(n).fill(0); // Χρόνος αναμονής
     const tat = new Array(n).fill(0); // Χρόνος επιστροφής
     const completionTime = new Array(n).fill(0); // Χρόνος ολοκλήρωσης
-    
+
     let currentTime = 0; // Χρονική στιγμή
     let completed = 0; // Μετρητής ολοκληρωμένων διεργασιών
     const isCompleted = new Array(n).fill(false); // Κατάσταση ολοκλήρωσης
@@ -28,41 +27,43 @@ function runSJFCPU() {
             }
         }
 
-        // Δημιουργία αναπαράστασης ουράς πριν την επιλογή
+        // Αν καμία διεργασία δεν είναι διαθέσιμη
+        if (availableProcesses.length === 0) {
+            queueOutput += `
+                <div class="step-box">
+                    <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
+                    <div>Καμία διεργασία διαθέσιμη. Αναμονή...</div>
+                </div>
+            `;
+            currentTime++;
+            continue;
+        }
+
+        // Βρες τη διεργασία με τον μικρότερο χρόνο εκτέλεσης
+        const shortestJobIndex = availableProcesses.reduce((shortest, i) =>
+            burstTime[i] < burstTime[shortest] ? i : shortest, availableProcesses[0]);
+
+        // Εκτέλεση της διεργασίας
+        const startTime = currentTime;
+        currentTime += burstTime[shortestJobIndex];
+        completionTime[shortestJobIndex] = currentTime;
+        isCompleted[shortestJobIndex] = true;
+        completed++;
+
+        // Δημιουργία της ουράς εκτέλεσης
+        const activeProcess = `<span class="queue-process active">P${processes[shortestJobIndex]}</span>`;
         const waitingQueue = availableProcesses
+            .filter((i) => i !== shortestJobIndex)
             .map((i) => `<span class="queue-process">P${processes[i]}</span>`)
             .join(' -> ') || 'Καμία';
 
         queueOutput += `
             <div class="step-box">
-                <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
-                <div>Ουρά αναμονής: ${waitingQueue}</div>
+                <div class="step-time">Χρονική στιγμή: ${startTime}</div>
+                <div>Εκτελείται: ${activeProcess}</div>
+                <div>Αναμονή: ${waitingQueue}</div>
             </div>
         `;
-
-        // Βρες τη διεργασία με τον μικρότερο χρόνο εκτέλεσης
-        if (availableProcesses.length > 0) {
-            const shortestJobIndex = availableProcesses.reduce((shortest, i) => 
-                burstTime[i] < burstTime[shortest] ? i : shortest, availableProcesses[0]);
-
-            // Εκτέλεση της διεργασίας
-            const startTime = currentTime;
-            currentTime += burstTime[shortestJobIndex];
-            completionTime[shortestJobIndex] = currentTime;
-            isCompleted[shortestJobIndex] = true;
-            completed++;
-
-            // Ενημέρωση ουράς εκτέλεσης
-            queueOutput += `
-                <div class="step-box">
-                    <div class="step-time">Χρονική στιγμή: ${startTime}</div>
-                    <div>Εκτελείται: <span class="queue-process active">P${processes[shortestJobIndex]}</span></div>
-                </div>
-            `;
-        } else {
-            // Αν δεν υπάρχουν διαθέσιμες διεργασίες, προχωράμε τον χρόνο
-            currentTime++;
-        }
     }
 
     // Υπολογισμός χρόνων αναμονής και επιστροφής
@@ -92,6 +93,7 @@ function runSJFCPU() {
     // Εμφάνιση του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "inline-block";
 }
+
 
 
 
