@@ -124,6 +124,7 @@
         </div>
       </div>
 
+    
       <div class="content">
         <div class="container">
             <div class="input-steps">
@@ -149,14 +150,14 @@
                 <br><br>
                 <div id="seek-count"></div>
                  <br>
-                <button onclick="runFCFSCPU()" id="runButton" style="display: none; ">Εκτέλεση</button>
+                <button onclick="runPreSJFCPU()" id="runButton" style="display: none; ">Εκτέλεση</button>
                 <button onclick="startStepByStep()" id="stepByStepBtn" style="display:none;">Βήμα προς βήμα</button>
-                <button id="resetButton" onclick="resetFCFS()" style="display: none;">Επαναφορά</button>
+                <button id="resetButton" onclick="resetPreSJF()" style="display: none;">Επαναφορά</button>
 
-
+  <div id="seek-count"></div> <!-- Πίνακας αποτελεσμάτων -->
+            <div id="stepHistory"></div>
             </div>
-            <div id="seek-count"></div> <!-- Πίνακας αποτελεσμάτων -->
-            <div id="stepHistory"></div> <!-- Ιστορικό βημάτων -->
+          
           
             
 
@@ -164,6 +165,7 @@
         </div>
     </div>
     <br>
+    
     
     <!-- Footer -->
     <footer>
