@@ -93,17 +93,14 @@ function runPreSJFCPU() {
 
 
 
-
-
-
-let stepIndex = 0;
 let stepCurrentTime = 0;
 let stepProcesses = [];
 let stepBurstTime = [];
 let stepArrivalTime = [];
+let stepRemainingTime = [];
 let stepWaitingTime = [];
 let stepTurnAroundTime = [];
-let stepCompleted = []; // Καταστάσεις ολοκλήρωσης διεργασιών
+let stepCompleted = [];
 
 function startStepByStep() {
     // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
@@ -113,19 +110,19 @@ function startStepByStep() {
     stepBurstTime = btInput.split(',').map(Number);
     stepArrivalTime = atInput.split(',').map(Number);
     const n = stepBurstTime.length;
+
     stepProcesses = Array.from({ length: n }, (_, i) => i + 1);
+    stepRemainingTime = [...stepBurstTime];
     stepWaitingTime = new Array(n).fill(0);
     stepTurnAroundTime = new Array(n).fill(0);
-    stepCompleted = new Array(n).fill(false); // Αρχικοποίηση μη ολοκληρωμένων διεργασιών
+    stepCompleted = new Array(n).fill(false);
 
     if (stepBurstTime.length !== stepArrivalTime.length) {
         alert('Οι χρόνοι εκτέλεσης και άφιξης πρέπει να έχουν το ίδιο μήκος!');
         return;
     }
 
-    stepIndex = 0;
     stepCurrentTime = 0;
-
     document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
     document.getElementById('seek-count').innerHTML = ''; // Καθαρισμός πίνακα
 
@@ -143,19 +140,12 @@ function stepByStepExecution() {
 
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
-        .map((p, i) => (stepArrivalTime[i] <= stepCurrentTime && !stepCompleted[i] ? i : -1))
+        .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 ? i : -1))
         .filter((i) => i !== -1);
 
     if (availableProcesses.length === 0) {
-        // Αν δεν υπάρχουν διαθέσιμες διεργασίες, πήγαινε στον επόμενο χρόνο άφιξης
-        const nextArrivalTime = Math.min(...stepArrivalTime.filter((at, i) => !stepCompleted[i]));
-        if (nextArrivalTime > stepCurrentTime) {
-            stepCurrentTime = nextArrivalTime; // Μεταπήδηση στον επόμενο χρόνο
-        } else {
-            stepCurrentTime++; // Εναλλακτικά, αυξάνεται ο χρόνος
-        }
-
-        // Δημιουργία μηνύματος αναμονής μόνο για τη στιγμή που αλλάζει κάτι
+        // Αν δεν υπάρχουν διαθέσιμες διεργασίες, προχωράμε στον επόμενο χρόνο
+        stepCurrentTime++;
         const stepBox = document.createElement('div');
         stepBox.classList.add('step-box');
         stepBox.innerHTML = `
@@ -166,19 +156,21 @@ function stepByStepExecution() {
         return;
     }
 
-    // Επιλέγουμε τη διεργασία με τον μικρότερο χρόνο εκτέλεσης
+    // Επιλέγουμε τη διεργασία με τον μικρότερο υπόλοιπο χρόνο εκτέλεσης
     const shortestJobIndex = availableProcesses.reduce((shortest, i) =>
-        stepBurstTime[i] < stepBurstTime[shortest] ? i : shortest
-    );
+        stepRemainingTime[i] < stepRemainingTime[shortest] ? i : shortest, availableProcesses[0]);
 
-    // Υπολογισμός χρόνου εκκίνησης και λήξης για την τρέχουσα διεργασία
-    const start = Math.max(stepCurrentTime, stepArrivalTime[shortestJobIndex]);
-    const end = start + stepBurstTime[shortestJobIndex];
+    // Εκτέλεση της διεργασίας για 1 μονάδα χρόνου
+    stepRemainingTime[shortestJobIndex]--;
+    stepCurrentTime++;
 
-    // Ενημέρωση χρόνου αναμονής και επιστροφής για την τρέχουσα διεργασία
-    stepWaitingTime[shortestJobIndex] = start - stepArrivalTime[shortestJobIndex];
-    if (stepWaitingTime[shortestJobIndex] < 0) stepWaitingTime[shortestJobIndex] = 0;
-    stepTurnAroundTime[shortestJobIndex] = stepWaitingTime[shortestJobIndex] + stepBurstTime[shortestJobIndex];
+    // Ενημέρωση της ολοκλήρωσης εάν η διεργασία τελείωσε
+    if (stepRemainingTime[shortestJobIndex] === 0) {
+        stepCompleted[shortestJobIndex] = true;
+        stepTurnAroundTime[shortestJobIndex] = stepCurrentTime - stepArrivalTime[shortestJobIndex];
+        stepWaitingTime[shortestJobIndex] =
+            stepTurnAroundTime[shortestJobIndex] - stepBurstTime[shortestJobIndex];
+    }
 
     // Δημιουργία του ενεργού κουτιού διεργασίας
     const activeProcess = `<span class="queue-process active">P${stepProcesses[shortestJobIndex]}</span>`;
@@ -190,7 +182,7 @@ function stepByStepExecution() {
     const stepBox = document.createElement('div');
     stepBox.classList.add('step-box');
     stepBox.innerHTML = `
-        <div class="step-time">Χρονική στιγμή: ${start}</div>
+        <div class="step-time">Χρονική στιγμή: ${stepCurrentTime - 1}</div>
         <div>Εκτελείται: ${activeProcess}</div>
         <div>Αναμονή: ${waitingQueue}</div>
     `;
@@ -198,26 +190,26 @@ function stepByStepExecution() {
 
     // Ενημέρωση του πεντάστηλου πίνακα
     const tableContainer = document.getElementById('seek-count');
-    if (!document.querySelector('#fcfs-table')) {
-        let output = "<table id='fcfs-table' border='1' style='border-collapse: collapse; width: 100%;'>";
+    if (!document.querySelector('#preemptive-sjf-table')) {
+        let output = "<table id='preemptive-sjf-table' border='1' style='border-collapse: collapse; width: 100%;'>";
         output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
         tableContainer.innerHTML = output + "</table>";
     }
 
-    const table = document.querySelector('#fcfs-table');
-    const newRow = table.insertRow(-1);
-    newRow.innerHTML = `
-        <td>${stepProcesses[shortestJobIndex]}</td>
-        <td>${stepBurstTime[shortestJobIndex]}</td>
-        <td>${stepArrivalTime[shortestJobIndex]}</td>
-        <td>${stepWaitingTime[shortestJobIndex]}</td>
-        <td>${stepTurnAroundTime[shortestJobIndex]}</td>
-    `;
+    // Αν ολοκληρώθηκε η διεργασία, ενημερώστε την αντίστοιχη γραμμή
+    if (stepCompleted[shortestJobIndex]) {
+        const table = document.querySelector('#preemptive-sjf-table');
+        const newRow = table.insertRow(-1);
+        newRow.innerHTML = `
+            <td>${stepProcesses[shortestJobIndex]}</td>
+            <td>${stepBurstTime[shortestJobIndex]}</td>
+            <td>${stepArrivalTime[shortestJobIndex]}</td>
+            <td>${stepWaitingTime[shortestJobIndex]}</td>
+            <td>${stepTurnAroundTime[shortestJobIndex]}</td>
+        `;
+    }
 
-    // Ενημέρωση χρόνου, κατάστασης και δείκτη
-    stepCurrentTime = end;
-    stepCompleted[shortestJobIndex] = true;
-
+    // Ελέγξτε αν όλες οι διεργασίες έχουν ολοκληρωθεί
     if (stepCompleted.every((completed) => completed)) {
         alert('Η εκτέλεση ολοκληρώθηκε!');
         document.getElementById('nextStepButton').remove();
@@ -229,9 +221,6 @@ function stepByStepExecution() {
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
     }
 }
-
-
-
 
 
 
