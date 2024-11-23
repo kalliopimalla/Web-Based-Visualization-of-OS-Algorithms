@@ -107,6 +107,7 @@ let stepCurrentTime = 0;
 let stepProcesses = [];
 let stepBurstTime = [];
 let stepArrivalTime = [];
+let stepPriority = []; // Προτεραιότητες διεργασιών
 let stepRemainingTime = [];
 let stepWaitingTime = [];
 let stepTurnAroundTime = [];
@@ -116,9 +117,11 @@ function startStepByStep() {
     // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
+    const prInput = document.getElementById('priority').value; // Προτεραιότητα
 
     stepBurstTime = btInput.split(',').map(Number);
     stepArrivalTime = atInput.split(',').map(Number);
+    stepPriority = prInput.split(',').map(Number);
     const n = stepBurstTime.length;
 
     stepProcesses = Array.from({ length: n }, (_, i) => i + 1);
@@ -127,8 +130,8 @@ function startStepByStep() {
     stepTurnAroundTime = new Array(n).fill(0);
     stepCompleted = new Array(n).fill(false);
 
-    if (stepBurstTime.length !== stepArrivalTime.length) {
-        alert('Οι χρόνοι εκτέλεσης και άφιξης πρέπει να έχουν το ίδιο μήκος!');
+    if (stepBurstTime.length !== stepArrivalTime.length || stepBurstTime.length !== stepPriority.length) {
+        alert('Οι χρόνοι εκτέλεσης, άφιξης και προτεραιότητας πρέπει να έχουν το ίδιο μήκος!');
         return;
     }
 
@@ -166,26 +169,27 @@ function stepByStepExecution() {
         return;
     }
 
-    // Επιλέγουμε τη διεργασία με τον μικρότερο υπόλοιπο χρόνο εκτέλεσης
-    const shortestJobIndex = availableProcesses.reduce((shortest, i) =>
-        stepRemainingTime[i] < stepRemainingTime[shortest] ? i : shortest, availableProcesses[0]);
+    // Επιλέγουμε τη διεργασία με την υψηλότερη προτεραιότητα (χαμηλότερη τιμή προτεραιότητας)
+    const highestPriorityIndex = availableProcesses.reduce((highest, i) =>
+        stepPriority[i] < stepPriority[highest] ? i : highest, availableProcesses[0]);
 
     // Εκτέλεση της διεργασίας για 1 μονάδα χρόνου
-    stepRemainingTime[shortestJobIndex]--;
+    stepRemainingTime[highestPriorityIndex]--;
     stepCurrentTime++;
 
     // Ενημέρωση της ολοκλήρωσης εάν η διεργασία τελείωσε
-    if (stepRemainingTime[shortestJobIndex] === 0) {
-        stepCompleted[shortestJobIndex] = true;
-        stepTurnAroundTime[shortestJobIndex] = stepCurrentTime - stepArrivalTime[shortestJobIndex];
-        stepWaitingTime[shortestJobIndex] =
-            stepTurnAroundTime[shortestJobIndex] - stepBurstTime[shortestJobIndex];
+    if (stepRemainingTime[highestPriorityIndex] === 0) {
+        stepCompleted[highestPriorityIndex] = true;
+        stepTurnAroundTime[highestPriorityIndex] =
+            stepCurrentTime - stepArrivalTime[highestPriorityIndex];
+        stepWaitingTime[highestPriorityIndex] =
+            stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
     }
 
     // Δημιουργία του ενεργού κουτιού διεργασίας
-    const activeProcess = `<span class="queue-process active">P${stepProcesses[shortestJobIndex]}</span>`;
+    const activeProcess = `<span class="queue-process active">P${stepProcesses[highestPriorityIndex]}</span>`;
     const waitingQueue = availableProcesses
-        .filter((i) => i !== shortestJobIndex)
+        .filter((i) => i !== highestPriorityIndex)
         .map((i) => `<span class="queue-process">P${stepProcesses[i]}</span>`)
         .join(' -> ') || 'Καμία';
 
@@ -198,24 +202,25 @@ function stepByStepExecution() {
     `;
     document.getElementById('stepHistory').appendChild(stepBox);
 
-    // Ενημέρωση του πεντάστηλου πίνακα
+    // Ενημέρωση του πίνακα
     const tableContainer = document.getElementById('seek-count');
-    if (!document.querySelector('#preemptive-sjf-table')) {
-        let output = "<table id='preemptive-sjf-table' border='1' style='border-collapse: collapse; width: 100%;'>";
-        output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
+    if (!document.querySelector('#priority-scheduling-table')) {
+        let output = "<table id='priority-scheduling-table' border='1' style='border-collapse: collapse; width: 100%;'>";
+        output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
         tableContainer.innerHTML = output + "</table>";
     }
 
     // Αν ολοκληρώθηκε η διεργασία, ενημερώστε την αντίστοιχη γραμμή
-    if (stepCompleted[shortestJobIndex]) {
-        const table = document.querySelector('#preemptive-sjf-table');
+    if (stepCompleted[highestPriorityIndex]) {
+        const table = document.querySelector('#priority-scheduling-table');
         const newRow = table.insertRow(-1);
         newRow.innerHTML = `
-            <td>${stepProcesses[shortestJobIndex]}</td>
-            <td>${stepBurstTime[shortestJobIndex]}</td>
-            <td>${stepArrivalTime[shortestJobIndex]}</td>
-            <td>${stepWaitingTime[shortestJobIndex]}</td>
-            <td>${stepTurnAroundTime[shortestJobIndex]}</td>
+            <td>${stepProcesses[highestPriorityIndex]}</td>
+            <td>${stepBurstTime[highestPriorityIndex]}</td>
+            <td>${stepArrivalTime[highestPriorityIndex]}</td>
+            <td>${stepPriority[highestPriorityIndex]}</td>
+            <td>${stepWaitingTime[highestPriorityIndex]}</td>
+            <td>${stepTurnAroundTime[highestPriorityIndex]}</td>
         `;
     }
 
@@ -231,7 +236,6 @@ function stepByStepExecution() {
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
     }
 }
-
 
 
 
