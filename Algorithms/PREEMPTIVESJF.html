@@ -1,132 +1,134 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlgoVista</title>
-    <link rel="stylesheet" href="FCFSDISK.css"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>AlgoVista - Preemptive SJF</title>
 </head>
 <body>
+  <header>
+    <div class="logo">
+      <span class="title">AlgoVista</span>
+      <span class="subtitle">Οπτικοποίηση Αλγορίθμων</span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../homepage.html">Αρχική</a></li>
+        <li>
+          <a href="#" id="open-sidebar">Αλγόριθμοι</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+  <div id="sidebar" class="sidebar">
+    <button id="close-sidebar" class="close-btn">&times;</button> <!-- Κουμπί για κλείσιμο -->
+    <ul>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού δίσκου</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSDISK.html">FCFS</a></li>
+          <li><a href="SSTF.html">SSTF</a></li>
+          <li><a href="SCAN.html">SCAN</a></li>
+          <li><a href="CSCAN.html">C-SCAN</a></li>
+          <li><a href="LOOK.html">LOOK</a></li>
+          <li><a href="CLOOK.html">C-LOOK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
+        <ul class="submenu-content">
+          <li><a href="FIFO.html">FIFO</a></li>
+          <li><a href="LRU.html">LRU</a></li>
+          <li><a href="OPTIMAL.html">OPTIMAL</a></li>
+          <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
+          <li><a href="CLOCK.html">CLOCK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού CPU</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSCPU.html">FCFS</a></li>
+          <li><a href="SJF.html">SJF</a></li>
+          <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
+          <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
+          <li><a href="RR.html">RR</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
-    <!-- Header -->
-    <header>
-        <h1>AlgoVista</h1>
-        <nav>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>Preemptive Shortest Job First</h1>
+        <h2>Shortest Remaining Time First</h2>
+      
+      </div>
+    </section>
+
+    <!-- Algorithm Description -->
+    <section class="algorithm-description">
+      <div class="container">
+        <h2>Περιγραφή</h2>
+        <p>
+         
+          Ο αλγόριθμος Shortest Remaining Time First (SRTF) είναι ένας αλγόριθμος χρονοπρογραμματισμού προεκχωρίσιμου τύπου,
+          στον οποίο η διεργασία με τον μικρότερο υπολειπόμενο χρόνο εκτέλεσης επιλέγεται για εκτέλεση. Αν κατά τη διάρκεια της 
+          εκτέλεσης μια νέα διεργασία με μικρότερο υπολειπόμενο χρόνο εισέλθει στην έτοιμη ουρά, τότε ο αλγόριθμος θα διακόψει 
+          την τρέχουσα διεργασία και θα εκτελέσει τη νέα. Αυτός ο αλγόριθμος είναι βέλτιστος όσον αφορά τη μείωση του μέσου χρόνου αναμονής,
+           αλλά μπορεί να προκαλέσει αυξημένο αριθμό εναλλαγών των διεργασιών, αυξάνοντας έτσι το κόστος συστήματος.  
+            <h3>Διαβάστε περισσότερα:</h3>
             <ul>
-                <li><a href="../index.html">Αρχική</a></li>
-                <li><a href="#">Οπτικοποιήσεις</a></li>
-                <li><a href="#">Κουιζ</a></li>
-                <li><a href="#">Παιχνίδια</a></li>
-                <li class="dropdown">
-                    <a href="#">Αλγόριθμοι</a>
-                    <ul class="dropdown-content">
-                        <!-- Disk Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης δίσκου</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSDISK.html">FCFS</a></li>
-                                <li><a href="SSTF.html">SSTF</a></li>
-                                <li><a href="SCAN.html">SCAN</a></li>
-                                <li><a href="CSCAN.html">C-SCAN</a></li>
-                                <li><a href="LOOK.html">LOOK</a></li>
-                                <li><a href="CLOOK.html">C-LOOK</a></li>
-                            </ul>
-                        </li>
-                        <!-- Page Replacement Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
-                            <ul class="submenu-content">
-                                <li><a href="FIFO.html">FIFO</a></li>
-                                <li><a href="LRU.html">LRU</a></li>
-                                <li><a href="OPTIMAL.html">OPTIMAL</a></li>
-                                <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
-                                <li><a href="CLOCK.html">CLOCK</a></li>
-                            </ul>
-                        </li>
-                        <!-- CPU Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης CPU</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSCPU.html">FCFS</a></li>
-                                <li><a href="SJF.html">SJF</a></li>
-                                <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
-                                <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
-                                <li><a href="RR.html">RR</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+              <li>
+                <a href="https://www.geeksforgeeks.org/shortest-remaining-time-first-preemptive-sjf-scheduling-algorithm/" target="_blank">
+                     Αναφορά 1
+                </a>
+            </li>
+            <li>
+                <a href="https://prepinsta.com/operating-systems/shortest-job-first-scheduling-preemptive-example/" target="_blank">
+                    Αναφορά 2
+                </a>
+            </li>
+            <li>
+                <a href="https://www.guru99.com/shortest-job-first-sjf-scheduling.html" target="_blank">
+                    Αναφορά 3
+                    </a>
                 </li>
             </ul>
-        </nav>
-    </header>
-  
-    <!-- Hero Section -->
-    <div class="content">
-
-        <div class="theory">
-          <div class="theory-heading">
-            <div> Preemptive Shortest Job First</div>
-            <div>Shortest Remaining Time First</div>
-          </div>
-    
-          <div class="theory-text">
-            <div>Αλγόριθμος  Preemptive SJF / SRTF: Λειτουργία και Χαρακτηριστικά</div>
-            <div></div>
-            <div>
-                
-                Αλγόριθμος SRTF: Λειτουργία και Χαρακτηριστικά
-
-                Ο αλγόριθμος Shortest Remaining Time First (SRTF) είναι ένας αλγόριθμος χρονοπρογραμματισμού προεκχωρίσιμου τύπου,
-                 στον οποίο η διεργασία με τον μικρότερο υπολειπόμενο χρόνο εκτέλεσης επιλέγεται για εκτέλεση. Αν κατά τη διάρκεια της 
-                 εκτέλεσης μια νέα διεργασία με μικρότερο υπολειπόμενο χρόνο εισέλθει στην έτοιμη ουρά, τότε ο αλγόριθμος θα διακόψει 
-                 την τρέχουσα διεργασία και θα εκτελέσει τη νέα. Αυτός ο αλγόριθμος είναι βέλτιστος όσον αφορά τη μείωση του μέσου χρόνου αναμονής,
-                  αλλά μπορεί να προκαλέσει αυξημένο αριθμό εναλλαγών των διεργασιών, αυξάνοντας έτσι το κόστος συστήματος.
-                  <br>
-                  <div>
-                    <h3>Διαβάστε περισσότερα:</h3>
-                    <ul>
-                        <li>
-                            <a href="https://www.geeksforgeeks.org/shortest-remaining-time-first-preemptive-sjf-scheduling-algorithm/" target="_blank">
-                                 Αναφορά 1
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://prepinsta.com/operating-systems/shortest-job-first-scheduling-preemptive-example/" target="_blank">
-                                Αναφορά 2
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://www.guru99.com/shortest-job-first-sjf-scheduling.html" target="_blank">
-                                Αναφορά 3
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-          </div>
-          <div class="theory-step">
-            <ul>
-    
-            
-                <label>ΒΗΜΑ 1 :</label>
-                <li>Εισάγετε τον χρόνο εκτέλεσης για κάθε διαδικασία(ακολουθία χωρισμένη με κόμμα).</li>
-        
-                <label>ΒΗΜΑ 2 :</label>
-                <li>Εισάγετε και τον χρόνο άφιξής τους(ακολουθία χωρισμένη με κόμμα).</li>
-                
-                <label>ΒΗΜΑ 3 :</label>
-               <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
-        
-    
-          </ul>
-          </div>
-        </div>
+        </p>
       </div>
+    </section>
 
+    <!-- Algorithm Steps -->
+    <section class="algorithm-steps">
+      <div class="container">
+        <h2>Βήματα</h2>
+        <ol>
+            <ul>
+              <label>ΒΗΜΑ 1 :</label>
+            <li>Εισάγετε τον χρόνο εκτέλεσης για κάθε διαδικασία(ακολουθία χωρισμένη με κόμμα).</li>
     
-      <div class="content">
-        <div class="container">
+            <label>ΒΗΜΑ 2 :</label>
+            <li>Εισάγετε και τον χρόνο άφιξής τους(ακολουθία χωρισμένη με κόμμα).</li>
+            
+            <label>ΒΗΜΑ 3 :</label>
+           <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
+              </ul>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Algorithm Implementation -->
+    <section class="algorithm-implementation">
+     
+        <h2>Υλοποίηση</h2>
+       
+        <div class="content">
+          <div class="container">
             <div class="input-steps">
                 <h2>Δημιουργία Πίνακα Διεργασιών</h2>
                 <div class="input-group">
@@ -164,13 +166,27 @@
 
         </div>
     </div>
-    <br>
-    
-    
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
-    </footer>
-    <script src="PREEMPTIVESJF.js"></script>
+ 
+           
+           
+        
+        <br>
+
+
+
+
+
+
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
+  </footer>
+
+  <script src="PREEMPTIVESJF.js"></script>
 </body>
 </html>

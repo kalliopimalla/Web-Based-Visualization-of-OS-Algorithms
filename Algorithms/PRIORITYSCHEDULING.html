@@ -1,177 +1,203 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlgoVista</title>
-    <link rel="stylesheet" href="FCFSDISK.css"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>AlgoVista - PRIORITY </title>
 </head>
 <body>
-
-    <!-- Header -->
-    <header>
-        <h1>AlgoVista</h1>
-        <nav>
-            <ul>
-                <li><a href="../index.html">Αρχική</a></li>
-                <li><a href="#">Οπτικοποιήσεις</a></li>
-                <li><a href="#">Κουιζ</a></li>
-                <li><a href="#">Παιχνίδια</a></li>
-                <li class="dropdown">
-                    <a href="#">Αλγόριθμοι</a>
-                    <ul class="dropdown-content">
-                        <!-- Disk Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης δίσκου</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSDISK.html">FCFS</a></li>
-                                <li><a href="SSTF.html">SSTF</a></li>
-                                <li><a href="SCAN.html">SCAN</a></li>
-                                <li><a href="CSCAN.html">C-SCAN</a></li>
-                                <li><a href="LOOK.html">LOOK</a></li>
-                                <li><a href="CLOOK.html">C-LOOK</a></li>
-                            </ul>
-                        </li>
-                        <!-- Page Replacement Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
-                            <ul class="submenu-content">
-                                <li><a href="FIFO.html">FIFO</a></li>
-                                <li><a href="LRU.html">LRU</a></li>
-                                <li><a href="OPTIMAL.html">OPTIMAL</a></li>
-                                <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
-                                <li><a href="CLOCK.html">CLOCK</a></li>
-                            </ul>
-                        </li>
-                        <!-- CPU Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης CPU</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSCPU.html">FCFS</a></li>
-                                <li><a href="SJF.html">SJF</a></li>
-                                <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
-                                <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
-                                <li><a href="RR.html">RR</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-        </nav>
-    </header>
-
-              <!-- Hero Section -->
-              <div class="content">
-
-                <div class="theory">
-                  <div class="theory-heading">
-                    <div>Priority Scheduling</div>
-                    <div></div>
-                  </div>
-            
-                  <div class="theory-text">
-                    <div>Αλγόριθμος Priority Scheduling: Λειτουργία και Χαρακτηριστικά</div>
-                    <div></div>
-                    <div>
-                        Ο αλγόριθμος Priority Scheduling είναι μια μέθοδος διαχείρισης διεργασιών στα λειτουργικά συστήματα, όπου κάθε διεργασία
-                         έχει μια προτεραιότητα. Οι διεργασίες εκτελούνται με βάση την προτεραιότητά τους, με τις διεργασίες υψηλότερης προτεραιότητας
-                          να εκτελούνται πρώτες. Αν δύο διεργασίες έχουν την ίδια προτεραιότητα, μπορεί να χρησιμοποιηθεί η σειρά άφιξής τους (FIFO) 
-                          για την επίλυση της σύγκρουσης. Ο αλγόριθμος αυτός μπορεί να είναι προεκχωρίσιμος ή μη προεκχωρίσιμος: στην
-                          προεκχωρίσιμη έκδοση, αν μια νέα διεργασία με υψηλότερη προτεραιότητα φτάσει, η τρέχουσα διεργασία διακόπτεται, ενώ στη 
-                          μη προεκχωρίσιμη, συνεχίζεται η εκτέλεση της τρέχουσας διεργασίας μέχρι την ολοκλήρωσή της. Μειονέκτημα της προσέγγισης 
-                          είναι το φαινόμενο γνωστό ώς starvation, όπου διεργασίες χαμηλής προτεραιότητας ενδέχεται να μην εκτελεστούν ποτέ.
-                          <br>
-                          <div>
-                            <h3>Διαβάστε περισσότερα:</h3>
-                            <ul>
-                                <li>
-                                    <a href="https://www.geeksforgeeks.org/priority-cpu-scheduling-with-different-arrival-time-set-2/" target="_blank">
-                                         Αναφορά 1
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.javatpoint.com/os-priority-scheduling" target="_blank">
-                                        Αναφορά 2
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.guru99.com/priority-scheduling-program.html" target="_blank">
-                                        Αναφορά 3
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                  </div>
-                  <div class="theory-step">
-                    <ul>
-            
-                        <label>ΒΗΜΑ 1 :</label>
-                        <li>Εισάγετε τον χρόνο εκτέλεσης για κάθε διαδικασία(ακολουθία χωρισμένη με κόμμα).</li>
-                
-                        <label>ΒΗΜΑ 2 :</label>
-                        <li>Εισάγετε και τον χρόνο άφιξής τους(ακολουθία χωρισμένη με κόμμα).</li>
-            
-                        <label>ΒΗΜΑ 3 :</label>
-                        <li>Επιλέξτε την επιθυμητή προτεραιότητα.</li>
-                        
-                        <label>ΒΗΜΑ 4 :</label>
-                       <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
-                  </ul>
-                  </div>
-                </div>
-              </div>
+  <header>
+    <div class="logo">
+      <span class="title">AlgoVista</span>
+      <span class="subtitle">Οπτικοποίηση Αλγορίθμων</span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../homepage.html">Αρχική</a></li>
+        <li>
+          <a href="#" id="open-sidebar">Αλγόριθμοι</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
   
-              <div class="content">
-                <div class="container">
-                    <div class="input-steps">
-                        <h2>Δημιουργία Πίνακα Διεργασιών</h2>
-                        <div class="input-group">
-                            <div class="popup">
-                            <label for="burst-time">Χρόνοι Εκτέλεσης :</label>
-                            <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                            <input type="text" id="burst-time" placeholder="π.χ. 5,3,8">
-                            <button id="generateSequenceButton1">Δημιουργία Τυχαίας Ακολουθίας</button>
-                            </div>
-                        </div>
-                        <div class="input-group">
-                        <div class="popup">
-                            <label for="arrival-time">Χρόνοι Άφιξης :</label>
-                            <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                            <input type="text" id="arrival-time" placeholder="π.χ. 0,1,2">
-                            <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
-                        </div>
-                        </div>
-                        <div>
-                            <label for="priority">Προτεραιότητες (διαχωρισμένες με κόμμα):</label>
-                            <input type="text" id="priority" placeholder="π.χ., 1,3,2,4">
-                            <button id="generateSequenceButton2">Δημιουργία Τυχαίας Ακολουθίας</button>
-                        </div>
-                        
-                        <br>
-                        <button onclick="createThreeColumnTable()">Δημιουργία Πίνακα</button>
-                        <br><br>
-                        <div id="seek-count"></div>
-                         <br>
-                        <button onclick="runPriorityCPU()" id="runButton" style="display: none; ">Εκτέλεση</button>
-                        <button onclick="startStepByStep()" id="stepByStepBtn" style="display:none;">Βήμα προς βήμα</button>
-                        <button id="resetButton" onclick="resetPrioritySJF()" style="display: none;">Επαναφορά</button>
-        
-          <div id="seek-count"></div> <!-- Πίνακας αποτελεσμάτων -->
-                    <div id="stepHistory"></div>
+  <div id="sidebar" class="sidebar">
+    <button id="close-sidebar" class="close-btn">&times;</button> <!-- Κουμπί για κλείσιμο -->
+    <ul>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού δίσκου</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSDISK.html">FCFS</a></li>
+          <li><a href="SSTF.html">SSTF</a></li>
+          <li><a href="SCAN.html">SCAN</a></li>
+          <li><a href="CSCAN.html">C-SCAN</a></li>
+          <li><a href="LOOK.html">LOOK</a></li>
+          <li><a href="CLOOK.html">C-LOOK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
+        <ul class="submenu-content">
+          <li><a href="FIFO.html">FIFO</a></li>
+          <li><a href="LRU.html">LRU</a></li>
+          <li><a href="OPTIMAL.html">OPTIMAL</a></li>
+          <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
+          <li><a href="CLOCK.html">CLOCK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού CPU</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSCPU.html">FCFS</a></li>
+          <li><a href="SJF.html">SJF</a></li>
+          <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
+          <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
+          <li><a href="RR.html">RR</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>Priority Scheduling</h1>
+ 
+      
+      </div>
+    </section>
+
+    <!-- Algorithm Description -->
+    <section class="algorithm-description">
+      <div class="container">
+        <h2>Περιγραφή</h2>
+        <p>
+         
+          Ο αλγόριθμος Priority Scheduling είναι μια μέθοδος διαχείρισης διεργασιών στα λειτουργικά συστήματα, όπου κάθε διεργασία
+          έχει μια προτεραιότητα. Οι διεργασίες εκτελούνται με βάση την προτεραιότητά τους, με τις διεργασίες υψηλότερης προτεραιότητας
+           να εκτελούνται πρώτες. Αν δύο διεργασίες έχουν την ίδια προτεραιότητα, μπορεί να χρησιμοποιηθεί η σειρά άφιξής τους (FIFO) 
+           για την επίλυση της σύγκρουσης. Ο αλγόριθμος αυτός μπορεί να είναι προεκχωρίσιμος ή μη προεκχωρίσιμος: στην
+           προεκχωρίσιμη έκδοση, αν μια νέα διεργασία με υψηλότερη προτεραιότητα φτάσει, η τρέχουσα διεργασία διακόπτεται, ενώ στη 
+           μη προεκχωρίσιμη, συνεχίζεται η εκτέλεση της τρέχουσας διεργασίας μέχρι την ολοκλήρωσή της. Μειονέκτημα της προσέγγισης 
+           είναι το φαινόμενο γνωστό ώς starvation, όπου διεργασίες χαμηλής προτεραιότητας ενδέχεται να μην εκτελεστούν ποτέ.  
+            <h3>Διαβάστε περισσότερα:</h3>
+            <ul>
+              <li>
+                <a href="https://www.geeksforgeeks.org/priority-cpu-scheduling-with-different-arrival-time-set-2/" target="_blank">
+                     Αναφορά 1
+                </a>
+            </li>
+            <li>
+                <a href="https://www.javatpoint.com/os-priority-scheduling" target="_blank">
+                    Αναφορά 2
+                </a>
+            </li>
+            <li>
+                <a href="https://www.guru99.com/priority-scheduling-program.html" target="_blank">
+                    Αναφορά 3
+                    </a>
+                </li>
+            </ul>
+        </p>
+      </div>
+    </section>
+
+    <!-- Algorithm Steps -->
+    <section class="algorithm-steps">
+      <div class="container">
+        <h2>Βήματα</h2>
+        <ol>
+            <ul>
+              <label>ΒΗΜΑ 1 :</label>
+              <li>Εισάγετε τον χρόνο εκτέλεσης για κάθε διαδικασία(ακολουθία χωρισμένη με κόμμα).</li>
+      
+              <label>ΒΗΜΑ 2 :</label>
+              <li>Εισάγετε και τον χρόνο άφιξής τους(ακολουθία χωρισμένη με κόμμα).</li>
+  
+              <label>ΒΗΜΑ 3 :</label>
+              <li>Επιλέξτε την επιθυμητή προτεραιότητα.</li>
+              
+              <label>ΒΗΜΑ 4 :</label>
+             <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
+              </ul>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Algorithm Implementation -->
+    <section class="algorithm-implementation">
+     
+        <h2>Υλοποίηση</h2>
+       
+        <div class="content">
+          <div class="container">
+            <div class="input-steps">
+                <h2>Δημιουργία Πίνακα Διεργασιών</h2>
+                <div class="input-group">
+                    <div class="popup">
+                    <label for="burst-time">Χρόνοι Εκτέλεσης :</label>
+                    <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+                    <input type="text" id="burst-time" placeholder="π.χ. 5,3,8">
+                    <button id="generateSequenceButton1">Δημιουργία Τυχαίας Ακολουθίας</button>
                     </div>
-                  
-                  
-                    
-        
-        
                 </div>
+                <div class="input-group">
+                <div class="popup">
+                    <label for="arrival-time">Χρόνοι Άφιξης :</label>
+                    <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+                    <input type="text" id="arrival-time" placeholder="π.χ. 0,1,2">
+                    <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+                </div>
+                </div>
+                <div>
+                    <label for="priority">Προτεραιότητες (διαχωρισμένες με κόμμα):</label>
+                    <input type="text" id="priority" placeholder="π.χ., 1,3,2,4">
+                    <button id="generateSequenceButton2">Δημιουργία Τυχαίας Ακολουθίας</button>
+                </div>
+                
+                <br>
+                <button onclick="createThreeColumnTable()">Δημιουργία Πίνακα</button>
+                <br><br>
+                <div id="seek-count"></div>
+                 <br>
+                <button onclick="runPriorityCPU()" id="runButton" style="display: none; ">Εκτέλεση</button>
+                <button onclick="startStepByStep()" id="stepByStepBtn" style="display:none;">Βήμα προς βήμα</button>
+                <button id="resetButton" onclick="resetPrioritySJF()" style="display: none;">Επαναφορά</button>
+
+  <div id="seek-count"></div> <!-- Πίνακας αποτελεσμάτων -->
+            <div id="stepHistory"></div>
             </div>
-            <br>
+          
+          
             
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
-    </footer>
-    <script src="PRIORITYSCHEDULING.js"></script>
+
+
+        </div>
+    </div>
+ 
+           
+           
+        
+        <br>
+
+
+
+
+
+
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
+  </footer>
+
+  <script src="PRIORITYSCHEDULING.js"></script>
 </body>
 </html>
