@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <title>AlgoVista - CLOOK</title>
+  <title>AlgoVista - CLOCK</title>
 </head>
 <body>
   <header>
@@ -64,8 +64,8 @@
     <!-- Hero Section -->
     <section class="hero">
       <div class="container">
-        <h1>Circural Look</h1>
-        <h2>C-LOOK</h2>
+        <h1>CLOCK</h1>
+      
       </div>
     </section>
 
@@ -74,30 +74,29 @@
       <div class="container">
         <h2>Περιγραφή</h2>
         <p>
-            Ο αλγόριθμος C-LOOK (Circular LOOK) είναι μια μέθοδος χρονοπρογραμματισμού δίσκων που συνδυάζει τα χαρακτηριστικά του LOOK με 
-            μια κυκλική προσέγγιση. Η κεφαλή του δίσκου κινείται προς την κατεύθυνση των αιτημάτων και εξυπηρετεί αυτά που βρίσκονται στην
-             πορεία της, αλλά όταν φτάσει στο τελευταίο αίτημα, επιστρέφει αμέσως στο πρώτο αίτημα στην κατεύθυνση αυτή χωρίς να κινείται 
-             μέχρι το άκρο του δίσκου. Αυτή η προσέγγιση μειώνει τις αποστάσεις που πρέπει να διανύσει η κεφαλή, βελτιώνοντας τους χρόνους
-              εξυπηρέτησης. Ένα βασικό χαρακτηριστικό του C-LOOK είναι η ικανότητά του να διατηρεί την ισοκατανομή των αιτημάτων, καθώς 
-              κάθε αίτημα έχει ίσες πιθανότητες να εξυπηρετηθεί. Τα πλεονεκτήματα του C-LOOK περιλαμβάνουν τη συνεπή και αποτελεσματική 
-              εξυπηρέτηση των αιτημάτων, καθώς και τη μείωση των καθυστερήσεων κατά την επιστροφή της κεφαλής. Ωστόσο, μπορεί να προκύψουν
-               καθυστερήσεις για αιτήματα που βρίσκονται μακριά από την πορεία της κεφαλής, ιδίως αν αυτά τα αιτήματα είναι συγκεντρωμένα 
-               σε περιοχές του δίσκου που δεν επισκέπτεται συχνά.   
+          Ο αλγόριθμος αντικατάστασης σελίδων Clock είναι μια αποδοτική μέθοδος διαχείρισης μνήμης που χρησιμοποιεί μια κυκλική δομή για την 
+            παρακολούθηση των σελίδων στη μνήμη. Κάθε σελίδα διαθέτει ένα bit αναφοράς (Reference bit), και ο αλγόριθμος διατηρεί έναν δείκτη
+             που κινείται κυκλικά ανάμεσα στις σελίδες. Όταν προκύψει ανάγκη αντικατάστασης, ο δείκτης εξετάζει τη σελίδα που δείχνει: αν το
+              bit αναφοράς είναι 1, το μηδενίζει και προχωρά στην επόμενη σελίδα, ενώ αν το bit είναι 0, η σελίδα αντικαθίσταται. Αυτός ο
+               αλγόριθμος προσφέρει καλή ισορροπία μεταξύ απλότητας και απόδοσης, ελαχιστοποιώντας τις αστοχίες σελίδας και βελτιώνοντας τη
+                χρήση της μνήμης. Τα κύρια πλεονεκτήματα του Clock είναι η ευκολία υλοποίησης και η ικανοποιητική απόδοση σε ποικιλία φορτίων 
+                εργασίας. Ωστόσο, μπορεί να παρουσιαστούν καθυστερήσεις κατά την αντικατάσταση όταν όλες οι σελίδες έχουν το bit αναφοράς σε 1, 
+                οδηγώντας σε επαναλαμβανόμενους κύκλους αναζήτησης.
             <h3>Διαβάστε περισσότερα:</h3>
             <ul>
-                <li>
-                    <a href="https://www.geeksforgeeks.org/c-look-disk-scheduling-algorithm/" target="_blank">
-                         Αναφορά 1
-                    </a>
-                </li>
-                <li>
-                    <a href="https://www.baeldung.com/cs/disk-scheduling-look-clook" target="_blank">
-                        Αναφορά 2
-                    </a>
-                </li>
-                <li>
-                    <a href="https://www.javatpoint.com/os-look-and-c-look-scheduling" target="_blank">
-                        Αναφορά 3
+              <li>
+                <a href="" target="_blank">
+                     Αναφορά 1
+                </a>
+            </li>
+            <li>
+                <a href="" target="_blank">
+                    Αναφορά 2
+                </a>
+            </li>
+            <li>
+                <a href="" target="_blank">
+                    Αναφορά 3
                     </a>
                 </li>
             </ul>
@@ -111,14 +110,15 @@
         <h2>Βήματα</h2>
         <ol>
             <ul>
-                <label>ΒΗΜΑ 1 :</label>
-                <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο C-LOOK.</li>
+             
+            <label>ΒΗΜΑ 1 :</label>
+            <li>Εισάγετε την ακολουθία σελιδών(ακολουθία σελιδών χωρισμένη με κόμμα). </li>
     
-                <label>ΒΗΜΑ 2 :</label>
-                <li>Εισάγετε τη τρέχουσα θέση της κεφαλής και επιλέξτε την αρχική κατεύθυνση κίνησης της κεφαλής.</li>
-                
-               <label>ΒΗΜΑ 3 :</label>
-               <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
+            <label>ΒΗΜΑ 2 :</label>
+            <li>Εισάγετε τον αριθμό των πλασίων σελιδών.</li>
+            
+           <label>ΒΗΜΑ 3 :</label>
+           <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
               </ul>
         </ol>
       </div>
@@ -130,46 +130,31 @@
         <h2>Υλοποίηση</h2>
        
         <div class="content">
-   
-                <div class="input-steps">
-                    <p>Η σειρά των αιτήσεων :</p>
-                    <div class="popup">
-                      <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
-                      <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                      <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
-                    </div>
-                    <p>Η θέση της κεφαλής :</p>
-                    <div class="popup">
-                      <input type="number" id="head-position" placeholder="π.χ. 50">
-                      <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
-                   
-                    </div>
-                    <p>Αρχική κατεύθυνση :</p>
-                    <div class="popup">
-                      <select id="direction">
-                        <option value="left">Left</option>
-                        <option value="right">Right</option>
-                      </select>
-                      <span class="popuptext">Επιλέξτε την αρχική κατεύθυνση (Αριστερά ή Δεξιά).</span>
-                    </div>
-                    <button onclick="executeCLOOK()">Εκτέλεση</button>
-                    <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
-                    <button id="resetButton" style="display: none;">Επαναφορά</button>
-                    
-                  <!-- Προσθήκη του συνολικού αριθμού κινήσεων -->
-                  <div id="seek-count-display" class="seek-count-display"></div>
-                
-                  <!-- Προσθήκη κουτιών για τη σειρά εξυπηρέτησης -->
-                  <div id="seek-sequence" class="seek-sequence">
-                      <h3>Σειρά Εξυπηρέτησης:</h3>
-                      <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
-                    </div>
-                </div>
+          <div class="container">
+            <div class="input-steps">
+              <p>Η ακολουθία σελιδών:</p>
+              <div class="popup">
+                  <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
+                  <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+                  <button onclick="generateSequence()">Δημιουργία τύχαιας ακολουθίας </button> 
+              </div>
+              <p>Αριθμός πλαισίων:</p>
+              <div class="popup">
+                  <input type="number" id="frame-number" placeholder="π.χ. 4" style="width: 150px; ">
+                  <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
+              </div>
+                <button onclick="runCLOCK()">Εκτέλεση</button>
+                <button onclick="nextStep()">Επόμενο Βήμα</button>
+              </div>
+              <br>
+              <button id="resetButton" class="input-steps" style="display: none;">Επαναφορά</button>
+              <div id="resultText">
+              </div>
+              <p id="seek-count"></p>
+              <div id="seek-sequence" class="seek-sequence"></div>
+          </div>
     </div>
-    <div class="canvas-container">
-        <canvas id="seekCanvas" width="1200" height="600"></canvas>
-    </div>
-    
+ 
            
            
         
@@ -190,6 +175,6 @@
     <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
   </footer>
 
-  <script src="CLOOK.js"></script>
+  <script src="CLOCK.js"></script>
 </body>
 </html>

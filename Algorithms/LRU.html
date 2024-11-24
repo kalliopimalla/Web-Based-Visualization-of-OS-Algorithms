@@ -1,115 +1,117 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlgoVista</title>
-    <link rel="stylesheet" href="FCFSDISK.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>AlgoVista - LRU</title>
 </head>
 <body>
+  <header>
+    <div class="logo">
+      <span class="title">AlgoVista</span>
+      <span class="subtitle">Οπτικοποίηση Αλγορίθμων</span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../homepage.html">Αρχική</a></li>
+        <li>
+          <a href="#" id="open-sidebar">Αλγόριθμοι</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+  <div id="sidebar" class="sidebar">
+    <button id="close-sidebar" class="close-btn">&times;</button> <!-- Κουμπί για κλείσιμο -->
+    <ul>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού δίσκου</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSDISK.html">FCFS</a></li>
+          <li><a href="SSTF.html">SSTF</a></li>
+          <li><a href="SCAN.html">SCAN</a></li>
+          <li><a href="CSCAN.html">C-SCAN</a></li>
+          <li><a href="LOOK.html">LOOK</a></li>
+          <li><a href="CLOOK.html">C-LOOK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
+        <ul class="submenu-content">
+          <li><a href="FIFO.html">FIFO</a></li>
+          <li><a href="LRU.html">LRU</a></li>
+          <li><a href="OPTIMAL.html">OPTIMAL</a></li>
+          <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
+          <li><a href="CLOCK.html">CLOCK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού CPU</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSCPU.html">FCFS</a></li>
+          <li><a href="SJF.html">SJF</a></li>
+          <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
+          <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
+          <li><a href="RR.html">RR</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
-    <!-- Header -->
-    <header>
-        <h1>AlgoVista</h1>
-        <nav>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>Least Recently Used</h1>
+        <h2>L. R. U.</h2>
+      </div>
+    </section>
+
+    <!-- Algorithm Description -->
+    <section class="algorithm-description">
+      <div class="container">
+        <h2>Περιγραφή</h2>
+        <p>
+          Ο αλγόριθμος LRU (Least Recently Used) είναι μια τεχνική αντικατάστασης σελίδων που χρησιμοποιείται για τη διαχείριση 
+          της μνήμης στα λειτουργικά συστήματα, με στόχο να αντικαθιστά τη σελίδα που έχει χρησιμοποιηθεί λιγότερο πρόσφατα όταν
+           χρειάζεται να φορτωθεί μια νέα. Κάθε φορά που γίνεται πρόσβαση σε μια σελίδα, ενημερώνεται η χρονική στιγμή της τελευταίας
+            χρήσης της, και σε περίπτωση αντικατάστασης επιλέγεται η σελίδα με την παλαιότερη χρονική σήμανση. Ο LRU προσεγγίζει τη
+             βέλτιστη αντικατάσταση και λειτουργεί καλά σε περιπτώσεις όπου η χρήση της μνήμης είναι συγκεντρωμένη σε συγκεκριμένες 
+             περιοχές για κάποιο χρονικό διάστημα, ωστόσο η υλοποίησή του μπορεί να απαιτεί επιπλέον πόρους για την καταγραφή της 
+             σειράς χρήσης των σελίδων. Αν και μειώνει τα page faults σε πολλές περιπτώσεις, η παρακολούθηση της χρονικής σειράς
+              πρόσβασης μπορεί να επιβαρύνει το σύστημα, και η απόδοσή του μπορεί να μειωθεί όταν οι αναφορές στη μνήμη είναι πιο
+               διάσπαρτες.    
+            <h3>Διαβάστε περισσότερα:</h3>
             <ul>
-                <li><a href="../index.html">Αρχική</a></li>
-                <li><a href="#">Οπτικοποιήσεις</a></li>
-                <li><a href="#">Κουιζ</a></li>
-                <li><a href="#">Παιχνίδια</a></li>
-                <li class="dropdown">
-                    <a href="#">Αλγόριθμοι</a>
-                    <ul class="dropdown-content">
-                        <!-- Disk Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης δίσκου</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSDISK.html">FCFS</a></li>
-                                <li><a href="SSTF.html">SSTF</a></li>
-                                <li><a href="SCAN.html">SCAN</a></li>
-                                <li><a href="CSCAN.html">C-SCAN</a></li>
-                                <li><a href="LOOK.html">LOOK</a></li>
-                                <li><a href="CLOOK.html">C-LOOK</a></li>
-                            </ul>
-                        </li>
-                        <!-- Page Replacement Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
-                            <ul class="submenu-content">
-                                <li><a href="FIFO.html">FIFO</a></li>
-                                <li><a href="LRU.html">LRU</a></li>
-                                <li><a href="OPTIMAL.html">OPTIMAL</a></li>
-                                <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
-                                <li><a href="CLOCK.html">CLOCK</a></li>
-                            </ul>
-                        </li>
-                        <!-- CPU Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης CPU</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSCPU.html">FCFS</a></li>
-                                <li><a href="SJF.html">SJF</a></li>
-                                <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
-                                <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
-                                <li><a href="RR.html">RR</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+              <li>
+                <a href="https://www.geeksforgeeks.org/page-replacement-algorithms-in-operating-systems/" target="_blank">
+                     Αναφορά 1
+                </a>
+            </li>
+            <li>
+                <a href="https://www.javatpoint.com/os-page-replacement-algorithms" target="_blank">
+                    Αναφορά 2
+                </a>
+            </li>
+            <li>
+                <a href="https://workat.tech/core-cs/tutorial/page-replacement-algorithms-in-operating-system-os-q0pioxh7iym5" target="_blank">
+                    Αναφορά 3
+                    </a>
                 </li>
             </ul>
-        </nav>
-    </header>
+        </p>
+      </div>
+    </section>
 
-          <!-- Hero Section -->
-          <div class="content">
-
-            <div class="theory">
-              <div class="theory-heading">
-                <div>Least Recently Used</div>
-                <div>L. R. U.</div>
-              </div>
-        
-              <div class="theory-text">
-                <div>Αλγόριθμος LRU: Λειτουργία και Χαρακτηριστικά</div>
-                <div></div>
-                <div>
-                    Ο αλγόριθμος LRU (Least Recently Used) είναι μια τεχνική αντικατάστασης σελίδων που χρησιμοποιείται για τη διαχείριση 
-                    της μνήμης στα λειτουργικά συστήματα, με στόχο να αντικαθιστά τη σελίδα που έχει χρησιμοποιηθεί λιγότερο πρόσφατα όταν
-                     χρειάζεται να φορτωθεί μια νέα. Κάθε φορά που γίνεται πρόσβαση σε μια σελίδα, ενημερώνεται η χρονική στιγμή της τελευταίας
-                      χρήσης της, και σε περίπτωση αντικατάστασης επιλέγεται η σελίδα με την παλαιότερη χρονική σήμανση. Ο LRU προσεγγίζει τη
-                       βέλτιστη αντικατάσταση και λειτουργεί καλά σε περιπτώσεις όπου η χρήση της μνήμης είναι συγκεντρωμένη σε συγκεκριμένες 
-                       περιοχές για κάποιο χρονικό διάστημα, ωστόσο η υλοποίησή του μπορεί να απαιτεί επιπλέον πόρους για την καταγραφή της 
-                       σειράς χρήσης των σελίδων. Αν και μειώνει τα page faults σε πολλές περιπτώσεις, η παρακολούθηση της χρονικής σειράς
-                        πρόσβασης μπορεί να επιβαρύνει το σύστημα, και η απόδοσή του μπορεί να μειωθεί όταν οι αναφορές στη μνήμη είναι πιο
-                         διάσπαρτες. 
-                         <br>
-                         <div>
-                            <h3>Διαβάστε περισσότερα:</h3>
-                            <ul>
-                                <li>
-                                    <a href="https://www.geeksforgeeks.org/page-replacement-algorithms-in-operating-systems/" target="_blank">
-                                         Αναφορά 1
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.javatpoint.com/os-page-replacement-algorithms" target="_blank">
-                                        Αναφορά 2
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://workat.tech/core-cs/tutorial/page-replacement-algorithms-in-operating-system-os-q0pioxh7iym5" target="_blank">
-                                        Αναφορά 3
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                </div>
-              </div>
-              <div class="theory-step">
-                <ul>
-        
-                    <label>ΒΗΜΑ 1 :</label>
+    <!-- Algorithm Steps -->
+    <section class="algorithm-steps">
+      <div class="container">
+        <h2>Βήματα</h2>
+        <ol>
+            <ul>
+              <label>ΒΗΜΑ 1 :</label>
                     <li>Εισάγετε την ακολουθία σελιδών(ακολουθία σελιδών χωρισμένη με κόμμα). </li>
             
                     <label>ΒΗΜΑ 2 :</label>
@@ -117,49 +119,68 @@
                     
                    <label>ΒΗΜΑ 3 :</label>
                    <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
-            
               </ul>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Algorithm Implementation -->
+    <section class="algorithm-implementation">
+     
+        <h2>Υλοποίηση</h2>
+       
+        <div class="content">
+          <div class="container">
+            <div class="input-steps">
+              <p>Η ακολουθία σελιδών:</p>
+              <div class="popup">
+                  <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
+                  <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+                  <button onclick="generateSequence()">Δημιουργία τύχαιας ακολουθίας </button> 
               </div>
-            </div>
+              <p>Αριθμός πλαισίων:</p>
+              <div class="popup">
+                  <input type="number" id="frame-number" placeholder="π.χ. 4" style="width: 150px; ">
+                  <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
+              </div>
+                <button onclick="runLRU()">Εκτέλεση</button>
+                <button onclick="nextStep()">Επόμενο Βήμα</button>
+              </div>
+              <br>
+              <button id="resetButton" class="input-steps" style="display: none;">Επαναφορά</button>
+  
+  
+              
+              <div id="resultText">
+                  
+              </div>
+              
+  
+              <p id="seek-count"></p>
+              <div id="seek-sequence" class="seek-sequence"></div>
           </div>
-          <div class="content">
-            <div class="container">
-              <div class="input-steps">
-                <p>Η ακολουθία σελιδών:</p>
-                <div class="popup">
-                    <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
-                    <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                    <button onclick="generateSequence()">Δημιουργία τύχαιας ακολουθίας </button> 
-                </div>
-                <p>Αριθμός πλαισίων:</p>
-                <div class="popup">
-                    <input type="number" id="frame-number" placeholder="π.χ. 4" style="width: 150px; ">
-                    <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
-                </div>
-                  <button onclick="runLRU()">Εκτέλεση</button>
-                  <button onclick="nextStep()">Επόμενο Βήμα</button>
-                </div>
-                <br>
-                <button id="resetButton" class="input-steps" style="display: none;">Επαναφορά</button>
-    
-    
-                
-                <div id="resultText">
-                    
-                </div>
-                
-    
-                <p id="seek-count"></p>
-                <div id="seek-sequence" class="seek-sequence"></div>
-            </div>
-        </div>
+    </div>
+ 
+           
+           
         
-          <br>
-    
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
-    </footer>
-    <script src="LRU.js"></script>
+        <br>
+
+
+
+
+
+
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
+  </footer>
+
+  <script src="LRU.js"></script>
 </body>
 </html>
