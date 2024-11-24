@@ -1,130 +1,137 @@
 <!DOCTYPE html>
 <html lang="el">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlgoVista</title>
-    <link rel="stylesheet" href="FCFSDISK.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>AlgoVista - LOOK</title>
 </head>
 <body>
+  <header>
+    <div class="logo">
+      <span class="title">AlgoVista</span>
+      <span class="subtitle">Οπτικοποίηση Αλγορίθμων</span>
+    </div>
+    <nav>
+      <ul>
+        <li><a href="../homepage.html">Αρχική</a></li>
+        <li>
+          <a href="#" id="open-sidebar">Αλγόριθμοι</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+  <div id="sidebar" class="sidebar">
+    <button id="close-sidebar" class="close-btn">&times;</button> <!-- Κουμπί για κλείσιμο -->
+    <ul>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού δίσκου</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSDISK.html">FCFS</a></li>
+          <li><a href="SSTF.html">SSTF</a></li>
+          <li><a href="SCAN.html">SCAN</a></li>
+          <li><a href="CSCAN.html">C-SCAN</a></li>
+          <li><a href="LOOK.html">LOOK</a></li>
+          <li><a href="CLOOK.html">C-LOOK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
+        <ul class="submenu-content">
+          <li><a href="FIFO.html">FIFO</a></li>
+          <li><a href="LRU.html">LRU</a></li>
+          <li><a href="OPTIMAL.html">OPTIMAL</a></li>
+          <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
+          <li><a href="CLOCK.html">CLOCK</a></li>
+        </ul>
+      </li>
+      <li class="dropdown-submenu">
+        <div>Αλγόριθμοι χρονοπρογραμματισμού CPU</div>
+        <ul class="submenu-content">
+          <li><a href="FCFSCPU.html">FCFS</a></li>
+          <li><a href="SJF.html">SJF</a></li>
+          <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
+          <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
+          <li><a href="RR.html">RR</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
-    <!-- Header -->
-    <header>
-        <h1>AlgoVista</h1>
-        <nav>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h1>LOOK</h1>
+        
+      </div>
+    </section>
+
+    <!-- Algorithm Description -->
+    <section class="algorithm-description">
+      <div class="container">
+        <h2>Περιγραφή</h2>
+        <p>
+            Ο αλγόριθμος LOOK είναι μια μέθοδος χρονοπρογραμματισμού δίσκων που λειτουργεί με την κίνηση της κεφαλής του δίσκου προς την
+            κατεύθυνση των αιτημάτων. Πρώτα εξετάζει αν υπάρχουν αιτήματα στην κατεύθυνση αυτή και εξυπηρετεί αυτά που βρίσκονται στην 
+            πορεία της. Όταν φτάσει στο τελευταίο αίτημα στην κατεύθυνση αυτή, αλλάζει κατεύθυνση και συνεχίζει την εξυπηρέτηση των αιτημάτων
+             στην αντίθετη κατεύθυνση. Αυτή η προσέγγιση ελαχιστοποιεί τις αποστάσεις που πρέπει να διανύσει η κεφαλή, βελτιώνοντας έτσι τους 
+             χρόνους εξυπηρέτησης. Ένα κύριο χαρακτηριστικό του LOOK είναι η ικανότητά του να μειώνει την αναμονή για τα αιτήματα που υπάρχουν
+              στην κατεύθυνση της κίνησης της κεφαλής. Παρά τα πλεονεκτήματά του, οι χρήστες που υποβάλλουν αιτήματα πολύ μακριά από την πορεία
+               της κεφαλής μπορεί να αντιμετωπίσουν καθυστερήσεις. Τα πλεονεκτήματα του LOOK περιλαμβάνουν την καλύτερη αποδοτικότητα στην
+                εξυπηρέτηση, ενώ τα μειονεκτήματά του σχετίζονται με τις πιθανές καθυστερήσεις για αιτήματα εκτός της κύριας πορείας κίνησης.   
+            <h3>Διαβάστε περισσότερα:</h3>
             <ul>
-                <li><a href="../index.html">Αρχική</a></li>
-                <li><a href="#">Οπτικοποιήσεις</a></li>
-                <li><a href="#">Κουιζ</a></li>
-                <li><a href="#">Παιχνίδια</a></li>
-                <li class="dropdown">
-                    <a href="#">Αλγόριθμοι</a>
-                    <ul class="dropdown-content">
-                        <!-- Disk Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης δίσκου</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSDISK.html">FCFS</a></li>
-                                <li><a href="SSTF.html">SSTF</a></li>
-                                <li><a href="SCAN.html">SCAN</a></li>
-                                <li><a href="CSCAN.html">C-SCAN</a></li>
-                                <li><a href="LOOK.html">LOOK</a></li>
-                                <li><a href="CLOOK.html">C-LOOK</a></li>
-                            </ul>
-                        </li>
-                        <!-- Page Replacement Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης σελιδών</div>
-                            <ul class="submenu-content">
-                                <li><a href="FIFO.html">FIFO</a></li>
-                                <li><a href="LRU.html">LRU</a></li>
-                                <li><a href="OPTIMAL.html">OPTIMAL</a></li>
-                                <li><a href="ENHANCED.html">ENHANCED SECOND CHANCE</a></li>
-                                <li><a href="CLOCK.html">CLOCK</a></li>
-                            </ul>
-                        </li>
-                        <!-- CPU Scheduling Algorithms Submenu -->
-                        <li class="dropdown-submenu">
-                            <div>Αλγόριθμοι αντικατάστασης CPU</div>
-                            <ul class="submenu-content">
-                                <li><a href="FCFSCPU.html">FCFS</a></li>
-                                <li><a href="SJF.html">SJF</a></li>
-                                <li><a href="PREEMPTIVESJF.html">PREEMPTIVE SJF</a></li>
-                                <li><a href="PRIORITYSCHEDULING.html">PRIORITY SCHEDULING</a></li>
-                                <li><a href="RR.html">RR</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                <li>
+                    <a href="https://www.geeksforgeeks.org/look-disk-scheduling-algorithm/" target="_blank">
+                         Αναφορά 1
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.baeldung.com/cs/disk-scheduling-look-clook" target="_blank">
+                        Αναφορά 2
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.javatpoint.com/os-look-and-c-look-scheduling" target="_blank">
+                        Αναφορά 3
+                    </a>
                 </li>
             </ul>
-        </nav>
-    </header>
+        </p>
+      </div>
+    </section>
 
-           <!-- Hero Section -->
-           <div class="content">
+    <!-- Algorithm Steps -->
+    <section class="algorithm-steps">
+      <div class="container">
+        <h2>Βήματα</h2>
+        <ol>
+            <ul>
+                <label>ΒΗΜΑ 1 :</label>
+                <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο LOOK.</li>
+    
+                <label>ΒΗΜΑ 2 :</label>
+                <li>Εισάγετε τη τρέχουσα θέση της κεφαλής και επιλέξτε την αρχική κατεύθυνση κίνησης της κεφαλής.</li>
+                
+               <label>ΒΗΜΑ 3 :</label>
+               <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
+              </ul>
+        </ol>
+      </div>
+    </section>
 
-            <div class="theory">
-              <div class="theory-heading">
-                <div>Look</div>
-                <div></div>
-              </div>
-        
-              <div class="theory-text">
-                <div>Αλγόριθμος LOOK: Λειτουργία και Χαρακτηριστικά</div>
-                <div></div>
-                <div>
-                    Ο αλγόριθμος LOOK είναι μια μέθοδος χρονοπρογραμματισμού δίσκων που λειτουργεί με την κίνηση της κεφαλής του δίσκου προς την
-                    κατεύθυνση των αιτημάτων. Πρώτα εξετάζει αν υπάρχουν αιτήματα στην κατεύθυνση αυτή και εξυπηρετεί αυτά που βρίσκονται στην 
-                    πορεία της. Όταν φτάσει στο τελευταίο αίτημα στην κατεύθυνση αυτή, αλλάζει κατεύθυνση και συνεχίζει την εξυπηρέτηση των αιτημάτων
-                     στην αντίθετη κατεύθυνση. Αυτή η προσέγγιση ελαχιστοποιεί τις αποστάσεις που πρέπει να διανύσει η κεφαλή, βελτιώνοντας έτσι τους 
-                     χρόνους εξυπηρέτησης. Ένα κύριο χαρακτηριστικό του LOOK είναι η ικανότητά του να μειώνει την αναμονή για τα αιτήματα που υπάρχουν
-                      στην κατεύθυνση της κίνησης της κεφαλής. Παρά τα πλεονεκτήματά του, οι χρήστες που υποβάλλουν αιτήματα πολύ μακριά από την πορεία
-                       της κεφαλής μπορεί να αντιμετωπίσουν καθυστερήσεις. Τα πλεονεκτήματα του LOOK περιλαμβάνουν την καλύτερη αποδοτικότητα στην
-                        εξυπηρέτηση, ενώ τα μειονεκτήματά του σχετίζονται με τις πιθανές καθυστερήσεις για αιτήματα εκτός της κύριας πορείας κίνησης.   
-                        <br>
-                        <div>
-                            <h3>Διαβάστε περισσότερα:</h3>
-                            <ul>
-                                <li>
-                                    <a href="https://www.geeksforgeeks.org/look-disk-scheduling-algorithm/" target="_blank">
-                                         Αναφορά 1
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.baeldung.com/cs/disk-scheduling-look-clook" target="_blank">
-                                        Αναφορά 2
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="https://www.javatpoint.com/os-look-and-c-look-scheduling" target="_blank">
-                                        Αναφορά 3
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                    </div>
-                  </div>
-              <div class="theory-step">
-                <ul>
-        
-                    <label>ΒΗΜΑ 1 :</label>
-                    <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο LOOK.</li>
-        
-                    <label>ΒΗΜΑ 2 :</label>
-                    <li>Εισάγετε τη τρέχουσα θέση της κεφαλής και επιλέξτε την αρχική κατεύθυνση κίνησης της κεφαλής.</li>
-                    
-                   <label>ΒΗΜΑ 3 :</label>
-                   <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="content">
-        <div class="container">
-          <div class="input-steps">
-            <p>Η σειρά των αιτήσεων :</p>
+    <!-- Algorithm Implementation -->
+    <section class="algorithm-implementation">
+     
+        <h2>Υλοποίηση</h2>
+       
+        <div class="content">
+   
+                <div class="input-steps">
+                    <p>Η σειρά των αιτήσεων :</p>
             <div class="popup">
               <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
               <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
@@ -153,17 +160,33 @@
         <div id="seek-sequence" class="seek-sequence">
             <h3>Σειρά Εξυπηρέτησης:</h3>
             <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
-        </div>
+                    </div>
+                </div>
     </div>
-     <canvas id="seekCanvas" width="1200" height="600" style="border: 1px solid #000; padding: 15px;"></canvas>
-</div>
-</div>
-      <br>
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 AlgoVista. Kalliopi Malla.</p>
-    </footer>
+    <div class="canvas-container">
+        <canvas id="seekCanvas" width="1200" height="600"></canvas>
+    </div>
+    
+           
+           
+        
+        <br>
 
-    <script src="LOOK.js"></script>
+
+
+
+
+
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
+  </footer>
+
+  <script src="LOOK.js"></script>
 </body>
 </html>

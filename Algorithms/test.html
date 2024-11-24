@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  <title>AlgoVista - CSCAN</title>
+  <title>AlgoVista - CLOOK</title>
 </head>
 <body>
   <header>
@@ -34,7 +34,7 @@
           <li><a href="SCAN.html">SCAN</a></li>
           <li><a href="CSCAN.html">C-SCAN</a></li>
           <li><a href="LOOK.html">LOOK</a></li>
-          <li><a href="CLOCK.html">C-LOOK</a></li>
+          <li><a href="CLOOK.html">C-LOOK</a></li>
         </ul>
       </li>
       <li class="dropdown-submenu">
@@ -64,8 +64,8 @@
     <!-- Hero Section -->
     <section class="hero">
       <div class="container">
-        <h1>Circural Scan</h1>
-        <h2>C-SCAN</h2>
+        <h1>Circural Look</h1>
+        <h2>C-LOOK</h2>
       </div>
     </section>
 
@@ -74,28 +74,29 @@
       <div class="container">
         <h2>Περιγραφή</h2>
         <p>
-            Ο αλγόριθμος C-SCAN (Circular SCAN) είναι μια μέθοδος προγραμματισμού δίσκων που σαρώνει τα αιτήματα εισόδου/εξόδου σε κυκλική
-            κατεύθυνση. Όταν η κεφαλή του δίσκου φτάνει στο τέλος του δίσκου, επανέρχεται στο αρχικό σημείο χωρίς να εξυπηρετήσει αιτήματα 
-            κατά την επιστροφή της, συνεχίζοντας τη σάρωση στην ίδια κατεύθυνση. Αυτός ο σχεδιασμός διασφαλίζει ότι όλα τα αιτήματα λαμβάνουν
-             δίκαιη εξυπηρέτηση, μειώνοντας τις μεγάλες καθυστερήσεις. Ένα βασικό χαρακτηριστικό του C-SCAN είναι ότι αποτρέπει την πείνα 
-             (starvation), καθώς όλοι οι χρήστες έχουν ίσες πιθανότητες να δουν τα αιτήματά τους να εξυπηρετούνται. Παρά τις θετικές πτυχές του,
-              τα αιτήματα που βρίσκονται κοντά στα άκρα του δίσκου ενδέχεται να αντιμετωπίσουν καθυστερήσεις, καθώς η κεφαλή πρέπει να επιστρέψει
-               στο αρχικό της σημείο. Τα πλεονεκτήματα του C-SCAN περιλαμβάνουν τη συνεπή εξυπηρέτηση και την αποδοτική εκμετάλλευση του δίσκου,
-                ενώ τα μειονεκτήματά του σχετίζονται με τις καθυστερήσεις που ενδέχεται να προκύψουν κατά την επιστροφή της κεφαλής.
+            Ο αλγόριθμος C-LOOK (Circular LOOK) είναι μια μέθοδος χρονοπρογραμματισμού δίσκων που συνδυάζει τα χαρακτηριστικά του LOOK με 
+            μια κυκλική προσέγγιση. Η κεφαλή του δίσκου κινείται προς την κατεύθυνση των αιτημάτων και εξυπηρετεί αυτά που βρίσκονται στην
+             πορεία της, αλλά όταν φτάσει στο τελευταίο αίτημα, επιστρέφει αμέσως στο πρώτο αίτημα στην κατεύθυνση αυτή χωρίς να κινείται 
+             μέχρι το άκρο του δίσκου. Αυτή η προσέγγιση μειώνει τις αποστάσεις που πρέπει να διανύσει η κεφαλή, βελτιώνοντας τους χρόνους
+              εξυπηρέτησης. Ένα βασικό χαρακτηριστικό του C-LOOK είναι η ικανότητά του να διατηρεί την ισοκατανομή των αιτημάτων, καθώς 
+              κάθε αίτημα έχει ίσες πιθανότητες να εξυπηρετηθεί. Τα πλεονεκτήματα του C-LOOK περιλαμβάνουν τη συνεπή και αποτελεσματική 
+              εξυπηρέτηση των αιτημάτων, καθώς και τη μείωση των καθυστερήσεων κατά την επιστροφή της κεφαλής. Ωστόσο, μπορεί να προκύψουν
+               καθυστερήσεις για αιτήματα που βρίσκονται μακριά από την πορεία της κεφαλής, ιδίως αν αυτά τα αιτήματα είναι συγκεντρωμένα 
+               σε περιοχές του δίσκου που δεν επισκέπτεται συχνά.   
             <h3>Διαβάστε περισσότερα:</h3>
             <ul>
                 <li>
-                    <a href="https://www.geeksforgeeks.org/program-for-sstf-disk-scheduling-algorithm/" target="_blank">
+                    <a href="https://www.geeksforgeeks.org/c-look-disk-scheduling-algorithm/" target="_blank">
                          Αναφορά 1
                     </a>
                 </li>
                 <li>
-                    <a href="https://www.javatpoint.com/os-scan-and-c-scan-algorithm" target="_blank">
+                    <a href="https://www.baeldung.com/cs/disk-scheduling-look-clook" target="_blank">
                         Αναφορά 2
                     </a>
                 </li>
                 <li>
-                    <a href="https://www.naukri.com/code360/library/c-scan-algorithm" target="_blank">
+                    <a href="https://www.javatpoint.com/os-look-and-c-look-scheduling" target="_blank">
                         Αναφορά 3
                     </a>
                 </li>
@@ -111,13 +112,13 @@
         <ol>
             <ul>
                 <label>ΒΗΜΑ 1 :</label>
-            <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο C-SCAN.</li>
-
-            <label>ΒΗΜΑ 2 :</label>
-            <li>Εισάγετε τη τρέχουσα θέση της κεφαλής και επιλέξτε την αρχική κατεύθυνση κίνησης της κεφαλής.</li>
-            
-           <label>ΒΗΜΑ 3 :</label>
-           <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
+                <li>Εισάγετε την ουρά των διεργασιών που θέλετε να προγραμματίσετε με τον αλγόριθμο C-LOOK.</li>
+    
+                <label>ΒΗΜΑ 2 :</label>
+                <li>Εισάγετε τη τρέχουσα θέση της κεφαλής και επιλέξτε την αρχική κατεύθυνση κίνησης της κεφαλής.</li>
+                
+               <label>ΒΗΜΑ 3 :</label>
+               <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
               </ul>
         </ol>
       </div>
@@ -131,7 +132,7 @@
         <div class="content">
    
                 <div class="input-steps">
-                    <p>Η σειρά των αιτήσεων:</p>
+                    <p>Η σειρά των αιτήσεων :</p>
                     <div class="popup">
                       <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
                       <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
@@ -141,6 +142,7 @@
                     <div class="popup">
                       <input type="number" id="head-position" placeholder="π.χ. 50">
                       <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
+                   
                     </div>
                     <p>Αρχική κατεύθυνση :</p>
                     <div class="popup">
@@ -150,16 +152,17 @@
                       </select>
                       <span class="popuptext">Επιλέξτε την αρχική κατεύθυνση (Αριστερά ή Δεξιά).</span>
                     </div>
-                    <button onclick="executeCSCAN()">Εκτέλεση</button>
-                    <button onclick="toggleShowNumbersOnArrows()">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
+                    <button onclick="executeCLOOK()">Εκτέλεση</button>
+                    <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
                     <button id="resetButton" style="display: none;">Επαναφορά</button>
-                    <!-- Προσθήκη του συνολικού αριθμού κινήσεων -->
-                    <div id="seek-count-display" class="seek-count-display"></div>
+                    
+                  <!-- Προσθήκη του συνολικού αριθμού κινήσεων -->
+                  <div id="seek-count-display" class="seek-count-display"></div>
                 
-                    <!-- Προσθήκη κουτιών για τη σειρά εξυπηρέτησης -->
-                    <div id="seek-sequence" class="seek-sequence">
-                        <h3>Σειρά Εξυπηρέτησης:</h3>
-                        <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
+                  <!-- Προσθήκη κουτιών για τη σειρά εξυπηρέτησης -->
+                  <div id="seek-sequence" class="seek-sequence">
+                      <h3>Σειρά Εξυπηρέτησης:</h3>
+                      <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
                     </div>
                 </div>
     </div>
@@ -187,6 +190,6 @@
     <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
   </footer>
 
-  <script src="CSCAN.js"></script>
+  <script src="CLOOK.js"></script>
 </body>
 </html>
