@@ -153,6 +153,65 @@ body {
     color: #555;
   }
   
+  /* Εμφάνιση τίτλων (πιο έντονα) */
+.sidebar ul li .dropdown-submenu > div {
+  font-size: 18px;
+  font-weight: bold;
+  color: #444;
+  margin-bottom: 10px;
+  cursor: pointer;
+  padding: 10px;
+  background-color: #fcf1d4;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul li .dropdown-submenu > div:hover {
+  background-color: #ffebb5;
+  color: #333;
+}
+
+/* Στυλ υπομενού (κρυφό αρχικά) */
+.sidebar ul li .submenu-content {
+  display: none;
+  margin-left: 20px;
+  border-left: 2px solid #ddd;
+  padding-left: 10px;
+}
+
+/* Εμφάνιση υπομενού όταν είναι ενεργό */
+.sidebar ul li.open .submenu-content {
+  display: block;
+}
+
+/* Στυλ για τις καρτέλες */
+.sidebar ul li .submenu-content li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li .submenu-content li a {
+  text-decoration: none;
+  color: #555;
+  font-size: 16px;
+  padding: 8px 10px;
+  display: block;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul li .submenu-content li a:hover {
+  background-color: #f8e8c8;
+  color: #333;
+}
+
+/* Ενεργή καρτέλα */
+.sidebar ul li .submenu-content li a.active {
+  background-color: #ffd27f;
+  color: #333;
+  font-weight: bold;
+  border-left: 4px solid #ff8c00;
+}
+
     /* Footer Styling */
     footer {
         background-color: #333; /* Σκούρο φόντο για το footer */

@@ -301,3 +301,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   
+  document.querySelectorAll('.dropdown-submenu > div').forEach((menuTitle) => {
+    menuTitle.addEventListener('click', () => {
+      const parentLi = menuTitle.parentElement;
+      parentLi.classList.toggle('open');
+    });
+  });
+  
+  document.querySelectorAll('.submenu-content li a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      document
+        .querySelectorAll('.submenu-content li a')
+        .forEach((el) => el.classList.remove('active'));
+      e.target.classList.add('active');
+    });
+  });
+  

@@ -1,259 +1,322 @@
 /* Βασικό στυλ */
 body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fcf6e4; /* Απαλό υπόβαθρο */
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ύψος όλης της σελίδας */
-  }
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fcf6e4; /* Απαλό υπόβαθρο */
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ύψος όλης της σελίδας */
+}
 
 /* Header */
 header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 40px;
-  background-color: transparent; /* Διαφανές φόντο */
-  box-sizing: border-box;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 20px 40px;
+background-color: transparent; /* Διαφανές φόντο */
+box-sizing: border-box;
 }
 
 .logo {
-  display: flex;
-  flex-direction: column;
+display: flex;
+flex-direction: column;
 }
 
 .logo .title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #333; /* Σκούρο χρώμα */
+font-size: 24px;
+font-weight: 600;
+color: #333; /* Σκούρο χρώμα */
 }
 
 .logo .subtitle {
-  font-size: 20px;
-  font-weight: 400;
-  color: #666;
+font-size: 20px;
+font-weight: 400;
+color: #666;
 }
 
 /* Navigation Styling */
 nav ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-  }
-  
-  nav ul li {
-    position: relative;
-    margin-right: 20px;
-  }
-  
-  nav ul li a {
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    font-weight: 500;
-    padding: 10px 15px;
-    display: block;
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
-  nav ul li a:hover {
-    background-color: #f4f4f4;
-    border-radius: 5px;
-  }
-  
-  /* Dropdown Menu Styling */
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #fcf6e4;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 10px;
-    border-radius: 8px;
-    z-index: 1000;
-    min-width: 200px;
-  }
-  
-  .dropdown:hover .dropdown-content {
-    display: block;
-  }
-  
-  .dropdown-content .dropdown-submenu {
-    margin-bottom: 10px;
-  }
-  
-  .dropdown-submenu div {
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  
-  .submenu-content {
-    list-style-type: none;
-    padding-left: 15px;
-  }
-  
-  .submenu-content li a {
-    color: #555;
-    font-size: 14px;
-  }
-  
-  .submenu-content li a:hover {
-    color: #333;
-  }
-  
-  
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+
+nav ul li {
+  position: relative;
+  margin-right: 20px;
+}
+
+nav ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 10px 15px;
+  display: block;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+nav ul li a:hover {
+  background-color: #f4f4f4;
+  border-radius: 5px;
+}
+
+/* Dropdown Menu Styling */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fcf6e4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+  z-index: 1000;
+  min-width: 200px;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content .dropdown-submenu {
+  margin-bottom: 10px;
+}
+
+.dropdown-submenu div {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.submenu-content {
+  list-style-type: none;
+  padding-left: 15px;
+}
+
+.submenu-content li a {
+  color: #555;
+  font-size: 14px;
+}
+
+.submenu-content li a:hover {
+  color: #333;
+}
+
+
 
 /* Hero Section */
 .hero {
-    position: relative;
-    height: 100vh; /* Ύψος πλήρους οθόνης */
-    width: 100%; /* Καλύπτει όλο το πλάτος */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #fcf6e4; /* Απαλό υπόβαθρο */
-  }
-  
-  .hero .container {
-    position: relative;
-    width: 80%; /* Πλάτος του container */
-    max-width: 1200px; /* Μέγιστο πλάτος */
-    height: auto; /* Αυτόματο ύψος ανάλογα με το περιεχόμενο */
-    padding: 20px;
-    background-color: rgba(252, 246, 228, 0.85); /* Απαλό χρώμα */
-    border-radius: 15px; /* Καμπυλωμένες γωνίες */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Απαλή σκιά */
-    text-align: center;
-  }
-  
-  .hero .container h1 {
-    font-size: 40px; /* Μεγάλα γράμματα */
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #333; /* Σκούρο κείμενο */
-  }
-  
-  .hero .container p {
-    font-size: 18px;
-    font-weight: 400;
-    color: #333; /* Σκούρο κείμενο */
-    margin-bottom: 20px;
-  }
-  
-  .hero .container .hero-image {
-    width: 100%; /* Η εικόνα να καλύπτει το πλάτος του container */
-    max-height: 800px; /* Μέγιστο ύψος της εικόνας */
-     object-fit: cover; /* Προσαρμογή της εικόνας χωρίς να κόβεται */
-    border-radius: 10px; /* Καμπυλωμένες γωνίες */
-    box-shadow: 0 2px 5px rgba(252, 246, 228, 1);
+  position: relative;
+  height: 100vh; /* Ύψος πλήρους οθόνης */
+  width: 100%; /* Καλύπτει όλο το πλάτος */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fcf6e4; /* Απαλό υπόβαθρο */
+}
 
-  }
-  
-  .hero .container .hero-image::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(252, 246, 228, 0.85); /* Απαλό χρώμα overlay */
-    z-index: 2; /* Πάνω από την εικόνα */
-    border-radius: 10px; /* Καμπυλωμένες γωνίες να ταιριάζουν με την εικόνα */
-  }
-  
+.hero .container {
+  position: relative;
+  width: 80%; /* Πλάτος του container */
+  max-width: 1200px; /* Μέγιστο πλάτος */
+  height: auto; /* Αυτόματο ύψος ανάλογα με το περιεχόμενο */
+  padding: 20px;
+  background-color: rgba(252, 246, 228, 0.85); /* Απαλό χρώμα */
+  border-radius: 15px; /* Καμπυλωμένες γωνίες */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Απαλή σκιά */
+  text-align: center;
+}
+
+.hero .container h1 {
+  font-size: 40px; /* Μεγάλα γράμματα */
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #333; /* Σκούρο κείμενο */
+}
+
+.hero .container p {
+  font-size: 18px;
+  font-weight: 400;
+  color: #333; /* Σκούρο κείμενο */
+  margin-bottom: 20px;
+}
+
+.hero .container .hero-image {
+  width: 100%; /* Η εικόνα να καλύπτει το πλάτος του container */
+  max-height: 800px; /* Μέγιστο ύψος της εικόνας */
+   object-fit: cover; /* Προσαρμογή της εικόνας χωρίς να κόβεται */
+  border-radius: 10px; /* Καμπυλωμένες γωνίες */
+  box-shadow: 0 2px 5px rgba(252, 246, 228, 1);
+
+}
+
+.hero .container .hero-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(252, 246, 228, 0.85); /* Απαλό χρώμα overlay */
+  z-index: 2; /* Πάνω από την εικόνα */
+  border-radius: 10px; /* Καμπυλωμένες γωνίες να ταιριάζουν με την εικόνα */
+}
+
 /* Sidebar Styling */
 .sidebar {
-    position: fixed;
-    top: 0;
-    right: -300px; /* Αρχικά κρυμμένο */
-    width: 300px;
-    height: 100vh;
-    background-color: #fcf6e4;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    overflow-y: auto;
-    transition: right 0.3s ease;
-    z-index: 1000;
-    display: none; /* Κρύβεται εξ αρχής */
-  }
-  
-  .sidebar.open {
-    display: block; /* Εμφανίζεται όταν ανοίγει */
-    right: 0;
-  }
-  
-  .sidebar .close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-  
-  .sidebar ul {
-    list-style-type: none;
-    padding: 0;
-    margin: 20px 0;
-  }
-  
-  .sidebar ul li {
-    margin-bottom: 15px;
-  }
-  
-  .sidebar ul li a {
-    text-decoration: none;
-    color: #333;
-    font-size: 16px;
-    transition: color 0.3s ease;
-  }
-  
-  .sidebar ul li a:hover {
-    color: #555;
-  }
-  
+  position: fixed;
+  top: 0;
+  right: -300px; /* Αρχικά κρυμμένο */
+  width: 300px;
+  height: 100vh;
+  background-color: #fcf6e4;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-y: auto;
+  transition: right 0.3s ease;
+  z-index: 1000;
+  display: none; /* Κρύβεται εξ αρχής */
+}
+
+.sidebar.open {
+  display: block; /* Εμφανίζεται όταν ανοίγει */
+  right: 0;
+}
+
+.sidebar .close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 15px;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  transition: color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+  color: #555;
+}
+
+/* Εμφάνιση τίτλων (πιο έντονα) */
+.sidebar ul li .dropdown-submenu > div {
+font-size: 18px;
+font-weight: bold;
+color: #444;
+margin-bottom: 10px;
+cursor: pointer;
+padding: 10px;
+background-color: #fcf1d4;
+border-radius: 5px;
+transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul li .dropdown-submenu > div:hover {
+background-color: #ffebb5;
+color: #333;
+}
+
+/* Στυλ υπομενού (κρυφό αρχικά) */
+.sidebar ul li .submenu-content {
+display: none;
+margin-left: 20px;
+border-left: 2px solid #ddd;
+padding-left: 10px;
+}
+
+/* Εμφάνιση υπομενού όταν είναι ενεργό */
+.sidebar ul li.open .submenu-content {
+display: block;
+}
+
+/* Στυλ για τις καρτέλες */
+.sidebar ul li .submenu-content li {
+margin-bottom: 10px;
+}
+
+.sidebar ul li .submenu-content li a {
+text-decoration: none;
+color: #555;
+font-size: 16px;
+padding: 8px 10px;
+display: block;
+border-radius: 4px;
+transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul li .submenu-content li a:hover {
+background-color: #f8e8c8;
+color: #333;
+}
+
+/* Ενεργή καρτέλα */
+.sidebar ul li .submenu-content li a.active {
+background-color: #ffd27f;
+color: #333;
+font-weight: bold;
+border-left: 4px solid #ff8c00;
+}
+
+
+
+
+
+
 /* Βασικό στυλ */
 body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #fcf6e4; /* Απαλό υπόβαθρο */
-    color: #333;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh; /* Ύψος ολόκληρης της σελίδας */
-  }
-  
-  main {
-    flex: 1; /* Το κύριο περιεχόμενο να καταλαμβάνει τον διαθέσιμο χώρο */
-    padding: 20px;
-    box-sizing: border-box; /* Περιλαμβάνει το padding στον υπολογισμό του μεγέθους */
-  }
-  
-  /* Container μέσα στο main */
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: rgba(252, 246, 228, 0.85); /* Απαλό χρώμα */
-    border-radius: 15px; /* Καμπυλωμένες γωνίες */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Απαλή σκιά */
-    text-align: center;
-  }
-  
-  /* Footer Styling */
-  footer {
-    background-color: #333; /* Σκούρο φόντο για το footer */
-    color: #fff; /* Λευκό κείμενο */
-    text-align: center;
-    padding: 15px 0;
-    font-size: 14px;
-    z-index: 1; /* Τοποθετούμε το footer πάνω από άλλα στοιχεία */
-  }
-  
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #fcf6e4; /* Απαλό υπόβαθρο */
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ύψος ολόκληρης της σελίδας */
+}
+
+main {
+  flex: 1; /* Το κύριο περιεχόμενο να καταλαμβάνει τον διαθέσιμο χώρο */
+  padding: 20px;
+  box-sizing: border-box; /* Περιλαμβάνει το padding στον υπολογισμό του μεγέθους */
+}
+
+/* Container μέσα στο main */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(252, 246, 228, 0.85); /* Απαλό χρώμα */
+  border-radius: 15px; /* Καμπυλωμένες γωνίες */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Απαλή σκιά */
+  text-align: center;
+}
+
+/* Footer Styling */
+footer {
+  background-color: #333; /* Σκούρο φόντο για το footer */
+  color: #fff; /* Λευκό κείμενο */
+  text-align: center;
+  padding: 15px 0;
+  font-size: 14px;
+  z-index: 1; /* Τοποθετούμε το footer πάνω από άλλα στοιχεία */
+}
