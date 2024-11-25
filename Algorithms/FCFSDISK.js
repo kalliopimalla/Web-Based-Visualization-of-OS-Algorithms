@@ -77,6 +77,7 @@ function runFCFS() {
 
     // Εμφάνιση του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "inline-block";
+    hideFooter(); // Απόκρυψη του footer
 }
 
 // Συνάρτηση για την επαναφορά του καμβά και των πεδίων εισόδου
@@ -98,10 +99,12 @@ function resetCanvasAndInputs() {
     // Καθαρισμός του πεδίου για το μήκος ακολουθίας
     document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
 
+    // Εμφάνιση του footer
+    showFooter();
+
     // Απόκρυψη του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "none";
 }
-
 // Σύνδεση της λειτουργίας με το κουμπί "Επαναφορά"
 document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
 
@@ -329,4 +332,14 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
 });
 
-  
+function showFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "visible"; // Εμφανίζεται
+    footer.style.display = "block"; // Παίρνει χώρο στη διάταξη
+}
+
+function hideFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "hidden"; // Κρύβεται
+    footer.style.display = "none"; // Δεν καταλαμβάνει χώρο
+}

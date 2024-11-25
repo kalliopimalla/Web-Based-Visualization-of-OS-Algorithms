@@ -213,25 +213,15 @@ body {
 }
 
 footer {
-  background-color: #333; /* Σκούρο φόντο */
-  color: #fff; /* Λευκό κείμενο */
+  background-color: #333;
+  color: #fff;
   text-align: center;
   padding: 15px 0;
   font-size: 14px;
-  z-index: 1; /* Τοποθετούμε το footer πάνω από άλλα στοιχεία */
-  position: relative; /* Αντικατάσταση του "fixed" */
-  bottom: 0;
-}
-
-body {
-  display: flex;
-  flex-direction: column; /* Κάθετη διάταξη */
-  min-height: 100vh; /* Το ύψος να καλύπτει όλη την οθόνη */
-  margin: 0; /* Καθαρισμός περιθωρίων */
-}
-
-main {
-  flex: 1; /* Το main περιεχόμενο παίρνει όλο τον διαθέσιμο χώρο */
+  z-index: 1;
+  position: relative;
+  visibility: hidden; /* Κρυφό από προεπιλογή */
+  display: none; /* Δεν καταλαμβάνει χώρο στη διάταξη */
 }
 
 
