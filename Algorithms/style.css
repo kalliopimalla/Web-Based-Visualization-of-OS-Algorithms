@@ -334,7 +334,7 @@ body {
       display: inline-block;
       margin: 5px;
       padding: 10px;
-      background-color: teal;
+      background-color: #333;
       color: white;
       border-radius: 5px;
       width: 50px;
@@ -359,19 +359,19 @@ body {
     }
     .input-steps button {
       padding: 10px 20px;
-      background-color: teal;
+      background-color: #333;
       color: white;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
     .input-steps button:hover {
-      background-color: rgb(2, 172, 172);
+      background-color: #333(2, 172, 172);
     }
     
     .input-steps button, #resetButton {
       padding: 10px 20px;
-      background-color: teal;
+      background-color: #333;
       color: white;
       border: none;
       border-radius: 5px;
@@ -379,7 +379,7 @@ body {
     }
     
     .input-steps button:hover, #resetButton:hover {
-      background-color: rgb(2, 172, 172);
+      background-color: rgb(0, 0, 0);
     }
     
     
@@ -421,7 +421,7 @@ body {
     .sequence-box {
       padding: 10px 15px;
       background-color: #f0f0f0;
-      border: 2px solid teal;
+      border: 2px solid #333;
       border-radius: 8px;
       font-weight: bold;
       font-size: 16px;
@@ -431,20 +431,20 @@ body {
       margin-top: 20px;
       padding: 15px;
       background-color: #f9f9f9;
-      border: 2px solid teal;
+      border: 2px solid #333;
       border-radius: 8px;
       font-size: 18px;
       font-weight: bold;
-      color: #007bff;
+      color :#333;
       text-align: center;
-      box-shadow: 0px 4px 8px teal(0, 123, 255, 0.2);
+      box-shadow: 0px 4px 8px #333(0, 123, 255, 0.2);
       transition: all 0.3s ease;
     }
     
     
     .arrow {
       font-size: 20px;
-      color: teal;
+      color: #333;
     }
     
     
@@ -460,7 +460,7 @@ body {
       border-bottom: 1px solid #ddd;
     }
     #seek-count-display {
-      color: teal;
+      color: #333;
     }
     
     .queue-process {
@@ -537,7 +537,7 @@ body {
     .visual-table td {
       border: 1px solid #ccc;
       padding: 15px; /* Αυξάνει το μέγεθος των κελιών */
-      font-size: 18px; /* Μεγαλύτερη γραμματοσειρά */
+      font-size: 14px; /* Μεγαλύτερη γραμματοσειρά */
       text-align: center;
     }
     

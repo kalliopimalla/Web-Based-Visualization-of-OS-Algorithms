@@ -150,51 +150,58 @@ function updateTable() {
     const pageTable = Array.from(table.getElementsByTagName("td"));
 
     pages.forEach((page, i) => {
-        const frameIndex = frames.indexOf(page);
         let hit = false;
+        const frameIndex = frames.indexOf(page);
 
         if (frameIndex !== -1) {
+            // Page hit
             hitCount++;
-            referenceBits[frameIndex] = 1; // Mark as referenced
+            referenceBits[frameIndex] = 1; // Μαρκάρισμα ως χρησιμοποιημένο
             hit = true;
         } else {
-            // Page fault occurs
+            // Page fault
+            faultCount++;
             while (true) {
                 if (referenceBits[pointer] === 0) {
-                    // Replace the page
+                    // Αντικατάσταση της σελίδας
                     frames[pointer] = page;
-                    referenceBits[pointer] = 1; // Set reference bit to 1
-                    modifiedBits[pointer] = Math.round(Math.random()); // Random modified bit
-                    pointer = (pointer + 1) % maxFrames; // Move pointer
-                    faultCount++;
+                    referenceBits[pointer] = 1; // Reference bit σε 1
+                    modifiedBits[pointer] = Math.round(Math.random()); // Τυχαίο modified bit
+                    pointer = (pointer + 1) % maxFrames; // Μετακίνηση δείκτη
                     break;
                 } else {
-                    // Set reference bit to 0 and move pointer
+                    // Επαναφορά του reference bit σε 0 και μετακίνηση δείκτη
                     referenceBits[pointer] = 0;
+                    pointer = (pointer + 1) % maxFrames;
                 }
-                pointer = (pointer + 1) % maxFrames;
             }
         }
 
+        // Ενημέρωση του πίνακα
         pageTable.forEach(cell => {
+            const cellFrameIndex = cell.getAttribute("data-frame");
             if (cell.getAttribute("data-step") == i) {
-                const frameIndex = cell.getAttribute("data-frame");
-                cell.innerText = frames[frameIndex] ?? '';
+                cell.innerText = frames[cellFrameIndex] ?? '';
 
-                if (frames[frameIndex] === page) {
+                if (frames[cellFrameIndex] === page) {
+                    // Χρωματισμός για hit ή fault
                     cell.style.backgroundColor = hit ? '#d4edda' : '#f8d7da';
                 } else {
+                    // Επαναφορά χρώματος για άλλα κελιά
                     cell.style.backgroundColor = '';
                 }
             }
         });
     });
 
+    // Ενημέρωση αποτελεσμάτων
     resultText.innerHTML = `
-    <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
-    <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
-`;
+        <span class="faults" style="color: red;">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+        <span class="hits" style="color: green;">Συνολικός αριθμός hits: ${hitCount}</span>
+    `;
 }
+
+
 
 function runENHANCED() {
     initializeSimulation(); // Αρχικοποίηση

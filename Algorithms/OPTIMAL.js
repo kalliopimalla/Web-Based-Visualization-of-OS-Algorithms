@@ -99,27 +99,33 @@ function nextStep() {
     if (step < pages.length) {
         const page = pages[step];
         const pageTable = Array.from(table.getElementsByTagName("td"));
+        let isFault = false;
 
         if (!pageFrames.includes(page)) { // Page fault
             pageFaults++;
+            isFault = true;
             if (pageFrames.includes(null)) {
                 const index = pageFrames.indexOf(null); // Βρες την πρώτη κενή θέση
                 pageFrames[index] = page; // Προσθήκη στη θέση
             } else {
-                const replaceIndex = predict(pages, pageFrames, pages.length, step + 1);
+                const replaceIndex = predict(pages, pageFrames, pages.length, step + 1); // Βρες τη θέση αντικατάστασης
                 pageFrames[replaceIndex] = page; // Αντικατάσταση
             }
         } else {
             hits++; // Αύξηση hits
         }
 
-        // Ενημέρωση πίνακα
+        // Ενημέρωση πίνακα: Χρωματίζεται μόνο το κελί που αντιστοιχεί σε fault ή hit
         pageTable.forEach(cell => {
+            const frameIndex = cell.getAttribute("data-frame");
             if (cell.getAttribute("data-step") == step) {
-                const frameIndex = cell.getAttribute("data-frame");
-                cell.innerText = pageFrames[frameIndex] ?? ''; // Ενημέρωση κελιού
-                cell.style.backgroundColor =
-                    pageFrames[frameIndex] === page ? '#d4edda' : '#f8d7da'; // Πράσινο για hit, Κόκκινο για fault
+                if (pageFrames[frameIndex] === page) {
+                    cell.innerText = page;
+                    cell.style.backgroundColor = isFault ? '#f8d7da' : '#d4edda'; // Κόκκινο για fault, πράσινο για hit
+                } else {
+                    cell.innerText = pageFrames[frameIndex] ?? '';
+                    cell.style.backgroundColor = ''; // Επαναφορά για μη σχετιζόμενα κελιά
+                }
             }
         });
 
@@ -133,8 +139,8 @@ function nextStep() {
         <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${pageFaults}</span><br>
         <span class="hits">Συνολικός αριθμός hits: ${hits}</span>
     `;
-    
 }
+
 
 
 
@@ -157,6 +163,7 @@ function updateTable() {
                     const frameIndex = cell.getAttribute("data-frame");
                     cell.innerText = pageFrames[frameIndex] ?? '';
                     cell.style.backgroundColor = pageFrames[frameIndex] === page ? '#f8d7da' : '';
+                    
                 }
             });
         } else { // Hit
@@ -276,7 +283,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebar.classList.remove("open"); // Αφαιρούμε την κλάση για να κρυφτεί το sidebar
     });
   });
-  
+
   document.querySelectorAll('.dropdown-submenu > div').forEach((menuTitle) => {
     menuTitle.addEventListener('click', () => {
       const parentLi = menuTitle.parentElement;

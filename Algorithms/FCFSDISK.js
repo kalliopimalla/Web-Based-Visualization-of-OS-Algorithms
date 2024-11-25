@@ -39,7 +39,7 @@ function runFCFS() {
     const incrementSpeed = 50; // ταχύτητα αύξησης του αριθμού
     const incrementValue = Math.ceil(seekCount / 20); // τιμή αύξησης ανά βήμα
 
-    seekCountDisplay.style.color = "teal";
+   
 
     const interval = setInterval(() => {
         if (currentCount + incrementValue >= seekCount) {

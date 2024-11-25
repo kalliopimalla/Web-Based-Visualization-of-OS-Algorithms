@@ -87,20 +87,22 @@ function createTable() {
 // Προβολή ενός βήματος της προσομοίωσης
 function nextStep() {
     if (step === 0 && table) {
-        initializeSimulation();
+        initializeSimulation(); // Επαναφορά του simulation αν είναι η πρώτη εκτέλεση
     }
 
     if (step < pages.length) {
         const page = pages[step];
         const pageTable = Array.from(table.getElementsByTagName("td"));
+        let isFault = false;
 
         if (!pageFrames.includes(page)) { // Page fault
             pageFaults++;
+            isFault = true;
             if (pageFrames.includes(null)) {
                 const index = pageFrames.indexOf(null); // Βρες την πρώτη κενή θέση
                 pageFrames[index] = page; // Προσθήκη στη θέση
             } else {
-                const lruPage = getLRUPage(pageFrames, lastUsed);
+                const lruPage = getLRUPage(pageFrames, lastUsed); // Βρες τη σελίδα που θα αντικατασταθεί
                 const index = pageFrames.indexOf(lruPage);
                 pageFrames[index] = page; // Αντικατάσταση LRU
             }
@@ -110,36 +112,40 @@ function nextStep() {
 
         lastUsed.set(page, step); // Ενημέρωση της τελευταίας χρήσης
 
-        // Ενημέρωση πίνακα
+        // Ενημέρωση πίνακα: Χρωματίζεται μόνο το κελί που αφορά fault ή hit
         pageTable.forEach(cell => {
+            const frameIndex = cell.getAttribute("data-frame");
             if (cell.getAttribute("data-step") == step) {
-                const frameIndex = cell.getAttribute("data-frame");
-                cell.innerText = pageFrames[frameIndex] ?? ''; // Ενημέρωση κελιού
                 if (pageFrames[frameIndex] == page) {
-                    cell.style.backgroundColor = '#d4edda'; // Πράσινο για hit
+                    cell.innerText = page;
+                    cell.style.backgroundColor = isFault ? '#f8d7da' : '#d4edda'; // Κόκκινο για fault, πράσινο για hit
                 } else {
-                    cell.style.backgroundColor = '#f8d7da'; // Κόκκινο για fault
+                    cell.innerText = pageFrames[frameIndex] ?? '';
+                    cell.style.backgroundColor = ''; // Επαναφορά για μη σχετιζόμενα κελιά
                 }
             }
         });
 
         step++;
     } else {
-         // Ενημέρωση αποτελεσμάτων
-    resultText.innerHTML = `
-    <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${pageFaults}</span><br>
-    <span class="hits">Συνολικός αριθμός hits: ${hits}</span>
-`;
+        // Ενημέρωση αποτελεσμάτων
+        resultText.innerHTML = `
+            <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${pageFaults}</span><br>
+            <span class="hits">Συνολικός αριθμός hits: ${hits}</span>
+        `;
     }
-
-   
 }
+
 
 function updateTable() {
     const pageTable = Array.from(table.getElementsByTagName("td"));
+
     pages.forEach((page, i) => {
+        let isFault = false;
+
         if (!pageFrames.includes(page)) { // Page fault
             pageFaults++;
+            isFault = true;
             if (pageFrames.includes(null)) {
                 const index = pageFrames.indexOf(null);
                 pageFrames[index] = page;
@@ -153,15 +159,16 @@ function updateTable() {
         }
         lastUsed.set(page, i);
 
-        // Ενημέρωση πίνακα
+        // Ενημέρωση πίνακα: Χρωματίζεται μόνο το κελί της σελίδας που προστέθηκε ή έγινε hit
         pageTable.forEach(cell => {
+            const frameIndex = cell.getAttribute("data-frame");
             if (cell.getAttribute("data-step") == i) {
-                const frameIndex = cell.getAttribute("data-frame");
-                cell.innerText = pageFrames[frameIndex] ?? '';
                 if (pageFrames[frameIndex] == page) {
-                    cell.style.backgroundColor = '#d4edda'; // Πράσινο για hit
+                    cell.innerText = page;
+                    cell.style.backgroundColor = isFault ? '#f8d7da' : '#d4edda'; // Κόκκινο για fault, πράσινο για hit
                 } else {
-                    cell.style.backgroundColor = '#f8d7da'; // Κόκκινο για fault
+                    cell.innerText = pageFrames[frameIndex] ?? '';
+                    cell.style.backgroundColor = ''; // Επαναφορά για μη σχετιζόμενα κελιά
                 }
             }
         });
