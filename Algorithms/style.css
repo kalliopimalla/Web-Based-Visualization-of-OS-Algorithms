@@ -212,15 +212,28 @@ body {
   border-left: 4px solid #ff8c00;
 }
 
-    /* Footer Styling */
-    footer {
-        background-color: #333; /* Σκούρο φόντο για το footer */
-        color: #fff; /* Λευκό κείμενο */
-        text-align: center;
-        padding: 15px 0;
-        font-size: 14px;
-        z-index: 1; /* Τοποθετούμε το footer πάνω από άλλα στοιχεία */
-      }
+footer {
+  background-color: #333; /* Σκούρο φόντο */
+  color: #fff; /* Λευκό κείμενο */
+  text-align: center;
+  padding: 15px 0;
+  font-size: 14px;
+  z-index: 1; /* Τοποθετούμε το footer πάνω από άλλα στοιχεία */
+  position: relative; /* Αντικατάσταση του "fixed" */
+  bottom: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column; /* Κάθετη διάταξη */
+  min-height: 100vh; /* Το ύψος να καλύπτει όλη την οθόνη */
+  margin: 0; /* Καθαρισμός περιθωρίων */
+}
+
+main {
+  flex: 1; /* Το main περιεχόμενο παίρνει όλο τον διαθέσιμο χώρο */
+}
+
 
       .content {
    
@@ -646,4 +659,28 @@ body {
 
 #nextStepButton:hover {
   background-color: #333;
+}
+
+.canvas-container {
+  display: flex; /* Χρήση Flexbox */
+  justify-content: center; /* Κεντραρισμός οριζόντια */
+  align-items: flex-start; /* Στοίχιση στην αρχή κάθετης διάταξης */
+  margin: 20px auto; /* Κενό πάνω-κάτω και στοίχιση στο κέντρο */
+  padding: 20px;
+  max-width: 1200px; /* Ορισμός μέγιστου πλάτους */
+  width: 100%; /* Να καλύπτει όλο το διαθέσιμο πλάτος */
+  position: relative;
+}
+
+.seek-sequence {
+  margin-bottom: 20px; /* Προσθέτει κενό κάτω από τη "Σειρά Εξυπηρέτησης" */
+}
+
+
+.seek-sequence {
+  margin-bottom: 20px; /* Σταθερό διάστημα */
+}
+
+.canvas-container {
+  margin-top: 20px; /* Διάστημα πάνω από τον καμβά */
 }

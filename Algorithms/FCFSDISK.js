@@ -86,25 +86,17 @@ function resetCanvasAndInputs() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
+    canvas.height = 600;
+
     // Καθαρισμός των πεδίων εισόδου και των αποτελεσμάτων
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
     document.getElementById("seek-count-display").innerText = "Συνολική μετακίνηση κεφαλής: 0"; // Μηδενισμός του πεδίου
     document.getElementById("seek-sequence-boxes").innerHTML = "";
 
-    // Μηδενισμός μεταβλητών
-    pages = [];
-    frames = [];
-    referenceBits = [];
-    pointer = 0;
-    faultCount = 0;
-    hitCount = 0;
-    step = 0;
-
-    // Μηδενισμός του currentCount
-    if (typeof currentCount !== "undefined") {
-        currentCount = 0; // Μηδενισμός της μεταβλητής currentCount
-    }
+    // Καθαρισμός του πεδίου για το μήκος ακολουθίας
+    document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
 
     // Απόκρυψη του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "none";
@@ -226,7 +218,7 @@ function visualizeSeekSequence(seekSequence) {
 
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length = 10, max = 200) {
+function generateRandomSequence(length = sequenceLength, max = 200) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
@@ -234,6 +226,34 @@ function generateRandomSequence(length = 10, max = 200) {
     }
     return sequence;
 }
+
+
+// Σύνδεση της λειτουργίας με το κουμπί
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    // Λήψη του μήκους από το πεδίο εισαγωγής
+    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLength = parseInt(sequenceLengthInput, 10);
+
+    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
+    if (isNaN(sequenceLength) || sequenceLength <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        return;
+    }
+
+    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
+    const canvas = document.getElementById("seekCanvas");
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+
+    // Δημιουργία τυχαίας ακολουθίας
+    const randomSequence = generateRandomSequence(sequenceLength); 
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+});
+
+
 
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
@@ -274,4 +294,39 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.classList.add('active');
     });
   });
+
+  function adjustCanvasSpacing() {
+    const canvas = document.getElementById("seekCanvas");
+    const sequenceContainer = document.getElementById("seek-sequence");
+
+    // Λήψη του ύψους του καμβά
+    const canvasHeight = canvas.height;
+
+    // Ρύθμιση του κάτω περιθωρίου για τη "Σειρά Εξυπηρέτησης"
+    sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
+}
+
+// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLength = parseInt(sequenceLengthInput, 10);
+
+    if (isNaN(sequenceLength) || sequenceLength <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        return;
+    }
+
+    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
+    const canvas = document.getElementById("seekCanvas");
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+
+    // Ρύθμιση του container για να μετακινηθεί σωστά
+    const canvasContainer = document.querySelector(".canvas-container");
+    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
+});
+
   
