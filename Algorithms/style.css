@@ -624,4 +624,26 @@ body {
     font-weight: bold;
 }
    
-    
+#stepHistory {
+  position: relative; /* Για να τοποθετηθεί το κουμπί μέσα στον container */
+  min-height: 200px; /* Ελάχιστο ύψος για να έχει χώρο */
+  padding-bottom: 60px; /* Για να υπάρχει χώρος κάτω για το κουμπί */
+}
+
+#nextStepButton {
+  position: absolute;
+  bottom: 10px; /* Τοποθέτηση κοντά στο κάτω μέρος */
+  left: 50%;
+  transform: translateX(-50%); /* Ευθυγράμμιση στο κέντρο */
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#nextStepButton:hover {
+  background-color: #333;
+}

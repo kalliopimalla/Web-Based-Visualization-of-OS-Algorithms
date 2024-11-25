@@ -82,7 +82,7 @@ function runPreSJFCPU() {
 
     // Εμφάνιση μέσου χρόνου αναμονής
     document.getElementById('stepHistory').innerHTML = `
-        <p>Μέσος Χρόνος Αναμονής (AWT): ${averageWaitingTime.toFixed(2)}</p>
+        <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
 
@@ -123,16 +123,19 @@ function startStepByStep() {
     }
 
     stepCurrentTime = 0;
-    document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
-    document.getElementById('seek-count').innerHTML = ''; // Καθαρισμός πίνακα
+
+    const stepHistoryContainer = document.getElementById('stepHistory');
+    stepHistoryContainer.innerHTML = ''; // Καθαρισμός ιστορικού
 
     const nextButton = document.createElement('button');
-    nextButton.textContent = 'Επόμενο';
+    nextButton.textContent = 'Επόμενο βήμα';
     nextButton.id = 'nextStepButton';
     nextButton.onclick = stepByStepExecution;
-    document.getElementById('stepHistory').appendChild(nextButton);
+    stepHistoryContainer.appendChild(nextButton); // Τοποθέτηση κουμπιού στο container
 
     stepByStepExecution(); // Ξεκινάμε από το πρώτο βήμα
+     // Εμφάνιση κουμπιού επαναφοράς
+     document.getElementById("resetButton").style.display = "inline-block";
 }
 
 function stepByStepExecution() {
@@ -213,11 +216,11 @@ function stepByStepExecution() {
     if (stepCompleted.every((completed) => completed)) {
         alert('Η εκτέλεση ολοκληρώθηκε!');
         document.getElementById('nextStepButton').remove();
-        document.getElementById("resetButton").style.display = "inline-block";
+       
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
-        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής (AWT): ${averageWaitingTime.toFixed(2)}</p>`;
+        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
     }
 }
