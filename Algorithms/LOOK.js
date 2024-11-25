@@ -248,7 +248,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", () =
 document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
 document.getElementById("toggleNumbersButton").addEventListener("click", () => {
     showNumbersOnArrows = !showNumbersOnArrows;
-    executeCLOOK();
+    executeLOOK();
 });
 
 /**

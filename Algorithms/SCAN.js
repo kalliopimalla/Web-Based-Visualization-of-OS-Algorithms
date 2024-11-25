@@ -265,7 +265,7 @@ function resetCanvasAndInputs() {
     // Καθαρισμός των πεδίων εισόδου και των αποτελεσμάτων
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
-    document.getElementById("seek-count-display").innerText = "Συνολική μετακίνηση κεφαλής: 0"; // Μηδενισμός του πεδίου
+    document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
 
     // Μηδενισμός μεταβλητών
