@@ -538,10 +538,12 @@ footer {
     
     .visual-table th,
     .visual-table td {
-      border: 1px solid #ccc;
-      padding: 15px; /* Αυξάνει το μέγεθος των κελιών */
-      font-size: 14px; /* Μεγαλύτερη γραμματοσειρά */
-      text-align: center;
+        border: 1px solid #ccc;
+        padding: 15px; /* Αυξάνει το μέγεθος των κελιών */
+        font-size: 14px; /* Μεγαλύτερη γραμματοσειρά */
+        text-align: center;
+        min-width: 100px; /* Ελάχιστο πλάτος για τα κελιά */
+        word-break: break-word; /* Διαχείριση μεγάλων λέξεων */
     }
     
     .visual-table th {
@@ -673,4 +675,28 @@ footer {
 
 .canvas-container {
   margin-top: 20px; /* Διάστημα πάνω από τον καμβά */
+}
+
+.sequence-container {
+  overflow-x: auto; /* Ενεργοποιεί την οριζόντια κύλιση αν χρειάζεται */
+  width: 100%; /* Πλάτος να καταλαμβάνει όλο το διαθέσιμο χώρο */
+  border: 1px solid #ccc; /* Προαιρετικό - για οπτική διάκριση */
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.seek-sequence-boxes {
+  display: flex; /* Χρησιμοποιείται για να τακτοποιεί τα κουτιά σε γραμμή */
+  gap: 10px; /* Απόσταση μεταξύ των κουτιών */
+  min-width: fit-content; /* Το πλάτος να προσαρμόζεται ανάλογα με τα περιεχόμενα */
+}
+
+.sequence-box {
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  text-align: center;
+  min-width: 50px; /* Πλάτος κάθε κουτιού */
 }

@@ -132,7 +132,10 @@
                 <p>Η ακολουθία σελιδών:</p>
                 <div class="popup">
                     <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
-                    <button onclick="generateSequence()">Δημιουργία τύχαιας ακολουθίας </button> 
+                    <input type="number" id="sequenceLength" placeholder="Μήκος ακολουθίας" min="1" style="width: 150px;">
+                    <button onclick="generateSequence()">Δημιουργία Τυχαίας Ακολουθίας</button>
+                  
+                    
                     <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
                 </div>
                 <p>Αριθμός πλαισίων:</p>
@@ -152,10 +155,16 @@
             <div id="resultText">
                 
             </div>
-            
+             </div> 
 
             <p id="seek-count"></p>
-            <div id="seek-sequence" class="seek-sequence"></div>
+            <div class="sequence-container">
+              <div id="seek-sequence" class="seek-sequence">
+                
+                  <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
+              </div>
+        
+          
         </div>
     </div>
  
