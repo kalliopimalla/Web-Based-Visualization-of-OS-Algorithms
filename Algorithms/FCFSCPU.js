@@ -40,7 +40,7 @@ function runFCFSCPU() {
 
     // Εμφάνιση της ουράς και του μέσου χρόνου αναμονής
     document.getElementById('stepHistory').innerHTML = `
-        <p>Μέσος Χρόνος Αναμονής (AWT): ${averageWaitingTime.toFixed(2)}</p>
+        <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
 
@@ -93,7 +93,7 @@ function startStepByStep() {
     document.getElementById('seek-count').innerHTML = ''; // Καθαρισμός πίνακα
 
     const nextButton = document.createElement('button');
-    nextButton.textContent = 'Επόμενο';
+    nextButton.textContent = 'Επόμενο βήμα';
     nextButton.id = 'nextStepButton';
     nextButton.onclick = stepByStepExecution;
     document.getElementById('stepHistory').appendChild(nextButton);
@@ -116,7 +116,7 @@ function stepByStepExecution() {
 
         // Εμφάνιση του μέσου χρόνου αναμονής στην αρχή
         const stepHistoryContainer = document.getElementById('stepHistory');
-        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής (AWT): ${averageWaitingTime.toFixed(2)}</p>`;
+        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
         if (!document.querySelector('#avg-waiting-time')) {
             // Αν δεν υπάρχει το μήνυμα, προσθέστε το
             stepHistoryContainer.insertAdjacentHTML('afterbegin', `<div id="avg-waiting-time">${avgWaitingTimeBox}</div>`);
@@ -226,7 +226,7 @@ function createThreeColumnTable() {
 }
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length = 6, max = 100) {
+function generateRandomSequence(length = 6, max = 50) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max

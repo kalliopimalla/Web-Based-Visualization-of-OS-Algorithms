@@ -82,7 +82,7 @@ function runSJFCPU() {
 
     // Εμφάνιση μέσου χρόνου αναμονής
     document.getElementById('stepHistory').innerHTML = `
-        <p>Μέσος Χρόνος Αναμονής (AWT): ${averageWaitingTime.toFixed(2)}</p>
+        <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
 
@@ -129,7 +129,7 @@ function startStepByStep() {
     document.getElementById('seek-count').innerHTML = ''; // Καθαρισμός πίνακα
 
     const nextButton = document.createElement('button');
-    nextButton.textContent = 'Επόμενο';
+    nextButton.textContent = 'Επόμενο βήμα';
     nextButton.id = 'nextStepButton';
     nextButton.onclick = stepByStepExecution;
     document.getElementById('stepHistory').appendChild(nextButton);
@@ -179,6 +179,21 @@ function stepByStepExecution() {
     if (stepWaitingTime[shortestJobIndex] < 0) stepWaitingTime[shortestJobIndex] = 0;
     stepTurnAroundTime[shortestJobIndex] = stepWaitingTime[shortestJobIndex] + stepBurstTime[shortestJobIndex];
 
+    // Υπολογισμός μέσου χρόνου αναμονής σταδιακά
+    const averageWaitingTime = stepWaitingTime.reduce((sum, time, i) => {
+        if (stepCompleted[i] || i === shortestJobIndex) return sum + time;
+        return sum;
+    }, 0) / (stepCompleted.filter((c) => c).length + 1);
+
+    // Εμφάνιση του μέσου χρόνου αναμονής
+    const avgWaitingTimeBox = `<p id="avg-waiting-time">Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
+    const avgWaitingTimeElement = document.getElementById('avg-waiting-time');
+    if (avgWaitingTimeElement) {
+        avgWaitingTimeElement.innerHTML = avgWaitingTimeBox;
+    } else {
+        document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
+    }
+
     // Δημιουργία του ενεργού κουτιού διεργασίας
     const activeProcess = `<span class="queue-process active">P${stepProcesses[shortestJobIndex]}</span>`;
     const waitingQueue = availableProcesses
@@ -221,13 +236,9 @@ function stepByStepExecution() {
         alert('Η εκτέλεση ολοκληρώθηκε!');
         document.getElementById('nextStepButton').remove();
         document.getElementById("resetButton").style.display = "inline-block";
-
-        // Υπολογισμός μέσου χρόνου αναμονής
-        const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
-        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής (AWT): ${averageWaitingTime.toFixed(2)}</p>`;
-        document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
     }
 }
+
 
 
 
@@ -263,7 +274,7 @@ function createThreeColumnTable() {
 }
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length = 6, max = 100) {
+function generateRandomSequence(length = 6, max = 50) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max

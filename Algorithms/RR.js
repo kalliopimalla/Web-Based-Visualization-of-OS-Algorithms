@@ -307,7 +307,7 @@ function createThreeColumnTable() {
 }
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length = 6, max = 100) {
+function generateRandomSequence(length = 6, max = 50) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max

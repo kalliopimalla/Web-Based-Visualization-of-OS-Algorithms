@@ -214,7 +214,7 @@ function runENHANCED() {
 // Λειτουργία για την τυχαία δημιουργία ακολουθίας σελίδων
 function generateSequence() {
     const length = 10; // Μήκος της ακολουθίας
-    const maxPageNumber = 100; // Μέγιστη τιμή σελίδας
+    const maxPageNumber = 50; // Μέγιστη τιμή σελίδας
     const sequence = Array.from({ length }, () => Math.floor(Math.random() * maxPageNumber) + 1);
     const pagesInput = document.getElementById("pages");
 
