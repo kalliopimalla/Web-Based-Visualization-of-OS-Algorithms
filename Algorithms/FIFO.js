@@ -289,12 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const sequenceBoxes = document.getElementById("seek-sequence-boxes");
     sequenceBoxes.innerHTML = ''; // Καθαρισμός προηγούμενου περιεχομένου
 
-    sequence.forEach((number) => {
-        const box = document.createElement("div");
-        box.className = "sequence-box";
-        box.textContent = number;
-        sequenceBoxes.appendChild(box);
-    });
 
     const containerWidth = Math.max(sequence.length * 100, 500); // Υπολογίζει το πλάτος (50px ανά στοιχείο)
     sequenceBoxes.style.width = `${containerWidth}px`; // Ενημερώνει το πλάτος

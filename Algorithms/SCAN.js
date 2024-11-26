@@ -99,6 +99,7 @@ const interval = setInterval(() => {
     // Σχεδίαση της πορείας στον καμβά
     drawScan(seekSequence);
     document.getElementById("resetButton").style.display = "inline-block";
+    hideFooter(); // Απόκρυψη του footer
 }
 
 
@@ -236,14 +237,6 @@ function drawArrow(ctx, fromX, fromY, toX, toY, value) {
 
 
 
-/**
- * Δημιουργεί μια τυχαία ακολουθία αριθμών και την εισάγει στο πεδίο.
- */
-function generateRandomSequence() {
-    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Μήκος 5-14
-    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * disk_size));
-    document.getElementById("process-queue").value = randomSequence.join(", ");
-}
 
 // Συνδέσεις κουμπιών
 document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
@@ -267,6 +260,8 @@ function resetCanvasAndInputs() {
     document.getElementById("head-position").value = "";
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
+    document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+    showFooter();
 
     // Μηδενισμός μεταβλητών
     pages = [];
@@ -285,35 +280,99 @@ function resetCanvasAndInputs() {
     // Απόκρυψη του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "none";
 }
-// script.js
-document.addEventListener("DOMContentLoaded", () => {
-    const openSidebar = document.getElementById("open-sidebar");
-    const closeSidebar = document.getElementById("close-sidebar");
-    const sidebar = document.getElementById("sidebar");
-  
-    openSidebar.addEventListener("click", (e) => {
-      e.preventDefault();
-      sidebar.classList.add("open"); // Προσθέτουμε την κλάση για να εμφανιστεί το sidebar
-    });
-  
-    closeSidebar.addEventListener("click", () => {
-      sidebar.classList.remove("open"); // Αφαιρούμε την κλάση για να κρυφτεί το sidebar
-    });
-  });
-  
-  document.querySelectorAll('.dropdown-submenu > div').forEach((menuTitle) => {
-    menuTitle.addEventListener('click', () => {
-      const parentLi = menuTitle.parentElement;
-      parentLi.classList.toggle('open');
-    });
-  });
-  
-  document.querySelectorAll('.submenu-content li a').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      document
-        .querySelectorAll('.submenu-content li a')
-        .forEach((el) => el.classList.remove('active'));
-      e.target.classList.add('active');
-    });
-  });
+// Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
+function generateRandomSequence(length = sequenceLength, max = 200) {
+    let sequence = [];
+    for (let i = 0; i < length; i++) {
+        let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
+        sequence.push(randomNum);
+    }
+    return sequence;
+}
+
+
+// Σύνδεση της λειτουργίας με το κουμπί
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    // Λήψη του μήκους από το πεδίο εισαγωγής
+    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLength = parseInt(sequenceLengthInput, 10);
+
+    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
+    if (isNaN(sequenceLength) || sequenceLength <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        return;
+    }
+
+    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
+    const canvas = document.getElementById("seekCanvas");
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+
+    // Δημιουργία τυχαίας ακολουθίας
+    const randomSequence = generateRandomSequence(sequenceLength); 
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+});
+
+
+
+// Σύνδεση της λειτουργίας με το κουμπί
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+
+});
+
+
+
+
+
+  function adjustCanvasSpacing() {
+    const canvas = document.getElementById("seekCanvas");
+    const sequenceContainer = document.getElementById("seek-sequence");
+
+    // Λήψη του ύψους του καμβά
+    const canvasHeight = canvas.height;
+
+    // Ρύθμιση του κάτω περιθωρίου για τη "Σειρά Εξυπηρέτησης"
+    sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
+}
+
+// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLength = parseInt(sequenceLengthInput, 10);
+
+    if (isNaN(sequenceLength) || sequenceLength <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        return;
+    }
+
+    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
+    const canvas = document.getElementById("seekCanvas");
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+
+    // Ρύθμιση του container για να μετακινηθεί σωστά
+    const canvasContainer = document.querySelector(".canvas-container");
+    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
+});
+
+function showFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "visible"; // Εμφανίζεται
+    footer.style.display = "block"; // Παίρνει χώρο στη διάταξη
+}
+
+function hideFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "hidden"; // Κρύβεται
+    footer.style.display = "none"; // Δεν καταλαμβάνει χώρο
+}
+
   

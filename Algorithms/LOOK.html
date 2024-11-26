@@ -135,7 +135,11 @@
             <div class="popup">
               <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
               <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-              <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+              <div>
+                <label for="sequence-length">Μήκος ακολουθίας:</label>
+                <input type="number" id="sequence-length" placeholder="π.χ. 10" min="1" style="width: 100px;">
+                <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+            </div>
             </div>
             <p>Η θέση της κεφαλής :</p>
             <div class="popup">

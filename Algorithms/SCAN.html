@@ -136,7 +136,11 @@
             <div class="popup">
                 <input type="text" id="process-queue" placeholder="π.χ. 176,79,34,...">
                 <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα.</span>
-                <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+                <div>
+                  <label for="sequence-length">Μήκος ακολουθίας:</label>
+                  <input type="number" id="sequence-length" placeholder="π.χ. 10" min="1" style="width: 100px;">
+                  <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+              </div>
             </div>
             <p>Η θέση της κεφαλής:</p>
             <div class="popup">
@@ -162,25 +166,26 @@
             <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
                     </div>
                 </div>
-    </div>
-    <div class="canvas-container">
-        <canvas id="seekCanvas" width="1200" height="600"></canvas>
-    </div>
-    
-           
-           
-        
-        <br>
-
-
-
-
-
-
-
-      </div>
-    </section>
-  </main>
+              </div>
+              <div class="canvas-container">
+                  <canvas id="seekCanvas" width="1200" height="600"></canvas>
+              </div>
+              
+                     
+                     
+                  
+                  <br>
+          
+          
+          
+          
+          
+          
+          
+                </div>
+              </section>
+            </main>
+          
 
   <!-- Footer -->
   <footer>

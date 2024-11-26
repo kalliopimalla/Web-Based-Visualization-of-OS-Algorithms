@@ -73,9 +73,13 @@ function runSSTF() {
     });
 
     visualizeSeekSequence(seekSequence);
+    
 
     // Εμφάνιση του κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
+    hideFooter(); // Απόκρυψη του footer
+    
+
 }
 
 // Συνάρτηση επαναφοράς
@@ -89,6 +93,9 @@ function resetCanvasAndInputs() {
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
     document.getElementById("resetButton").style.display = "none";
+    document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+    showFooter();
+
 }
 
 // Σύνδεση κουμπιού επαναφοράς
@@ -220,41 +227,53 @@ function visualizeSeekSequence(seekSequence) {
         }
     }
 }
-
-
-// Δημιουργεί μια τυχαία ακολουθία αριθμών και την τοποθετεί στο input πεδίο
-function generateRandomSequence() {
-    const sequenceLength = Math.floor(Math.random() * 10) + 5; // Τυχαίο μήκος ακολουθίας (5-14)
-    const min = 0;
-    const max = 199;
-    const randomSequence = Array.from({ length: sequenceLength }, () => Math.floor(Math.random() * (max - min + 1)) + min);
-    document.getElementById("process-queue").value = randomSequence.join(", ");
+// Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
+function generateRandomSequence(length = sequenceLength, max = 200) {
+    let sequence = [];
+    for (let i = 0; i < length; i++) {
+        let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
+        sequence.push(randomNum);
+    }
+    return sequence;
 }
 
+
 // Σύνδεση της λειτουργίας με το κουμπί
-document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
-// script.js
-document.addEventListener("DOMContentLoaded", () => {
-    const openSidebar = document.getElementById("open-sidebar");
-    const closeSidebar = document.getElementById("close-sidebar");
-    const sidebar = document.getElementById("sidebar");
-  
-    openSidebar.addEventListener("click", (e) => {
-      e.preventDefault();
-      sidebar.classList.add("open"); // Προσθέτουμε την κλάση για να εμφανιστεί το sidebar
-    });
-  
-    closeSidebar.addEventListener("click", () => {
-      sidebar.classList.remove("open"); // Αφαιρούμε την κλάση για να κρυφτεί το sidebar
-    });
-  });
-  
-  document.querySelectorAll('.dropdown-submenu > div').forEach((menuTitle) => {
-    menuTitle.addEventListener('click', () => {
-      const parentLi = menuTitle.parentElement;
-      parentLi.classList.toggle('open');
-    });
-  });
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    // Λήψη του μήκους από το πεδίο εισαγωγής
+    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLength = parseInt(sequenceLengthInput, 10);
+
+    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
+    if (isNaN(sequenceLength) || sequenceLength <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        return;
+    }
+
+    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
+    const canvas = document.getElementById("seekCanvas");
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+
+    // Δημιουργία τυχαίας ακολουθίας
+    const randomSequence = generateRandomSequence(sequenceLength); 
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+});
+
+
+
+// Σύνδεση της λειτουργίας με το κουμπί
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+
+});
+
+
+
   
   document.querySelectorAll('.submenu-content li a').forEach((link) => {
     link.addEventListener('click', (e) => {
@@ -264,4 +283,30 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.classList.add('active');
     });
   });
+
+  function adjustCanvasSpacing() {
+    const canvas = document.getElementById("seekCanvas");
+    const sequenceContainer = document.getElementById("seek-sequence");
+
+    // Λήψη του ύψους του καμβά
+    const canvasHeight = canvas.height;
+
+    // Ρύθμιση του κάτω περιθωρίου για τη "Σειρά Εξυπηρέτησης"
+    sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
+}
+
+
+
+function showFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "visible"; // Εμφανίζεται
+    footer.style.display = "block"; // Παίρνει χώρο στη διάταξη
+}
+
+function hideFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "hidden"; // Κρύβεται
+    footer.style.display = "none"; // Δεν καταλαμβάνει χώρο
+}
+
   
