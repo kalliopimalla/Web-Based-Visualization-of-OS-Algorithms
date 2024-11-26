@@ -136,6 +136,7 @@
               <div class="popup">
                   <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
                   <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+                  <input type="number" id="sequenceLength" placeholder="Μήκος ακολουθίας" min="1" style="width: 150px;">
                   <button onclick="generateSequence()">Δημιουργία τύχαιας ακολουθίας </button> 
               </div>
               <p>Αριθμός πλαισίων:</p>
@@ -150,16 +151,23 @@
               <button id="resetButton" class="input-steps" style="display: none;">Επαναφορά</button>
               <div id="resultText">
               </div>
-              <p id="seek-count"></p>
-              <div id="seek-sequence" class="seek-sequence"></div>
-          </div>
-    </div>
- 
-           
-           
-        
-        <br>
+            </div> 
 
+           <p id="seek-count"></p>
+           <div class="sequence-container">
+             <div id="seek-sequence" class="seek-sequence">
+               
+                 <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
+             </div>
+       
+         
+       </div>
+   </div>
+
+          
+          
+       
+       <br>
 
 
 

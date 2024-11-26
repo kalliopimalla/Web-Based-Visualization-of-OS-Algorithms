@@ -209,12 +209,27 @@ function runLRU() {
     enableResetButton();
 }
 
-// Λειτουργία για την τυχαία δημιουργία ακολουθίας σελίδων
 function generateSequence() {
-    const length = 10; // Μήκος της ακολουθίας
+    const lengthInput = document.getElementById("sequenceLength").value.trim();
+    const length = parseInt(lengthInput, 10);
+
+    if (isNaN(length) || length <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας (θετικός αριθμός)!");
+        return;
+    }
+
     const maxPageNumber = 50; // Μέγιστη τιμή σελίδας
     const sequence = Array.from({ length }, () => Math.floor(Math.random() * maxPageNumber) + 1);
+
     document.getElementById("pages").value = sequence.join(',');
+
+    // Ενημέρωση του container για δυναμικό πλάτος
+    const sequenceBoxes = document.getElementById("seek-sequence-boxes");
+    sequenceBoxes.innerHTML = ''; // Καθαρισμός προηγούμενου περιεχομένου
+
+
+    const containerWidth = Math.max(sequence.length * 100, 500); // Υπολογίζει το πλάτος (50px ανά στοιχείο)
+    sequenceBoxes.style.width = `${containerWidth}px`; // Ενημερώνει το πλάτος
 }
 
 // Κώδικας για το resetButton
@@ -230,6 +245,8 @@ resetButton.addEventListener('click', () => {
     document.getElementById('seek-count').innerText = '';
     document.getElementById('seek-sequence').innerHTML = '';
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
+    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+    // Μηδενισμός μεταβλητών
 
     // Μηδενισμός μεταβλητών
     pages = [];
