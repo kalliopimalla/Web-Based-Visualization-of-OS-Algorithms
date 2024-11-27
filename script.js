@@ -29,3 +29,4 @@ document.querySelectorAll('.submenu-content li a').forEach((link) => {
     e.target.classList.add('active');
   });
 });
+

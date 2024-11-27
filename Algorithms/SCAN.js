@@ -255,6 +255,9 @@ function resetCanvasAndInputs() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+     // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
+     canvas.height = 600;
+
     // Καθαρισμός των πεδίων εισόδου και των αποτελεσμάτων
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
@@ -280,6 +283,13 @@ function resetCanvasAndInputs() {
     // Απόκρυψη του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "none";
 }
+
+
+
+
+
+
+
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
     let sequence = [];
@@ -375,4 +385,35 @@ function hideFooter() {
     footer.style.display = "none"; // Δεν καταλαμβάνει χώρο
 }
 
+// script.js
+document.addEventListener("DOMContentLoaded", () => {
+    const openSidebar = document.getElementById("open-sidebar");
+    const closeSidebar = document.getElementById("close-sidebar");
+    const sidebar = document.getElementById("sidebar");
+  
+    openSidebar.addEventListener("click", (e) => {
+      e.preventDefault();
+      sidebar.classList.add("open"); // Προσθέτουμε την κλάση για να εμφανιστεί το sidebar
+    });
+  
+    closeSidebar.addEventListener("click", () => {
+      sidebar.classList.remove("open"); // Αφαιρούμε την κλάση για να κρυφτεί το sidebar
+    });
+  });
+  
+  document.querySelectorAll('.dropdown-submenu > div').forEach((menuTitle) => {
+    menuTitle.addEventListener('click', () => {
+      const parentLi = menuTitle.parentElement;
+      parentLi.classList.toggle('open');
+    });
+  });
+  
+  document.querySelectorAll('.submenu-content li a').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      document
+        .querySelectorAll('.submenu-content li a')
+        .forEach((el) => el.classList.remove('active'));
+      e.target.classList.add('active');
+    });
+  });
   

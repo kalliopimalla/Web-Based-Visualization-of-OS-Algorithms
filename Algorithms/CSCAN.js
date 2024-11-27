@@ -245,8 +245,9 @@ function drawArrow(ctx, fromX, fromY, toX, toY) {
 
 
 // Συνδέσεις κουμπιών
-document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
+
 document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
+
 document.getElementById("toggleNumbersButton").addEventListener("click", () => {
     showNumbersOnArrows = !showNumbersOnArrows;
     executeCSCAN();
@@ -259,6 +260,8 @@ function resetCanvasAndInputs() {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+     // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
+     canvas.height = 600;
     
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
@@ -266,7 +269,7 @@ function resetCanvasAndInputs() {
     document.getElementById("seek-sequence-boxes").innerHTML = "";
     document.getElementById("resetButton").style.display = "none";
       // Καθαρισμός του πεδίου για το μήκος ακολουθίας
-      document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+      document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
 
       // Εμφάνιση του footer
       showFooter();
@@ -294,7 +297,7 @@ function generateRandomSequence(length = sequenceLength, max = 200) {
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
     // Λήψη του μήκους από το πεδίο εισαγωγής
-    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLengthInput = document.getElementById("sequenceLength").value.trim();
     const sequenceLength = parseInt(sequenceLengthInput, 10);
 
     // Έλεγχος αν το μήκος είναι αριθμός και θετικό
@@ -318,12 +321,71 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
 
 
+
+  
+
+  function adjustCanvasSpacing() {
+    const canvas = document.getElementById("seekCanvas");
+    const sequenceContainer = document.getElementById("seek-sequence");
+
+    // Λήψη του ύψους του καμβά
+    const canvasHeight = canvas.height;
+
+    // Ρύθμιση του κάτω περιθωρίου για τη "Σειρά Εξυπηρέτησης"
+    sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
+}
+
+
+
+
+
+
+
+// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    const sequenceLengthInput = document.getElementById("sequenceLength").value.trim();
+    const sequenceLength = parseInt(sequenceLengthInput, 10);
+
+    if (isNaN(sequenceLength) || sequenceLength <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        return;
+    }
+
+    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
+    const canvas = document.getElementById("seekCanvas");
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+
+    // Ρύθμιση του container για να μετακινηθεί σωστά
+    const canvasContainer = document.querySelector(".canvas-container");
+    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
+});
+
+
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
     const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
     document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
 
 });
+
+
+function showFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "visible"; // Εμφανίζεται
+    footer.style.display = "block"; // Παίρνει χώρο στη διάταξη
+}
+
+function hideFooter() {
+    const footer = document.querySelector("footer");
+    footer.style.visibility = "hidden"; // Κρύβεται
+    footer.style.display = "none"; // Δεν καταλαμβάνει χώρο
+}
+
+
 
 
 // script.js
@@ -357,49 +419,5 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.classList.add('active');
     });
   });
-
-  function adjustCanvasSpacing() {
-    const canvas = document.getElementById("seekCanvas");
-    const sequenceContainer = document.getElementById("seek-sequence");
-
-    // Λήψη του ύψους του καμβά
-    const canvasHeight = canvas.height;
-
-    // Ρύθμιση του κάτω περιθωρίου για τη "Σειρά Εξυπηρέτησης"
-    sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
-}
-
-// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
-    const sequenceLength = parseInt(sequenceLengthInput, 10);
-
-    if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
-        return;
-    }
-
-    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
-    const canvas = document.getElementById("seekCanvas");
-    if (sequenceLength > 30) {
-        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
-    } else {
-        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
-    }
-
-    // Ρύθμιση του container για να μετακινηθεί σωστά
-    const canvasContainer = document.querySelector(".canvas-container");
-    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
-});
-
-function showFooter() {
-    const footer = document.querySelector("footer");
-    footer.style.visibility = "visible"; // Εμφανίζεται
-    footer.style.display = "block"; // Παίρνει χώρο στη διάταξη
-}
-
-function hideFooter() {
-    const footer = document.querySelector("footer");
-    footer.style.visibility = "hidden"; // Κρύβεται
-    footer.style.display = "none"; // Δεν καταλαμβάνει χώρο
-}
+  
+  

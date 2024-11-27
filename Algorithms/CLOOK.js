@@ -219,6 +219,10 @@ function resetCanvasAndInputs() {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+
+       // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
+       canvas.height = 600;
+
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
     document.getElementById("seek-count-display").innerText = "";
