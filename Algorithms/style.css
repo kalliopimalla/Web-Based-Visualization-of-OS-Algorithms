@@ -419,15 +419,19 @@ footer {
       align-items: center;
       gap: 10px;
       margin-top: 10px;
-    }
+      flex-wrap: wrap; /* Επιτρέπει το "wrap" στις γραμμές */
     
+      justify-content: start; /* Τα κουτιά στοιχίζονται στην αρχή */
+    }
+  
     .sequence-box {
-      padding: 10px 15px;
-      background-color: #f0f0f0;
-      border: 2px solid #333;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 16px;
+      flex: 1 0 calc(10% - 10px); /* Κάθε κουτί καταλαμβάνει το 10% της γραμμής με απόσταση */
+      max-width: calc(10% - 10px);
+      box-sizing: border-box; /* Για σωστό υπολογισμό περιθωρίων */
+      padding: 10px;
+      border: 1px solid #000;
+      border-radius: 5px;
+      background-color: #f9f9f9;
       text-align: center;
     }
     .seek-count-display {

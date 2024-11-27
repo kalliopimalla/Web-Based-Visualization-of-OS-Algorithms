@@ -342,4 +342,41 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.classList.add('active');
     });
   });
-  
+  seekSequence.forEach((position, index) => {
+    const box = document.createElement("div");
+    box.className = "sequence-box";
+    box.textContent = position;
+
+    seekSequenceBoxes.appendChild(box);
+
+    // Προσθέστε ένα βέλος, αν δεν είναι το τελευταίο στοιχείο
+    if (index < seekSequence.length - 1) {
+        const arrow = document.createElement("span");
+        arrow.className = "arrow";
+        arrow.textContent = "→";
+        seekSequenceBoxes.appendChild(arrow);
+    }
+});
+
+seekSequence.forEach((position, index) => {
+    const box = document.createElement("div");
+    box.className = "sequence-box";
+    box.textContent = position;
+
+    seekSequenceBoxes.appendChild(box);
+
+    // Προσθέστε ένα βέλος αν δεν είναι το τελευταίο στοιχείο
+    if (index < seekSequence.length - 1) {
+        const arrow = document.createElement("span");
+        arrow.className = "arrow";
+        arrow.textContent = "→";
+        seekSequenceBoxes.appendChild(arrow);
+    }
+
+    // Δημιουργήστε νέα σειρά κάθε 10 κουτιά
+    if ((index + 1) % 10 === 0 && index !== seekSequence.length - 1) {
+        const lineBreak = document.createElement("div");
+        lineBreak.style.flexBasis = "100%"; // Νέα γραμμή
+        seekSequenceBoxes.appendChild(lineBreak);
+    }
+});
