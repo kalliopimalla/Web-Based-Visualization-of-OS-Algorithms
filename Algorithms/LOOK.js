@@ -44,7 +44,7 @@ function LOOK(arr, head, direction) {
     let distance, cur_track;
     let left = [];
     let right = [];
-    let seek_sequence = [];
+    let seek_sequence = [head];
 
     // Διαχωρισμός αιτημάτων σε αριστερά και δεξιά
     for (let i = 0; i < arr.length; i++) {
@@ -198,30 +198,31 @@ function visualizeSeekSequence(seekSequence) {
     ctx.lineWidth = 2;
 
     let x1 = padding + (seekSequence[0] - startScale) * trackWidth;
-    let y1 = scaleY; // Ξεκινά από τη γραμμή της κλίμακας
-
+    let y1 = padding; // Ξεκινά από την κορυφή του καμβά
+    
     for (let i = 1; i < seekSequence.length; i++) {
         const x2 = padding + (seekSequence[i] - startScale) * trackWidth;
-        const y2 = scaleY + i * horizontalStep;
-
+        const y2 = padding + i * horizontalStep;
+    
         // Σχεδιασμός γραμμών
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
-
-        // Σχεδιασμός κεφαλών στα βέλη
+    
+        // Σχεδίαση κεφαλών στα βέλη
         drawArrow(ctx, x1, y1, x2, y2);
-
+    
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
             ctx.font = "12px Arial";
             ctx.fillText(seekSequence[i], x2 - 10, y2 - 10);
         }
-
+    
         x1 = x2;
         y1 = y2;
     }
+    
 }
 
 

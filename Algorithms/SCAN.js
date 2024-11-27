@@ -53,7 +53,8 @@ function executeSCAN() {
     }
 
     // Αφαίρεση της κεφαλής (προστέθηκε μόνο για ταξινόμηση)
-    seekSequence = seekSequence.filter(position => position !== head);
+    seekSequence = [head, ...seekSequence];
+
 
 // Υπολογισμός των συνολικών κινήσεων κεφαλής με σταδιακή αύξηση
 let currentPos = head;
@@ -180,20 +181,22 @@ function drawScan(sequence) {
     ctx.fillStyle = "green";
 
     const stepY = trackHeight / (sequence.length - 1);
+    
 
     for (let i = 0; i < sequence.length - 1; i++) {
         const x1 = padding + (sequence[i] - startScale) * trackWidth;
         const y1 = padding + i * stepY;
         const x2 = padding + (sequence[i + 1] - startScale) * trackWidth;
         const y2 = padding + (i + 1) * stepY;
-
+    
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
-
+    
         drawArrow(ctx, x1, y1, x2, y2, sequence[i + 1]);
     }
+    
 }
 
 

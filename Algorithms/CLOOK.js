@@ -27,7 +27,8 @@ function executeCLOOK() {
     let right = tracks.filter(track => track >= head).sort((a, b) => a - b);
 
     // Δημιουργία ακολουθίας αναζήτησης
-    let seekSequence = direction === "right" ? [...right, ...left] : [...left.reverse(), ...right.reverse()];
+    let seekSequence = direction === "right" ? [head, ...right, ...left] : [head, ...left.reverse(), ...right.reverse()];
+
     let seekCount = 0;
     let currentPos = head;
 
