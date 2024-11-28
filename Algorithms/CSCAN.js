@@ -1,5 +1,6 @@
 // Ορισμός του μεγέθους του δίσκου
 let disk_size = 199;
+let seekSequence = []; // Global μεταβλητή
 /**
  * Εκτελεί τον αλγόριθμο C-SCAN για την αναζήτηση δίσκου.
  * Λαμβάνει τις εισροές από τον χρήστη, επεξεργάζεται τις θέσεις των κομματιών,
@@ -283,55 +284,28 @@ function resetCanvasAndInputs() {
 
 
 
-// Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length = sequenceLength, max = 200) {
+function generateRandomSequence(length, max = 200) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
-        let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
+        let randomNum = Math.floor(Math.random() * max);
         sequence.push(randomNum);
     }
     return sequence;
 }
 
 
-// Σύνδεση της λειτουργίας με το κουμπί
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    // Λήψη του μήκους από το πεδίο εισαγωγής
-    const sequenceLengthInput = document.getElementById("sequenceLength").value.trim();
-    const sequenceLength = parseInt(sequenceLengthInput, 10);
-
-    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
-    if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
-        return;
-    }
-
-    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
-    const canvas = document.getElementById("seekCanvas");
-    if (sequenceLength > 30) {
-        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
-    } else {
-        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
-    }
-
-    // Δημιουργία τυχαίας ακολουθίας
-    const randomSequence = generateRandomSequence(sequenceLength); 
-    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
-});
 
 
 
 
   
-
-  function adjustCanvasSpacing() {
+function adjustCanvasSpacing() {
     const canvas = document.getElementById("seekCanvas");
     const sequenceContainer = document.getElementById("seek-sequence");
 
-    // Λήψη του ύψους του καμβά
-    const canvasHeight = canvas.height;
+    if (!sequenceContainer) return; // Έλεγχος αν το στοιχείο υπάρχει
 
-    // Ρύθμιση του κάτω περιθωρίου για τη "Σειρά Εξυπηρέτησης"
+    const canvasHeight = canvas.height;
     sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
 }
 
@@ -341,8 +315,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
 
 
-// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
+document.getElementById("generateSequenceButton").addEventListener("click", function () {
     const sequenceLengthInput = document.getElementById("sequenceLength").value.trim();
     const sequenceLength = parseInt(sequenceLengthInput, 10);
 
@@ -351,26 +324,20 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
         return;
     }
 
-    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
+    const randomSequence = generateRandomSequence(sequenceLength, 200); // Παροχή μήκους και μέγιστου ορίου
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+
+    // Ενημέρωση καμβά αν η ακολουθία είναι μεγάλη
     const canvas = document.getElementById("seekCanvas");
     if (sequenceLength > 30) {
         canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
     } else {
         canvas.height = 600; // Επαναφορά στο αρχικό ύψος
     }
-
-    // Ρύθμιση του container για να μετακινηθεί σωστά
-    const canvasContainer = document.querySelector(".canvas-container");
-    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
 });
 
 
-// Σύνδεση της λειτουργίας με το κουμπί
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
-    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
 
-});
 
 
 function showFooter() {

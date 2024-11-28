@@ -17,7 +17,7 @@
       <ul>
         <li><a href="../homepage.html">Αρχική</a></li>
         <li>
-          <a href="#" id="open-sidebar">Αλγόριθμοι</a>
+          <a href="#" id="open-sidebar">Αλγόριθμοι</a> <!-- Το κουμπί για άνοιγμα του sidebar -->
         </li>
       </ul>
     </nav>
@@ -74,6 +74,7 @@
       <div class="container">
         <h2>Περιγραφή</h2>
         <p>
+           
             Ο αλγόριθμος C-SCAN (Circular SCAN) είναι μια μέθοδος προγραμματισμού δίσκων που σαρώνει τα αιτήματα εισόδου/εξόδου σε κυκλική
             κατεύθυνση. Όταν η κεφαλή του δίσκου φτάνει στο τέλος του δίσκου, επανέρχεται στο αρχικό σημείο χωρίς να εξυπηρετήσει αιτήματα 
             κατά την επιστροφή της, συνεχίζοντας τη σάρωση στην ίδια κατεύθυνση. Αυτός ο σχεδιασμός διασφαλίζει ότι όλα τα αιτήματα λαμβάνουν
@@ -82,7 +83,8 @@
               τα αιτήματα που βρίσκονται κοντά στα άκρα του δίσκου ενδέχεται να αντιμετωπίσουν καθυστερήσεις, καθώς η κεφαλή πρέπει να επιστρέψει
                στο αρχικό της σημείο. Τα πλεονεκτήματα του C-SCAN περιλαμβάνουν τη συνεπή εξυπηρέτηση και την αποδοτική εκμετάλλευση του δίσκου,
                 ενώ τα μειονεκτήματά του σχετίζονται με τις καθυστερήσεις που ενδέχεται να προκύψουν κατά την επιστροφή της κεφαλής.
-            <h3>Διαβάστε περισσότερα:</h3>
+
+                   <h3>Διαβάστε περισσότερα:</h3>
             <ul>
                 <li>
                     <a href="https://www.geeksforgeeks.org/program-for-sstf-disk-scheduling-algorithm/" target="_blank">
@@ -100,6 +102,8 @@
                     </a>
                 </li>
             </ul>
+
+
         </p>
       </div>
     </section>
@@ -133,39 +137,46 @@
                 <div class="input-steps">
                     <p>Η σειρά των αιτήσεων:</p>
                     <div class="popup">
-                      <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
-                      <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                      <div>
-                        <label for="sequenceLength">Μήκος ακολουθίας:</label>
-                        <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 100px;">
-                        <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+                        <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
+                        <div>
+                          <label for="sequenceLength">Μήκος ακολουθίας:</label>
+                          <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 100px;">
+
+                          <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+
+                      </div>
+                        <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
                     </div>
+                    <p>Αρχική κατεύθυνση:</p>
+                    <div class="popup">
+                        <select id="direction">
+                            <option value="left">Left</option>
+                            <option value="right">Right</option>
+                        </select>
                     </div>
                     <p>Η θέση της κεφαλής :</p>
                     <div class="popup">
-                      <input type="number" id="head-position" placeholder="π.χ. 50">
-                      <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
+                        <input type="number" id="head-position" placeholder="π.χ. 50" style="width: 150px; ">
+                        <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
                     </div>
-                    <p>Αρχική κατεύθυνση :</p>
-                    <div class="popup">
-                      <select id="direction">
-                        <option value="left">Left</option>
-                        <option value="right">Right</option>
-                      </select>
-                      <span class="popuptext">Επιλέξτε την αρχική κατεύθυνση (Αριστερά ή Δεξιά).</span>
-                    </div>
+                 
+     
+    
                     <button onclick="executeCSCAN()">Εκτέλεση</button>
-                    <button onclick="toggleShowNumbersOnArrows()">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
+                    <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη θέσεων κεφαλής</button>
+
                     <button id="resetButton" style="display: none;">Επαναφορά</button>
-                    <!-- Προσθήκη του συνολικού αριθμού κινήσεων -->
+    
+                    <!-- Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού -->
                     <div id="seek-count-display" class="seek-count-display"></div>
-                
-                    <!-- Προσθήκη κουτιών για τη σειρά εξυπηρέτησης -->
+    
+                    <!-- Δημιουργία κουτιών με βελάκια για τη σειρά εξυπηρέτησης -->
                     <div id="seek-sequence" class="seek-sequence">
                         <h3>Σειρά Εξυπηρέτησης:</h3>
                         <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
                     </div>
                 </div>
+              
     </div>
     <div class="canvas-container">
         <canvas id="seekCanvas" width="1200" height="600"></canvas>
