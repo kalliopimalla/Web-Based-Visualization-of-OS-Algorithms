@@ -633,3 +633,31 @@ footer ul li a {
 
 
 
+#seek-sequence {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  white-space: nowrap;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 10px;
+  min-height: 100px;
+}
+
+.visual-table {
+  border-collapse: collapse;
+  width: max-content; /* Εξασφαλίζει ότι η οριζόντια κύλιση λειτουργεί */
+}
+
+.visual-table th, .visual-table td {
+  border: 1px solid #bdbdbd;
+  padding: 5px;
+  text-align: center;
+  min-width: 50px; /* Εξασφαλίζει ομοιόμορφο μέγεθος κελιών */
+}
+
+#seek-sequence-boxes {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+}

@@ -79,10 +79,10 @@ function createTable() {
 
     seekSequence.appendChild(table);
 
-  
-
-    enableResetButton();
+    // Προσαρμογή πλάτους καμβά
+    adjustCanvasWidth(pages.length);
 }
+
 
 // Προβολή ενός βήματος της προσομοίωσης
 function nextStep() {
@@ -223,14 +223,10 @@ function generateSequence() {
 
     document.getElementById("pages").value = sequence.join(',');
 
-    // Ενημέρωση του container για δυναμικό πλάτος
-    const sequenceBoxes = document.getElementById("seek-sequence-boxes");
-    sequenceBoxes.innerHTML = ''; // Καθαρισμός προηγούμενου περιεχομένου
-
-
-    const containerWidth = Math.max(sequence.length * 100, 500); // Υπολογίζει το πλάτος (50px ανά στοιχείο)
-    sequenceBoxes.style.width = `${containerWidth}px`; // Ενημερώνει το πλάτος
+    // Προσαρμογή πλάτους καμβά
+    adjustCanvasWidth(sequence.length);
 }
+
 
 // Κώδικας για το resetButton
 const resetButton = document.getElementById('resetButton');
@@ -300,4 +296,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   
-  
+  function adjustCanvasWidth(sequenceLength) {
+    const seekSequence = document.getElementById("seek-sequence");
+    const minWidth = 800; // Ελάχιστο πλάτος
+    const additionalWidth = (sequenceLength - 10) * 50; // Προσθήκη 50px για κάθε επιπλέον στοιχείο πέρα από τα 10
+    const newWidth = Math.max(minWidth, minWidth + additionalWidth);
+
+    seekSequence.style.width = `${newWidth}px`; // Ενημέρωση του πλάτους
+    seekSequence.style.overflowX = "auto"; // Ενεργοποίηση οριζόντιας κύλισης
+}
