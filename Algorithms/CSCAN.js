@@ -46,14 +46,14 @@ function executeCSCAN() {
         if (tracks[i] < head) left.push(tracks[i]);
         if (tracks[i] > head) right.push(tracks[i]);
     }
-
     if (direction === "right") {
         right.push(disk_size); // Προσθέτουμε το μέγιστο κομμάτι στο τέλος των δεξιών
-        seekSequence = [...right, 0, ...left]; // Δεξιά πρώτα, μετά 0, μετά αριστερά
+        seekSequence = [head, ...right, 0, ...left]; // Προσθέτουμε την κεφαλή στην αρχή
     } else {
         left.unshift(0); // Προσθέτουμε το 0 στην αρχή των αριστερών
-        seekSequence = [...left.reverse(), disk_size, ...right.reverse()]; // Αριστερά πρώτα, μετά max, μετά δεξιά
+        seekSequence = [head, ...left.reverse(), disk_size, ...right.reverse()]; // Προσθέτουμε την κεφαλή στην αρχή
     }
+    
     
     // Αφαίρεση τυχόν διπλοεμφανίσεων του 0
     seekSequence = seekSequence.filter((value, index, self) => value !== 0 || self.indexOf(0) === index);
@@ -393,20 +393,10 @@ document.addEventListener("DOMContentLoaded", () => {
     box.textContent = position;
 
     seekSequenceBoxes.appendChild(box);
-
-    // Προσθέστε ένα βέλος αν δεν είναι το τελευταίο στοιχείο
     if (index < seekSequence.length - 1) {
         const arrow = document.createElement("span");
         arrow.className = "arrow";
         arrow.textContent = "→";
         seekSequenceBoxes.appendChild(arrow);
     }
-
-    // Δημιουργήστε νέα σειρά κάθε 10 κουτιά
-    if ((index + 1) % 10 === 0 && index !== seekSequence.length - 1) {
-        const lineBreak = document.createElement("div");
-        lineBreak.style.flexBasis = "100%"; // Νέα γραμμή
-        seekSequenceBoxes.appendChild(lineBreak);
-    }
 });
-  
