@@ -108,6 +108,21 @@ function startStepByStep() {
 let stepCurrentExecutionTime = 0; // Μετρητής για την τρέχουσα διεργασία
 
 function stepByStepExecution() {
+    // Αν δεν έχει ξεκινήσει καμία διεργασία
+    if (stepIndex === 0 && stepCurrentTime < stepArrivalTime[stepIndex]) {
+        const stepBox = document.createElement('div');
+        stepBox.classList.add('step-box');
+        stepBox.innerHTML = `
+            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
+            <div>Καμία διεργασία διαθέσιμη. Αναμονή...</div>
+        `;
+        document.getElementById('stepHistory').appendChild(stepBox);
+
+        // Αυξήστε τη χρονική στιγμή
+        stepCurrentTime++;
+        return;
+    }
+
     if (stepIndex < stepProcesses.length) {
         // Υπολογισμός χρόνου εκκίνησης για την τρέχουσα διεργασία
         const start = Math.max(stepCurrentTime, stepArrivalTime[stepIndex]);
@@ -193,6 +208,7 @@ function stepByStepExecution() {
         alert('Η εκτέλεση έχει ήδη ολοκληρωθεί!');
     }
 }
+
 
 
 
