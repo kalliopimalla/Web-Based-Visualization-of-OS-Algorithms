@@ -66,7 +66,7 @@ function createTable() {
     for (let i = 0; i < maxFrames; i++) {
         const frameRow = document.createElement("tr");
         const frameHeader = document.createElement("th");
-        frameHeader.innerText = `Frame ${i + 1}`;
+        frameHeader.innerText = `Πλαίσιο ${i + 1}`;
         frameRow.appendChild(frameHeader);
 
         for (let j = 0; j < pages.length; j++) {
