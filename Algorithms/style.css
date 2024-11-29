@@ -532,27 +532,46 @@ footer {
     
     
     
-    /**Page replacement πίνακας */
+    .algorithm-implementation {
+      text-align: center; /* Κεντράρει το περιεχόμενο μέσα στην ενότητα */
+      margin: 20px auto;
+      padding: 20px;
+    }
+    
+    .sequence-container {
+      display: flex;
+      justify-content: center; /* Κεντράρει τον πίνακα */
+      align-items: center;
+      overflow: hidden; /* Αφαιρεί περιττά scrollbars */
+    }
+    
+    .seek-sequence {
+      max-width: 100%; /* Περιορίζει το πλάτος του πίνακα στο 90% της σελίδας */
+      overflow-x: auto; /* Ενεργοποίηση scroll μόνο αν χρειάζεται */
+      margin: 0 auto;
+    }
     
     .visual-table {
-      width: 100%;
-      table-layout: fixed;
-      border-collapse: collapse;
+      width: 100%; /* Ο πίνακας καταλαμβάνει όλο το διαθέσιμο πλάτος */
+      max-width: 1200px; /* Περιορισμός μέγιστου πλάτους */
+      border-collapse: collapse; /* Συγχώνευση γραμμών για καθαρό look */
+      margin: 0 auto; /* Κεντράρει τον πίνακα */
     }
     
     .visual-table th,
     .visual-table td {
-        border: 1px solid #ccc;
-        padding: 15px; /* Αυξάνει το μέγεθος των κελιών */
-        font-size: 14px; /* Μεγαλύτερη γραμματοσειρά */
-        text-align: center;
-        min-width: 100px; /* Ελάχιστο πλάτος για τα κελιά */
-        word-break: break-word; /* Διαχείριση μεγάλων λέξεων */
+      border: 1px solid #ccc;
+      padding: 15px;
+      font-size: 14px;
+      text-align: center;
+      white-space: normal; /* Επιτρέπει την αναδίπλωση του κειμένου */
     }
     
     .visual-table th {
       background-color: #f2f2f2;
     }
+    
+    
     
     #resultText {
       margin-top: 20px;

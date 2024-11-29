@@ -44,29 +44,29 @@ function isValidInput(pageInput, maxFrames) {
 
     return true;
 }
-
 function createTable() {
     const seekSequence = document.getElementById("seek-sequence");
-    seekSequence.innerHTML = ''; // Καθαρισμός πίνακα
-
+    seekSequence.innerHTML = ''; // Καθαρισμός του πίνακα
     table = document.createElement("table");
     table.classList.add("visual-table");
 
+    // Δημιουργία της επικεφαλίδας με T1, T2, ...
     const headerRow = document.createElement("tr");
     const emptyHeader = document.createElement("th");
     headerRow.appendChild(emptyHeader);
 
     for (let i = 0; i < pages.length; i++) {
         const th = document.createElement("th");
-        th.innerText = `T${i + 1}`;
+        th.innerText = `T${i + 1}`; // Προσθήκη του T πριν από τον αριθμό
         headerRow.appendChild(th);
     }
     table.appendChild(headerRow);
 
+    // Δημιουργία σειρών για τα πλαίσια με "Πλαίσιο 1", "Πλαίσιο 2", ...
     for (let i = 0; i < maxFrames; i++) {
         const frameRow = document.createElement("tr");
         const frameHeader = document.createElement("th");
-        frameHeader.innerText = `Πλαίσιο ${i + 1}`;
+        frameHeader.innerText = `Πλαίσιο ${i + 1}`; // Εμφάνιση με την ελληνική λέξη "Πλαίσιο"
         frameRow.appendChild(frameHeader);
 
         for (let j = 0; j < pages.length; j++) {
@@ -80,10 +80,12 @@ function createTable() {
 
     seekSequence.appendChild(table);
 
-    // Ρύθμιση δυναμικού πλάτους για τον καμβά
+    // Προσαρμογή πλάτους καμβά
     adjustCanvasWidth(pages.length);
-    enableResetButton();
 }
+
+
+
 
 // Πλήρης εκτέλεση της προσομοίωσης
 function updateTable() {
@@ -287,7 +289,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
   
-
   function generateSequence() {
     const lengthInput = document.getElementById("sequenceLength").value.trim();
     const length = parseInt(lengthInput, 10);
@@ -302,14 +303,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("pages").value = sequence.join(',');
 
-    // Ενημέρωση του container για δυναμικό πλάτος
-    const sequenceBoxes = document.getElementById("seek-sequence-boxes");
-    sequenceBoxes.innerHTML = ''; // Καθαρισμός προηγούμενου περιεχομένου
-
-
-    const containerWidth = Math.max(sequence.length * 100, 500); // Υπολογίζει το πλάτος (50px ανά στοιχείο)
-    sequenceBoxes.style.width = `${containerWidth}px`; // Ενημερώνει το πλάτος
+    // Προσαρμογή πλάτους καμβά
+    adjustCanvasWidth(sequence.length);
 }
+
 
 function adjustCanvasWidth(sequenceLength) {
     const canvasContainer = document.getElementById("seek-sequence");

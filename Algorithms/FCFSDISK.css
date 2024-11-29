@@ -556,22 +556,26 @@ footer ul li a {
 
 /**Page replacement πίνακας */
 
-.visual-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-}
-
 .visual-table th,
 .visual-table td {
-  border: 1px solid #ccc;
-  padding: 15px; /* Αυξάνει το μέγεθος των κελιών */
-  font-size: 18px; /* Μεγαλύτερη γραμματοσειρά */
-  text-align: center;
+    width: 100px; /* Σταθερό πλάτος κελιών */
+    height: 40px; /* Σταθερό ύψος κελιών */
+    text-align: center; /* Κεντραρισμένο κείμενο */
+    white-space: nowrap; /* Αποφυγή αναδίπλωσης κειμένου */
+    overflow: hidden; /* Απόκρυψη περιεχομένου αν ξεπεράσει το πλάτος */
+    border: 1px solid #ddd; /* Περιθώριο για καλύτερη εμφάνιση */
+    padding: 5px; /* Εσωτερικό περιθώριο */
+    box-sizing: border-box; /* Συμπερίληψη περιθωρίων στο πλάτος */
 }
 
 .visual-table th {
-  background-color: #f2f2f2;
+    background-color: #f0f0f0; /* Γκρι χρώμα για επικεφαλίδες */
+    font-weight: bold; /* Έντονο κείμενο */
+}
+
+.visual-table {
+    table-layout: fixed; /* Καθορισμένο πλάτος κελιών */
+    width: auto; /* Αυτόματη προσαρμογή */
 }
 
 #resultText {
@@ -644,17 +648,6 @@ footer ul li a {
   min-height: 100px;
 }
 
-.visual-table {
-  border-collapse: collapse;
-  width: max-content; /* Εξασφαλίζει ότι η οριζόντια κύλιση λειτουργεί */
-}
-
-.visual-table th, .visual-table td {
-  border: 1px solid #bdbdbd;
-  padding: 5px;
-  text-align: center;
-  min-width: 50px; /* Εξασφαλίζει ομοιόμορφο μέγεθος κελιών */
-}
 
 #seek-sequence-boxes {
   display: flex;
