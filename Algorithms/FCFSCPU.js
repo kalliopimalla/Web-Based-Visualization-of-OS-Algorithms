@@ -99,74 +99,95 @@ function startStepByStep() {
     document.getElementById('stepHistory').appendChild(nextButton);
 
     stepByStepExecution(); // Ξεκινάμε από το πρώτο βήμα
+         // Εμφάνιση κουμπιού επαναφοράς
+         document.getElementById("resetButton").style.display = "inline-block";
 }
+
+
+
+let stepCurrentExecutionTime = 0; // Μετρητής για την τρέχουσα διεργασία
+
 function stepByStepExecution() {
     if (stepIndex < stepProcesses.length) {
-        // Υπολογισμός χρόνου εκκίνησης και λήξης για την τρέχουσα διεργασία
+        // Υπολογισμός χρόνου εκκίνησης για την τρέχουσα διεργασία
         const start = Math.max(stepCurrentTime, stepArrivalTime[stepIndex]);
         const end = start + stepBurstTime[stepIndex];
 
-        // Ενημέρωση χρόνου αναμονής και επιστροφής για την τρέχουσα διεργασία
-        stepWaitingTime[stepIndex] = start - stepArrivalTime[stepIndex];
-        if (stepWaitingTime[stepIndex] < 0) stepWaitingTime[stepIndex] = 0;
-        stepTurnAroundTime[stepIndex] = stepWaitingTime[stepIndex] + stepBurstTime[stepIndex];
-
-        // Υπολογισμός μέσου χρόνου αναμονής
-        const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / stepProcesses.length;
-
-        // Εμφάνιση του μέσου χρόνου αναμονής στην αρχή
-        const stepHistoryContainer = document.getElementById('stepHistory');
-        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
-        if (!document.querySelector('#avg-waiting-time')) {
-            // Αν δεν υπάρχει το μήνυμα, προσθέστε το
-            stepHistoryContainer.insertAdjacentHTML('afterbegin', `<div id="avg-waiting-time">${avgWaitingTimeBox}</div>`);
-        } else {
-            // Αν υπάρχει, ενημερώστε το
-            document.querySelector('#avg-waiting-time').innerHTML = avgWaitingTimeBox;
+        // Ενημέρωση χρόνου αναμονής και επιστροφής μόνο στο πρώτο βήμα της διεργασίας
+        if (stepCurrentExecutionTime === 0) {
+            stepWaitingTime[stepIndex] = start - stepArrivalTime[stepIndex];
+            if (stepWaitingTime[stepIndex] < 0) stepWaitingTime[stepIndex] = 0;
+            stepTurnAroundTime[stepIndex] = stepWaitingTime[stepIndex] + stepBurstTime[stepIndex];
+            stepCurrentTime = start; // Ορισμός της χρονικής στιγμής στην αρχή της διεργασίας
         }
 
-        // Δημιουργία του ενεργού κουτιού διεργασίας
+        // Δημιουργία ουράς αναμονής
         const activeProcess = `<span class="queue-process active">P${stepProcesses[stepIndex]}</span>`;
         const waitingQueue = stepProcesses
             .slice(stepIndex + 1)
             .map((p) => `<span class="queue-process">P${p}</span>`)
             .join(' -> ') || 'Καμία';
 
+        // Προσθήκη κουτιού για την τρέχουσα χρονική στιγμή
         const stepBox = document.createElement('div');
         stepBox.classList.add('step-box');
         stepBox.innerHTML = `
-            <div class="step-time">Χρονική στιγμή: ${start}</div>
+            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
             <div>Εκτελείται: ${activeProcess}</div>
             <div>Αναμονή: ${waitingQueue}</div>
         `;
-        stepHistoryContainer.appendChild(stepBox); // Προσθέστε την ουρά κάτω από το μήνυμα
+        document.getElementById('stepHistory').appendChild(stepBox);
 
-        // Ενημέρωση του πεντάστηλου πίνακα
-        const tableContainer = document.getElementById('seek-count');
-        if (!document.querySelector('#fcfs-table')) {
-            let output = "<table id='fcfs-table' border='1' style='border-collapse: collapse; width: 100%;'>";
-            output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
-            tableContainer.innerHTML = output + "</table>";
-        }
+        // Ενημέρωση χρόνου για το επόμενο βήμα
+        stepCurrentTime++;
+        stepCurrentExecutionTime++;
 
-        const table = document.querySelector('#fcfs-table');
-        const newRow = table.insertRow(-1);
-        newRow.innerHTML = `
-            <td>${stepProcesses[stepIndex]}</td>
-            <td>${stepBurstTime[stepIndex]}</td>
-            <td>${stepArrivalTime[stepIndex]}</td>
-            <td>${stepWaitingTime[stepIndex]}</td>
-            <td>${stepTurnAroundTime[stepIndex]}</td>
-        `;
+        // Όταν ολοκληρωθεί η τρέχουσα διεργασία
+        if (stepCurrentExecutionTime === stepBurstTime[stepIndex]) {
+            // Ενημέρωση του πεντάστηλου πίνακα
+            const tableContainer = document.getElementById('seek-count');
+            if (!document.querySelector('#fcfs-table')) {
+                let output = "<table id='fcfs-table' border='1' style='border-collapse: collapse; width: 100%;'>";
+                output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
+                tableContainer.innerHTML = output + "</table>";
+            }
 
-        // Ενημέρωση χρόνου και δείκτη
-        stepCurrentTime = end;
-        stepIndex++;
+            const table = document.querySelector('#fcfs-table');
+            const newRow = table.insertRow(-1);
+            newRow.innerHTML = `
+                <td>${stepProcesses[stepIndex]}</td>
+                <td>${stepBurstTime[stepIndex]}</td>
+                <td>${stepArrivalTime[stepIndex]}</td>
+                <td>${stepWaitingTime[stepIndex]}</td>
+                <td>${stepTurnAroundTime[stepIndex]}</td>
+            `;
 
-        if (stepIndex === stepProcesses.length) {
-            alert('Η εκτέλεση ολοκληρώθηκε!');
-            document.getElementById('nextStepButton').remove();
-            document.getElementById("resetButton").style.display = "inline-block";
+            // Επαναφορά του μετρητή χρόνου διεργασίας και μετάβαση στην επόμενη διεργασία
+            stepCurrentExecutionTime = 0;
+            stepIndex++;
+
+            // Έλεγχος αν όλες οι διεργασίες έχουν ολοκληρωθεί
+            if (stepIndex === stepProcesses.length) {
+                // Προσθήκη κουτιού για το τέλος της εκτέλεσης
+                const endBox = document.createElement('div');
+                endBox.classList.add('step-box');
+                endBox.innerHTML = `
+                    <div class="step-time">Τέλος Εκτέλεσης</div>
+                    <div>Όλες οι διεργασίες ολοκληρώθηκαν!</div>
+                `;
+                document.getElementById('stepHistory').appendChild(endBox);
+
+                // Υπολογισμός μέσου χρόνου αναμονής
+                const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / stepProcesses.length;
+                const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
+                if (!document.querySelector('#avg-waiting-time')) {
+                    document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', `<div id="avg-waiting-time">${avgWaitingTimeBox}</div>`);
+                }
+
+                alert('Η εκτέλεση ολοκληρώθηκε!');
+                document.getElementById('nextStepButton').remove();
+                document.getElementById("resetButton").style.display = "inline-block";
+            }
         }
     } else {
         alert('Η εκτέλεση έχει ήδη ολοκληρωθεί!');
