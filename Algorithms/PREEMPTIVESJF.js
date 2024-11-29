@@ -140,16 +140,7 @@ function startStepByStep() {
 
 function stepByStepExecution() {
     const n = stepProcesses.length;
-    // Εμφάνιση κουτιού αρχής εκτέλεσης αν είναι το πρώτο βήμα
-    if (stepCurrentTime === 0 && stepCompleted.every((c) => !c)) {
-        const startBox = document.createElement('div');
-        startBox.classList.add('step-box');
-        startBox.innerHTML = `
-            <div class="step-time">Αρχή Εκτέλεσης</div>
-            <div>Οι διεργασίες ξεκινούν τώρα!</div>
-        `;
-        document.getElementById('stepHistory').appendChild(startBox);
-    }
+
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
         .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 ? i : -1))
@@ -223,22 +214,14 @@ function stepByStepExecution() {
 
     // Ελέγξτε αν όλες οι διεργασίες έχουν ολοκληρωθεί
     if (stepCompleted.every((completed) => completed)) {
-        // Προσθήκη κουτιού για το τέλος της εκτέλεσης
-        const endBox = document.createElement('div');
-        endBox.classList.add('step-box');
-        endBox.innerHTML = `
-            <div class="step-time">Τέλος Εκτέλεσης</div>
-            <div>Όλες οι διεργασίες ολοκληρώθηκαν!</div>
-        `;
-        document.getElementById('stepHistory').appendChild(endBox);
+        alert('Η εκτέλεση ολοκληρώθηκε!');
+        document.getElementById('nextStepButton').remove();
+       
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
         const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
-
-        alert('Η εκτέλεση ολοκληρώθηκε!');
-        document.getElementById('nextStepButton').remove();
     }
 }
 

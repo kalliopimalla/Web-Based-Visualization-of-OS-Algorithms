@@ -150,16 +150,7 @@ function startStepByStep() {
 
 function stepByStepExecution() {
     const n = stepProcesses.length;
-    // Εμφάνιση κουτιού αρχής εκτέλεσης αν είναι το πρώτο βήμα
-    if (stepCurrentTime === 0 && stepCompleted.every((c) => !c)) {
-        const startBox = document.createElement('div');
-        startBox.classList.add('step-box');
-        startBox.innerHTML = `
-            <div class="step-time">Αρχή Εκτέλεσης</div>
-            <div>Οι διεργασίες ξεκινούν τώρα!</div>
-        `;
-        document.getElementById('stepHistory').appendChild(startBox);
-    }
+
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
         .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 ? i : -1))
