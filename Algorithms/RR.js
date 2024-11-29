@@ -167,7 +167,6 @@ function startStepByStep() {
 
     stepByStepExecution(); // Ξεκινάμε από το πρώτο βήμα
 }
-
 function stepByStepExecution() {
     const n = stepProcesses.length;
 
@@ -266,18 +265,25 @@ function stepByStepExecution() {
 
     // Ελέγξτε αν όλες οι διεργασίες έχουν ολοκληρωθεί
     if (stepCompleted.every((completed) => completed)) {
-        alert('Η εκτέλεση ολοκληρώθηκε!');
-        document.getElementById('nextStepButton').remove();
-        document.getElementById("resetButton").style.display = "inline-block";
+        // Προσθήκη κουτιού για το τέλος της εκτέλεσης
+        const endBox = document.createElement('div');
+        endBox.classList.add('step-box');
+        endBox.innerHTML = `
+            <div class="step-time">Τέλος Εκτέλεσης</div>
+            <div>Όλες οι διεργασίες ολοκληρώθηκαν!</div>
+        `;
+        document.getElementById('stepHistory').appendChild(endBox);
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
         const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
+
+        alert('Η εκτέλεση ολοκληρώθηκε!');
+        document.getElementById('nextStepButton').remove();
+        document.getElementById("resetButton").style.display = "inline-block";
     }
 }
-
-
 
 function createThreeColumnTable() {
     const btInput = document.getElementById('burst-time').value;
