@@ -108,6 +108,16 @@ function startStepByStep() {
 let stepCurrentExecutionTime = 0; // Μετρητής για την τρέχουσα διεργασία
 
 function stepByStepExecution() {
+        // Εμφάνιση κουτιού αρχής εκτέλεσης αν είναι το πρώτο βήμα
+        if (stepCurrentTime === 0 && stepCompleted.every((c) => !c)) {
+            const startBox = document.createElement('div');
+            startBox.classList.add('step-box');
+            startBox.innerHTML = `
+                <div class="step-time">Αρχή Εκτέλεσης</div>
+                <div>Οι διεργασίες ξεκινούν τώρα!</div>
+            `;
+            document.getElementById('stepHistory').appendChild(startBox);
+        }
     // Αν δεν έχει ξεκινήσει καμία διεργασία
     if (stepIndex === 0 && stepCurrentTime < stepArrivalTime[stepIndex]) {
         const stepBox = document.createElement('div');
