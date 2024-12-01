@@ -235,6 +235,9 @@ function stepByStepExecution() {
             stepHistoryContainer.insertAdjacentElement('afterbegin', avgBox);
         }
 
+        // Δημιουργία του 5-στήλου πίνακα
+        createFiveColumnTable(stepProcesses, originalBurstTimes, originalArrivalTimes, stepWaitingTime);
+
         // Δημιουργία Gantt Chart με τα αρχικά δεδομένα
         drawPartialGanttChart(stepProcesses, originalBurstTimes, originalArrivalTimes);
 
@@ -254,6 +257,30 @@ function stepByStepExecution() {
         }
     }
 }
+
+// Συνάρτηση δημιουργίας 5-στήλου πίνακα
+function createFiveColumnTable(processes, bt, at, wt) {
+    const tat = processes.map((_, i) => bt[i] + wt[i]); // Υπολογισμός Turnaround Time
+
+    let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+    output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
+
+    for (let i = 0; i < processes.length; i++) {
+        output += `<tr>
+            <td>${processes[i]}</td>
+            <td>${bt[i]}</td>
+            <td>${at[i]}</td>
+            <td>${wt[i]}</td>
+            <td>${tat[i]}</td>
+        </tr>`;
+    }
+
+    output += "</table>";
+
+    // Εμφάνιση του πίνακα στη σελίδα
+    document.getElementById('seek-count').innerHTML = output;
+}
+
 
 
 
