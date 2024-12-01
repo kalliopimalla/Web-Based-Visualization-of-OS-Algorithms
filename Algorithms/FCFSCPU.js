@@ -52,9 +52,56 @@ function runFCFSCPU() {
     output += "</table>";
     document.getElementById('seek-count').innerHTML = output;
 
+   // Κλήση για τη σχεδίαση του Gantt Chart
+   drawPartialGanttChart(processes, burstTime, arrivalTime);
+
     // Εμφάνιση του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "inline-block";
 }
+
+
+function drawPartialGanttChart(processes, bt, at) {
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Υπολογισμός συνολικού χρόνου (άθροισμα όλων των burst times)
+    let totalTime = at[0]; // Ξεκινάμε από τον χρόνο άφιξης της πρώτης διεργασίας
+    for (let i = 0; i < processes.length; i++) {
+        totalTime += bt[i];
+    }
+
+    // Προσαρμογή πλάτους καμβά
+    canvas.width = totalTime * 40; // Κάθε μονάδα χρόνου = 40 pixels
+
+    // Καθαρισμός καμβά
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let currentTime = at[0]; // Ξεκινάμε από την πρώτη χρονική στιγμή
+
+    for (let i = 0; i < processes.length; i++) {
+        const start = currentTime; // Η διεργασία ξεκινά από την τρέχουσα χρονική στιγμή
+        const end = start + bt[i];
+
+        // Γέμισμα με διαφορετικό χρώμα για κάθε διεργασία
+        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
+        ctx.fillRect(start * 40, 50, (end - start) * 40, 40);
+
+        // Ετικέτες για διεργασίες και χρόνους
+        ctx.fillStyle = '#000';
+        ctx.font = '12px Arial';
+        ctx.fillText(`P${processes[i]}`, (start * 40) + ((end - start) * 20) - 10, 75); // Κέντρο μπάρας
+        ctx.fillText(`${start}`, start * 40, 100); // Αρχή
+        ctx.fillText(`${end}`, end * 40, 100); // Τέλος
+
+        // Ενημέρωση τρέχουσας χρονικής στιγμής
+        currentTime = end;
+    }
+}
+
+
+
+
+
 
 
 // Ξεκινά η "Step by Step" διαδικασία
