@@ -116,6 +116,9 @@ let stepWaitingTime = [];
 let stepTurnAroundTime = [];
 
 // Ξεκινά η "Step by Step" διαδικασία
+let originalBurstTimes = []; // Αποθήκευση αρχικών burst times
+let originalArrivalTimes = []; // Αποθήκευση αρχικών arrival times
+
 function startStepByStep() {
     // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
     const btInput = document.getElementById('burst-time').value;
@@ -123,6 +126,11 @@ function startStepByStep() {
 
     stepBurstTime = btInput.split(',').map(Number);
     stepArrivalTime = atInput.split(',').map(Number);
+
+    // Αποθήκευση των αρχικών δεδομένων για το Gantt Chart
+    originalBurstTimes = [...stepBurstTime];
+    originalArrivalTimes = [...stepArrivalTime];
+
     const n = stepBurstTime.length;
     stepProcesses = Array.from({ length: n }, (_, i) => i + 1);
     stepWaitingTime = new Array(n).fill(0);
@@ -154,12 +162,13 @@ function startStepByStep() {
     nextButton.onclick = stepByStepExecution;
     document.getElementById('stepHistory').appendChild(nextButton);
 
-    stepByStepExecution(); // Ξεκινάμε από το πρώτο βήμα
-
     // Εμφάνιση κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
 }
+
+
 function stepByStepExecution() {
+    // Έλεγχος αν υπάρχουν υπόλοιπα burst times για εκτέλεση
     if (stepBurstTime.some((bt) => bt > 0)) {
         // Εύρεση της διεργασίας που εκτελείται στην τρέχουσα χρονική στιγμή
         let executingProcessIndex = -1;
@@ -207,37 +216,42 @@ function stepByStepExecution() {
         // Αύξηση της χρονικής στιγμής
         stepCurrentTime++;
 
-        // Αν ολοκληρωθούν όλες οι διεργασίες
-        if (stepBurstTime.every((bt) => bt === 0)) {
-            // Υπολογισμός μέσου χρόνου αναμονής
-            const totalWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0);
-            const averageWaitingTime = totalWaitingTime / stepProcesses.length;
-
-            // Προσθήκη μέσου χρόνου αναμονής στο πάνω μέρος της ουράς
-            const avgWaitingContainer = document.getElementById('avg-waiting-container');
-            if (!avgWaitingContainer) {
-                const avgBox = document.createElement('div');
-                avgBox.id = 'avg-waiting-container';
-                avgBox.innerHTML = `
-                    <p><strong>Μέσος Χρόνος Αναμονής:</strong> ${averageWaitingTime.toFixed(2)}</p>
-                `;
-                document.getElementById('stepHistory').insertAdjacentElement('afterbegin', avgBox);
-            }
-
-            // Προσθήκη κουτιού τέλους
-            const endBox = document.createElement('div');
-            endBox.classList.add('step-box');
-            endBox.innerHTML = `
-                <div class="step-time">Τέλος διαδικασίας!</div>
-                <div>Όλες οι διεργασίες έχουν εκτελεστεί.</div>
-            `;
-            stepHistoryContainer.appendChild(endBox);
-
-            // Αφαίρεση κουμπιού "Επόμενο βήμα"
-            document.getElementById('nextStepButton').remove();
-        }
     } else {
-        alert('Η εκτέλεση έχει ήδη ολοκληρωθεί!');
+        // Αν ολοκληρωθούν όλες οι διεργασίες
+        const stepHistoryContainer = document.getElementById('stepHistory');
+
+        // Υπολογισμός μέσου χρόνου αναμονής
+        const totalWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0);
+        const averageWaitingTime = totalWaitingTime / stepProcesses.length;
+
+        // Προσθήκη μέσου χρόνου αναμονής στο πάνω μέρος της ουράς
+        const avgWaitingContainer = document.getElementById('avg-waiting-container');
+        if (!avgWaitingContainer) {
+            const avgBox = document.createElement('div');
+            avgBox.id = 'avg-waiting-container';
+            avgBox.innerHTML = `
+                <p><strong>Μέσος Χρόνος Αναμονής:</strong> ${averageWaitingTime.toFixed(2)}</p>
+            `;
+            stepHistoryContainer.insertAdjacentElement('afterbegin', avgBox);
+        }
+
+        // Δημιουργία Gantt Chart με τα αρχικά δεδομένα
+        drawPartialGanttChart(stepProcesses, originalBurstTimes, originalArrivalTimes);
+
+        // Προσθήκη κουτιού τέλους διαδικασίας
+        const endBox = document.createElement('div');
+        endBox.classList.add('step-box');
+        endBox.innerHTML = `
+            <div class="step-time">Τέλος Αλγορίθμου!</div>
+            <div>Όλες οι διεργασίες έχουν εκτελεστεί επιτυχώς.</div>
+        `;
+        stepHistoryContainer.appendChild(endBox);
+
+        // Αφαίρεση κουμπιού "Επόμενο Βήμα"
+        const nextStepButton = document.getElementById('nextStepButton');
+        if (nextStepButton) {
+            nextStepButton.remove();
+        }
     }
 }
 
@@ -333,7 +347,11 @@ function resetFCFS() {
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
-
+    
+      // Καθαρισμός του καμβά
+      const canvas = document.getElementById('seekCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
   
 
     // Απόκρυψη κουμπιών που δεν χρειάζονται
