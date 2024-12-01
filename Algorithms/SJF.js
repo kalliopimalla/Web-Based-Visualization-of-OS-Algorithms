@@ -1,3 +1,5 @@
+
+
 function runSJFCPU() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
@@ -16,6 +18,7 @@ function runSJFCPU() {
     const isCompleted = new Array(n).fill(false); // Κατάσταση ολοκλήρωσης
 
     let queueOutput = ''; // Αναπαράσταση ουράς
+    let completionOrder = []; // Σειρά ολοκλήρωσης διεργασιών
 
     // Εκτέλεση SJF
     while (completed < n) {
@@ -29,9 +32,8 @@ function runSJFCPU() {
 
         // Αν καμία διεργασία δεν είναι διαθέσιμη
         if (availableProcesses.length === 0) {
-            // Βρες την επόμενη χρονική στιγμή που θα φτάσει μια διεργασία
             const nextArrivalTime = Math.min(...arrivalTime.filter((at, i) => !isCompleted[i]));
-            currentTime = Math.max(currentTime, nextArrivalTime); // Μεταπήδηση στον επόμενο χρόνο
+            currentTime = Math.max(currentTime, nextArrivalTime);
             continue;
         }
 
@@ -45,6 +47,9 @@ function runSJFCPU() {
         completionTime[shortestJobIndex] = currentTime;
         isCompleted[shortestJobIndex] = true;
         completed++;
+
+        // Ενημέρωση της σειράς ολοκλήρωσης
+        completionOrder.push(shortestJobIndex);
 
         // Δημιουργία της ουράς εκτέλεσης
         const activeProcess = `<span class="queue-process active">P${processes[shortestJobIndex]}</span>`;
@@ -86,12 +91,49 @@ function runSJFCPU() {
         ${queueOutput}
     `;
 
+    // Δημιουργία Gantt Chart
+    drawGanttChart(processes, burstTime, arrivalTime, completionOrder);
+
     // Εμφάνιση του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
+function drawGanttChart(processes, bt, at, completionOrder) {
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
 
+    // Υπολογισμός συνολικού χρόνου (τέλος της τελευταίας διεργασίας)
+    const totalTime = completionOrder.reduce(
+        (total, processIndex) => total + bt[processIndex],
+        0
+    );
 
+    // Ορισμός πλάτους καμβά για να χωρέσουν όλες οι διεργασίες
+    canvas.width = totalTime * 40; // 40 pixels ανά μονάδα χρόνου
+
+    // Καθαρισμός καμβά
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let currentTime = 0;
+
+    completionOrder.forEach((processIndex) => {
+        const start = Math.max(currentTime, at[processIndex]);
+        const end = start + bt[processIndex];
+
+        // Γέμισμα μπάρας
+        ctx.fillStyle = `hsl(${(processIndex * 60) % 360}, 70%, 70%)`;
+        ctx.fillRect(start * 40, 50, (end - start) * 40, 40);
+
+        // Ετικέτες για τη διεργασία και τους χρόνους
+        ctx.fillStyle = '#000';
+        ctx.font = '12px Arial';
+        ctx.fillText(`P${processes[processIndex]}`, (start * 40) + ((end - start) * 20) - 10, 75); // Κέντρο μπάρας
+        ctx.fillText(`${start}`, start * 40, 100); // Αρχή
+        ctx.fillText(`${end}`, end * 40, 100); // Τέλος
+
+        currentTime = end;
+    });
+}
 
 
 
@@ -337,13 +379,18 @@ function resetSJF() {
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
 
-  
+    // Καθαρισμός καμβά
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
 
     // Απόκρυψη κουμπιών που δεν χρειάζονται
     document.getElementById('runButton').style.display = 'none';
     document.getElementById('stepByStepBtn').style.display = 'none';
     document.getElementById('resetButton').style.display = 'none';
 }
+
 
 // script.js
 document.addEventListener("DOMContentLoaded", () => {
