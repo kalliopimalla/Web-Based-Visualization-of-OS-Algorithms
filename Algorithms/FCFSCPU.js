@@ -64,22 +64,22 @@ function drawPartialGanttChart(processes, bt, at) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
 
+    // Βρες τον ελάχιστο χρόνο άφιξης
+    const minArrivalTime = Math.min(...at);
+
     // Υπολογισμός συνολικού χρόνου (άθροισμα όλων των burst times)
-    let totalTime = at[0]; // Ξεκινάμε από τον χρόνο άφιξης της πρώτης διεργασίας
-    for (let i = 0; i < processes.length; i++) {
-        totalTime += bt[i];
-    }
+    let totalTime = Math.max(...at) + bt.reduce((sum, time) => sum + time, 0);
 
     // Προσαρμογή πλάτους καμβά
-    canvas.width = totalTime * 40; // Κάθε μονάδα χρόνου = 40 pixels
+    canvas.width = (totalTime - minArrivalTime) * 40; // Κάθε μονάδα χρόνου = 40 pixels
 
     // Καθαρισμός καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let currentTime = at[0]; // Ξεκινάμε από την πρώτη χρονική στιγμή
+    let currentTime = minArrivalTime; // Ξεκινάμε από την πρώτη χρονική στιγμή
 
     for (let i = 0; i < processes.length; i++) {
-        const start = currentTime; // Η διεργασία ξεκινά από την τρέχουσα χρονική στιγμή
+        const start = Math.max(currentTime, at[i]) - minArrivalTime; // Υπολογισμός με βάση τον ελάχιστο χρόνο άφιξης
         const end = start + bt[i];
 
         // Γέμισμα με διαφορετικό χρώμα για κάθε διεργασία
@@ -90,13 +90,14 @@ function drawPartialGanttChart(processes, bt, at) {
         ctx.fillStyle = '#000';
         ctx.font = '12px Arial';
         ctx.fillText(`P${processes[i]}`, (start * 40) + ((end - start) * 20) - 10, 75); // Κέντρο μπάρας
-        ctx.fillText(`${start}`, start * 40, 100); // Αρχή
-        ctx.fillText(`${end}`, end * 40, 100); // Τέλος
+        ctx.fillText(`${start + minArrivalTime}`, start * 40, 100); // Αρχή
+        ctx.fillText(`${end + minArrivalTime}`, end * 40, 100); // Τέλος
 
         // Ενημέρωση τρέχουσας χρονικής στιγμής
-        currentTime = end;
+        currentTime = Math.max(currentTime, at[i]) + bt[i];
     }
 }
+
 
 
 
