@@ -124,60 +124,50 @@
       </div>
     </section>
 
-    <!-- Algorithm Implementation -->
-    <section class="algorithm-implementation">
-     
-        <h2>Υλοποίηση</h2>
-       
-        <div class="content">
-          <div class="container">
-            <div class="input-steps">
-              <p>Η ακολουθία σελιδών:</p>
-              <div class="popup">
-                  <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
-                  <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                  <input type="number" id="sequenceLength" placeholder="Μήκος ακολουθίας" min="1" style="width: 150px;">
-                  <button onclick="generateSequence()">Δημιουργία τύχαιας ακολουθίας </button> 
-              </div>
-              <p>Αριθμός πλαισίων:</p>
-              <div class="popup">
-                  <input type="number" id="frame-number" placeholder="π.χ. 4" style="width: 150px; ">
-                  <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
-              </div>
-                <button onclick="runLRU()">Εκτέλεση</button>
-                <button onclick="nextStep()">Βήμα προς βήμα </button>
-              </div>
-              <br>
-              <button id="resetButton" class="input-steps" style="display: none;">Επαναφορά</button>
+  <!-- Algorithm Implementation -->
+  <section class="algorithm-implementation">
+    <h2>Υλοποίηση</h2>
+    <div class="content">
+      <div class="container">
+        <!-- Κουτί Εισαγωγής -->
+        <div class="input-steps">
+          <p>Η ακολουθία σελιδών:</p>
+          <div class="popup">
+            <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
+            <input type="number" id="sequenceLength" placeholder="Μήκος ακολουθίας" min="1" style="width: 150px;">
+            <input type="number" id="maxPageNumber" placeholder="Μέγιστος αριθμός σελίδας" min="1" style="width: 200px;">
   
+            <button onclick="generateSequence()">Δημιουργία Τυχαίας Ακολουθίας</button>
+            <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+          </div>
+          <p>Αριθμός πλαισίων:</p>
+          <div class="popup">
+            <input type="number" id="frame-number" placeholder="π.χ. 4" style="width: 150px; ">
+            <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
+          </div>
+          <button onclick="runLRU()">Εκτέλεση</button>
+          <button onclick="nextStep()">Βήμα προς βήμα</button>
+        </div>
+        <br>
+        <button id="resetButton" class="input-steps" style="display: none;">Επαναφορά</button>
   
-              
-              <div id="resultText">
-                  
-                   
-              </div>
-            </div> 
-
-           <p id="seek-count"></p>
-           <div class="sequence-container">
-            <div id="seek-sequence" class="seek-sequence">
-              <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
-          </div>  
+        <!-- Αποτελέσματα -->
+        <div id="resultText"></div>
+  
+        <p id="seek-count"></p>
+  
+        <!-- Πίνακας Οπτικοποίησης -->
+        <div class="sequence-container">
+          <div id="seek-sequence" class="seek-sequence">
+            <table class="visual-table">
+              <!-- Ο Πίνακας σου -->
+            </table>
+          </div>
+        </div>
       </div>
-   </div>
-
-          
-          
-       
-       <br>
-
-
-
-
-
-
-      </div>
-    </section>
+    </div>
+  </section>
+  
   </main>
 
   <!-- Footer -->
