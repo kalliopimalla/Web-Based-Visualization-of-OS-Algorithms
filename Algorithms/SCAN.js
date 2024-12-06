@@ -8,18 +8,22 @@ function executeSCAN() {
     const tracksInput = document.getElementById("process-queue").value;
     const head = parseInt(document.getElementById("head-position").value);
     const direction = document.getElementById("direction").value;
-
+   
+   
+    
     if (!tracksInput || isNaN(head) || (direction !== "left" && direction !== "right")) {
         alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
 
     const tracks = tracksInput.split(",").map(Number).filter(num => !isNaN(num));
-    if (tracks.length === 0) {
-        alert("Παρακαλώ εισάγετε τουλάχιστον μία θέση στο queue!");
-        return;
-    }
+    // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
+if (tracks.length === 0 || tracks.length > 100) {
+    alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό και όχι περισσότερους από 100!");
+    return;
+}
 
+    
     // Προσθήκη της κεφαλής στη λίστα για ταξινόμηση
     tracks.push(head);
 
@@ -295,6 +299,10 @@ function resetCanvasAndInputs() {
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
+    if (length > 100) {
+        alert("Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
+        return [];
+    }
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
@@ -309,7 +317,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     // Λήψη του μήκους από το πεδίο εισαγωγής
     const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
     const sequenceLength = parseInt(sequenceLengthInput, 10);
-
+    
     // Έλεγχος αν το μήκος είναι αριθμός και θετικό
     if (isNaN(sequenceLength) || sequenceLength <= 0) {
         alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");

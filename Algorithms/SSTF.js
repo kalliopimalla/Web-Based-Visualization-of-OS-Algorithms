@@ -27,7 +27,11 @@ function runSSTF() {
     let seekSequence = [headPosition];
     let currentPosition = headPosition;
     let remainingRequests = [...requestQueue];
-
+        // Έλεγχος για μέγιστο μήκος 100 αριθμών
+        if (requestQueue.length > 100) {
+            alert("Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+            return;
+        }
     while (remainingRequests.length > 0) {
         let closestRequest = remainingRequests.reduce((prev, curr) =>
             Math.abs(curr - currentPosition) < Math.abs(prev - currentPosition) ? curr : prev
@@ -231,6 +235,11 @@ function visualizeSeekSequence(seekSequence) {
 }
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
+
+    if (length > 100) {
+        alert("Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
+        return [];
+    }
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max

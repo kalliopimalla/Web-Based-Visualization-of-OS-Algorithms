@@ -19,10 +19,11 @@ function executeLOOK() {
     // Μετατροπή των αιτημάτων σε πίνακα αριθμών
     let tracks = tracksInput.split(',').map(item => Number(item.trim())).filter(num => !isNaN(num));
 
-    if (tracks.length === 0) {
-        alert("Παρακαλώ εισάγετε έγκυρους αριθμούς χωρισμένους με κόμματα.");
-        return;
-    }
+   // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
+if (tracks.length === 0 || tracks.length > 100) {
+    alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό και όχι περισσότερους από 100!");
+    return;
+}
 
     // Κλήση της συνάρτησης LOOK
     LOOK(tracks, head, direction);
@@ -278,6 +279,12 @@ function resetCanvasAndInputs() {
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
+
+    if (length > 100) {
+        alert("Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
+        return [];
+    }
+
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
