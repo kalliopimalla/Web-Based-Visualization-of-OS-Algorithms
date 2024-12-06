@@ -223,23 +223,49 @@ function predict(pg, fr, pn, index) {
 
 
 
-
 function generateSequence() {
+    // Παίρνουμε τις τιμές από τα πεδία
     const lengthInput = document.getElementById("sequenceLength").value.trim();
-    const length = parseInt(lengthInput, 10);
+    const maxPageInput = document.getElementById("maxPageNumber").value.trim();
 
+    const length = parseInt(lengthInput, 10); // Μήκος ακολουθίας
+    const maxPageNumber = parseInt(maxPageInput, 10); // Μέγιστος αριθμός σελίδας
+
+    // Έλεγχος εγκυρότητας για το μήκος ακολουθίας
     if (isNaN(length) || length <= 0) {
         alert("Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας (θετικός αριθμός)!");
         return;
     }
 
-    const maxPageNumber = 50; // Μέγιστη τιμή σελίδας
-    const sequence = Array.from({ length }, () => Math.floor(Math.random() * maxPageNumber) + 1);
+    // Έλεγχος εγκυρότητας για τον μέγιστο αριθμό σελίδας
+    if (isNaN(maxPageNumber) || maxPageNumber <= 0) {
+        alert("Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας (θετικός αριθμός)!");
+        return;
+    }
 
+    // Δημιουργία τυχαίας ακολουθίας σελίδων από 1 έως maxPageNumber
+    const sequence = [];
+    for (let i = 0; i < length; i++) {
+        const randomPage = Math.floor(Math.random() * maxPageNumber) + 1;
+        sequence.push(randomPage);
+    }
+
+    // Ενημέρωση του πεδίου "pages" με την τυχαία ακολουθία
     document.getElementById("pages").value = sequence.join(',');
 
-    // Προσαρμογή πλάτους καμβά
-    adjustCanvasWidth(sequence.length);
+    // Καθαρισμός προηγούμενου περιεχομένου (προαιρετικά)
+    const sequenceBoxes = document.getElementById("seek-sequence-boxes");
+    if (sequenceBoxes) {
+        sequenceBoxes.innerHTML = ''; 
+
+        // Δημιουργία των στοιχείων της ακολουθίας για οπτικοποίηση
+        sequence.forEach(page => {
+            const box = document.createElement("div");
+            box.classList.add("sequence-box");
+            box.innerText = page;
+            sequenceBoxes.appendChild(box);
+        });
+    }
 }
 
 
@@ -257,6 +283,7 @@ resetButton.addEventListener('click', () => {
     document.getElementById('seek-sequence').innerHTML = '';
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
     document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+    document.getElementById('maxPageNumber').value = ''; // Μηδενισμός του μέγιστου αριθμού σελίδας
 
     // Μηδενισμός μεταβλητών
     pages = [];
