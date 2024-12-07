@@ -231,6 +231,9 @@ function startStepByStep() {
 
     stepByStepExecution(); // Ξεκινάμε από το πρώτο βήμα
 }
+
+
+
 function stepByStepExecution() {
     const n = stepProcesses.length;
 
@@ -266,6 +269,20 @@ function stepByStepExecution() {
     const executionTime = Math.min(stepQuantum, stepRemainingTime[currentProcess]);
     stepRemainingTime[currentProcess] -= executionTime;
     stepCurrentTime += executionTime;
+
+    // Ενημέρωση του schedule
+    if (
+        schedule.length === 0 ||
+        schedule[schedule.length - 1].process !== stepProcesses[currentProcess]
+    ) {
+        schedule.push({
+            process: stepProcesses[currentProcess],
+            startTime: stepCurrentTime - executionTime,
+            endTime: stepCurrentTime,
+        });
+    } else {
+        schedule[schedule.length - 1].endTime = stepCurrentTime;
+    }
 
     // Ενημέρωση αν η διεργασία ολοκληρώθηκε
     if (stepRemainingTime[currentProcess] === 0) {
@@ -306,30 +323,8 @@ function stepByStepExecution() {
     `;
     document.getElementById('stepHistory').appendChild(stepBox);
 
-    // Ενημέρωση του πίνακα
-    const tableContainer = document.getElementById('seek-count');
-    if (!document.querySelector('#round-robin-table')) {
-        let output = "<table id='round-robin-table' border='1' style='border-collapse: collapse; width: 100%;'>";
-        output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
-        tableContainer.innerHTML = output + "</table>";
-    }
-
-    // Αν ολοκληρώθηκε η διεργασία, ενημερώστε την αντίστοιχη γραμμή
-    if (stepCompleted[currentProcess]) {
-        const table = document.querySelector('#round-robin-table');
-        const newRow = table.insertRow(-1);
-        newRow.innerHTML = `
-            <td>${stepProcesses[currentProcess]}</td>
-            <td>${stepBurstTime[currentProcess]}</td>
-            <td>${stepArrivalTime[currentProcess]}</td>
-            <td>${stepWaitingTime[currentProcess]}</td>
-            <td>${stepTurnAroundTime[currentProcess]}</td>
-        `;
-    }
-
     // Ελέγξτε αν όλες οι διεργασίες έχουν ολοκληρωθεί
     if (stepCompleted.every((completed) => completed)) {
-        // Προσθήκη κουτιού για το τέλος της εκτέλεσης
         const endBox = document.createElement('div');
         endBox.classList.add('step-box');
         endBox.innerHTML = `
@@ -338,16 +333,21 @@ function stepByStepExecution() {
         `;
         document.getElementById('stepHistory').appendChild(endBox);
 
-        // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
         const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
 
         alert('Η εκτέλεση ολοκληρώθηκε!');
+
+        // Σχεδιάστε το Gantt Chart στο τέλος
+        drawGanttChart(schedule);
+
         document.getElementById('nextStepButton').remove();
         document.getElementById("resetButton").style.display = "inline-block";
     }
 }
+
+
 
 function createThreeColumnTable() {
     const btInput = document.getElementById('burst-time').value;
