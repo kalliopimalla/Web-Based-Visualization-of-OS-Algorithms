@@ -65,46 +65,45 @@ function drawPartialGanttChart(processes, bt, at) {
 
     // Εύρεση χρόνων άφιξης και συνολικού χρόνου
     const minArrivalTime = Math.min(...at);
-    let totalTime = Math.max(...at) + bt.reduce((sum, time) => sum + time, 0);
+    let totalTime = bt.reduce((sum, time) => sum + time, 0);
 
-    // Υπολογισμός μήκους μπάρων για κάθε διεργασία
-    const barLengths = bt.map((time) => time * 40); // 40 pixels ανά μονάδα χρόνου
-    const maxDivisionFactor = Math.ceil(totalTime / 800); // Διαίρεση για να χωράνε όλα
-    const adjustedBarLengths = barLengths.map((length) => length / maxDivisionFactor);
+    // Υπολογισμός δυναμικής κλίμακας
+    const canvasBaseWidth = 800; // Βασικό πλάτος καμβά
+    const scaleFactor = Math.max(canvasBaseWidth / totalTime, 5); // Ελάχιστο πλάτος μονάδας
+    const adjustedBarLengths = bt.map((time) => time * scaleFactor);
 
-    // Αναπροσαρμογή πλάτους καμβά
-    canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0);
+    // Προσαρμογή πλάτους καμβά
+    canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 50;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let currentTime = minArrivalTime;
-    let currentX = 0;
+    let currentX = 0; // Τρέχουσα θέση στον καμβά
+    let currentTime = minArrivalTime; // Τρέχων χρόνος στο Gantt Chart
 
     for (let i = 0; i < processes.length; i++) {
-        const start = Math.max(currentTime, at[i]) - minArrivalTime;
-        const end = start + bt[i];
+        const startTime = Math.max(currentTime, at[i]); // Χρόνος εκκίνησης της διεργασίας
 
+        // Σχεδίαση μπάρας διεργασίας
         const barWidth = adjustedBarLengths[i];
-
-        // Σχεδίαση μπάρας
-        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
+        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`; // Χρώμα μπάρας
         ctx.fillRect(currentX, 50, barWidth, 40);
 
-        // Προσθήκη ετικέτας διεργασίας
+        // Προσθήκη ετικέτας διεργασίας (πάνω από τη μπάρα)
         ctx.fillStyle = '#000';
         ctx.font = '12px Arial';
-        ctx.fillText(`P${processes[i]}`, currentX + barWidth / 2 - 10, 70); // Στο κέντρο μπάρας
+        ctx.fillText(`P${processes[i]}`, currentX + barWidth / 2 - 10, 45);
 
-        // Προσθήκη χρόνων
-        if (i === 0 || start > currentTime) {
-            ctx.fillText(`${start + minArrivalTime}`, currentX, 100); // Αρχή μπάρας
-        }
-        ctx.fillText(`${end + minArrivalTime}`, currentX + barWidth - 10, 100); // Τέλος μπάρας
+        // Προσθήκη ετικέτας χρόνου εκκίνησης (κάτω από τη μπάρα)
+        ctx.fillText(`${startTime}`, currentX + 5, 110);
 
-        // Ενημέρωση τρέχοντος χρόνου και θέσης X
-        currentTime = Math.max(currentTime, at[i]) + bt[i];
-        currentX += barWidth; // Ενιαίες μπάρες
+        currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
+        currentTime = startTime + bt[i]; // Ενημέρωση του τρέχοντος χρόνου
     }
 }
+
+
+
+
+
 
 
 
