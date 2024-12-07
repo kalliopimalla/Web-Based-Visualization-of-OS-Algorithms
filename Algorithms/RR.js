@@ -1,3 +1,6 @@
+
+const schedule = []; // Πίνακας προγραμματισμού για το Gantt Chart
+
 function runRoundRobinCPU() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
@@ -70,7 +73,22 @@ function runRoundRobinCPU() {
         const executionTime = Math.min(quantum, remainingBurstTime[currentProcess]);
         currentTime += executionTime;
         remainingBurstTime[currentProcess] -= executionTime;
-
+        if (
+            schedule.length === 0 || 
+            schedule[schedule.length - 1].process !== processes[currentProcess]
+        ) {
+            // Αν είναι νέα διεργασία, προσθήκη στο schedule
+            schedule.push({
+                process: processes[currentProcess],
+                startTime: currentTime - executionTime,
+                endTime: currentTime,
+            });
+        } else {
+            // Αν συνεχίζεται η ίδια διεργασία, ενημέρωση της ώρας λήξης
+            schedule[schedule.length - 1].endTime = currentTime;
+        }
+        
+        
         // Αν ολοκληρώθηκε η διεργασία
         if (remainingBurstTime[currentProcess] === 0) {
             completed++;
@@ -105,9 +123,55 @@ function runRoundRobinCPU() {
         ${queueOutput}
     `;
     document.getElementById("resetButton").style.display = "inline-block";
+    drawGanttChart(schedule);
+
 }
 
+function drawGanttChart(schedule) {
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
 
+    if (schedule.length === 0) {
+        console.error("Το Gantt Chart δεν μπορεί να σχεδιαστεί, το schedule είναι κενό.");
+        return;
+    }
+
+    // Υπολογισμός της συνολικής διάρκειας
+    const totalBurstTime = schedule[schedule.length - 1].endTime;
+
+    // Λήψη του διαθέσιμου πλάτους από το container του καμβά
+    const containerWidth = canvas.parentElement.clientWidth; // Το πλάτος του container
+    const scaleFactor = containerWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
+    const barHeight = 40; // Ύψος κάθε μπάρας
+    const minBarWidth = 50; // Ελάχιστο πλάτος για τη μπάρα (ώστε να χωράει η ετικέτα)
+
+    // Καθορισμός πλάτους καμβά ανάλογα με τη συνολική διάρκεια
+    canvas.width = Math.max(containerWidth, totalBurstTime * minBarWidth);
+    canvas.height = barHeight + 60; // Προσθήκη περιθωρίου για καλύτερη εμφάνιση
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let currentX = 0;
+    ctx.font = '12px Arial';
+
+    schedule.forEach(({ process, startTime, endTime }) => {
+        const duration = endTime - startTime;
+        const barWidth = Math.max(duration * scaleFactor, minBarWidth); // Χρήση ελάχιστου πλάτους
+
+        // Σχεδίαση μπάρας
+        ctx.fillStyle = `hsl(${(process * 60) % 360}, 70%, 70%)`; // Χρώμα ανά διεργασία
+        ctx.fillRect(currentX, 50, barWidth, barHeight);
+
+        // Ετικέτα διεργασίας μέσα στη μπάρα
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width;
+
+        ctx.fillStyle = '#000'; // Χρώμα ετικέτας
+        ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Τοποθέτηση στο κέντρο της μπάρας
+
+        currentX += barWidth; // Ενημέρωση της θέσης X
+    });
+}
 
 
 
@@ -356,7 +420,11 @@ function resetRR() {
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
-
+    // Καθαρισμός καμβά
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+ 
   
 
     // Απόκρυψη κουμπιών που δεν χρειάζονται
