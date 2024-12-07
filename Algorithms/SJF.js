@@ -98,42 +98,7 @@ function runSJFCPU() {
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
-function drawGanttChart(processes, bt, at, completionOrder) {
-    const canvas = document.getElementById('seekCanvas');
-    const ctx = canvas.getContext('2d');
 
-    // Υπολογισμός συνολικού χρόνου (τέλος της τελευταίας διεργασίας)
-    const totalTime = completionOrder.reduce(
-        (total, processIndex) => total + bt[processIndex],
-        0
-    );
-
-    // Ορισμός πλάτους καμβά για να χωρέσουν όλες οι διεργασίες
-    canvas.width = totalTime * 40; // 40 pixels ανά μονάδα χρόνου
-
-    // Καθαρισμός καμβά
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    let currentTime = 0;
-
-    completionOrder.forEach((processIndex) => {
-        const start = Math.max(currentTime, at[processIndex]);
-        const end = start + bt[processIndex];
-
-        // Γέμισμα μπάρας
-        ctx.fillStyle = `hsl(${(processIndex * 60) % 360}, 70%, 70%)`;
-        ctx.fillRect(start * 40, 50, (end - start) * 40, 40);
-
-        // Ετικέτες για τη διεργασία και τους χρόνους
-        ctx.fillStyle = '#000';
-        ctx.font = '12px Arial';
-        ctx.fillText(`P${processes[processIndex]}`, (start * 40) + ((end - start) * 20) - 10, 75); // Κέντρο μπάρας
-        ctx.fillText(`${start}`, start * 40, 100); // Αρχή
-        ctx.fillText(`${end}`, end * 40, 100); // Τέλος
-
-        currentTime = end;
-    });
-}
 
 
 
@@ -291,41 +256,49 @@ function createFiveColumnTable(processes, bt, at, wt) {
 }
 
 // Δημιουργία του Gantt Chart
-function drawGanttChart(processes, bt, at) {
+
+function drawGanttChart(processes, burstTime, arrivalTime, completionOrder) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Υπολογισμός συνολικού χρόνου (άθροισμα όλων των burst times)
-    const totalTime = processes.reduce(
-        (sum, p, i) => sum + bt[i],
-        0
-    );
+    // Υπολογισμός της συνολικής διάρκειας
+    const totalBurstTime = burstTime.reduce((sum, time) => sum + time, 0);
 
-    // Ορισμός πλάτους καμβά
-    canvas.width = totalTime * 40; // 40 pixels ανά μονάδα χρόνου
+    // Βασικό πλάτος καμβά
+    const baseWidth = 800;
+    const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
 
-    // Καθαρισμός καμβά
+    // Καθαρισμός του καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let currentTime = 0;
+    // Αρχικοποίηση
+    let currentX = 0;
+    ctx.font = '12px Arial';
 
-    processes.forEach((process, i) => {
-        const start = currentTime;
-        const end = start + bt[i];
+    for (const processIndex of completionOrder) {
+        const process = processes[processIndex];
+        const burst = burstTime[processIndex];
 
-        // Γέμισμα μπάρας
-        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
-        ctx.fillRect(start * 40, 50, (end - start) * 40, 40);
+        // Υπολογισμός πλάτους μπάρας
+        let barWidth = burst * scaleFactor;
 
-        // Ετικέτες για τη διεργασία και τους χρόνους
+        // Προσαρμογή πλάτους αν είναι μικρότερο από το ελάχιστο
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width + 10; // Επιπλέον περιθώριο για να χωράει η ετικέτα
+        if (barWidth < labelWidth) {
+            barWidth = labelWidth; // Προσαρμογή πλάτους
+        }
+
+        // Σχεδίαση μπάρας
+        ctx.fillStyle = `hsl(${(processIndex * 60) % 360}, 70%, 70%)`; // Χρώμα ανά διεργασία
+        ctx.fillRect(currentX, 50, barWidth, 40);
+
+        // Ετικέτα διεργασίας μέσα στη μπάρα
         ctx.fillStyle = '#000';
-        ctx.font = '12px Arial';
-        ctx.fillText(`P${process}`, (start * 40) + ((end - start) * 20) - 10, 75); // Κέντρο μπάρας
-        ctx.fillText(`${start}`, start * 40, 100); // Αρχή
-        ctx.fillText(`${end}`, end * 40, 100); // Τέλος
+        ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Κέντρο μπάρας
 
-        currentTime = end;
-    });
+        currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
+    }
 }
 
 
