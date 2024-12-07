@@ -3,6 +3,7 @@ function runPriorityCPU() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
     const prInput = document.getElementById('priority').value;
+    const schedule = []; // Πίνακας προγραμματισμού για το Gantt Chart
 
     // Έλεγχος αν τα πεδία είναι σωστά
     if (!btInput || !atInput || !prInput) {
@@ -70,6 +71,21 @@ function runPriorityCPU() {
 
         remainingBurstTime[highestPriorityIndex]--;
         currentTime++;
+        if (
+            schedule.length === 0 ||
+            schedule[schedule.length - 1].process !== processes[highestPriorityIndex]
+        ) {
+            // Αν είναι νέα διεργασία, προσθήκη στο schedule
+            schedule.push({
+                process: processes[highestPriorityIndex],
+                startTime: currentTime - 1,
+                endTime: currentTime,
+            });
+        } else {
+            // Ενημέρωση της λήξης αν είναι η ίδια διεργασία
+            schedule[schedule.length - 1].endTime = currentTime;
+        }
+        
 
         if (remainingBurstTime[highestPriorityIndex] === 0) {
             completed++;
@@ -88,16 +104,58 @@ function runPriorityCPU() {
         output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${priority[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
-
+    
     // Εμφάνιση αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById('stepHistory').innerHTML = `
         <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
+    // Δημιουργία του Gantt Chart
+drawGanttChart(schedule);
+
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
+function drawGanttChart(schedule) {
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Υπολογισμός της συνολικής διάρκειας
+    const totalBurstTime = schedule[schedule.length - 1].endTime;
+
+    // Βασικό πλάτος καμβά
+    const baseWidth = 800;
+    const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
+
+    // Καθαρισμός του καμβά
+    canvas.width = baseWidth;
+    canvas.height = 100;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let currentX = 0;
+    ctx.font = '12px Arial';
+
+    schedule.forEach(({ process, startTime, endTime }) => {
+        const duration = endTime - startTime;
+        const barWidth = duration * scaleFactor;
+
+        // Σχεδίαση μπάρας
+        ctx.fillStyle = `hsl(${(process * 60) % 360}, 70%, 70%)`; // Χρώμα ανά διεργασία
+        ctx.fillRect(currentX, 50, barWidth, 40);
+
+        // Ετικέτα διεργασίας μέσα στη μπάρα
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width;
+
+        if (labelWidth < barWidth) {
+            ctx.fillStyle = '#000'; // Χρώμα ετικέτας
+            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Κέντρο μπάρας
+        }
+
+        currentX += barWidth; // Ενημέρωση της θέσης X
+    });
+}
 
 
 
@@ -112,12 +170,14 @@ let stepRemainingTime = [];
 let stepWaitingTime = [];
 let stepTurnAroundTime = [];
 let stepCompleted = [];
+let stepSchedule = [];
 
 function startStepByStep() {
     // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
     const prInput = document.getElementById('priority').value; // Προτεραιότητα
+    
 
     stepBurstTime = btInput.split(',').map(Number);
     stepArrivalTime = atInput.split(',').map(Number);
@@ -172,7 +232,22 @@ function stepByStepExecution() {
     // Επιλέγουμε τη διεργασία με την υψηλότερη προτεραιότητα (χαμηλότερη τιμή προτεραιότητας)
     const highestPriorityIndex = availableProcesses.reduce((highest, i) =>
         stepPriority[i] < stepPriority[highest] ? i : highest, availableProcesses[0]);
-
+    
+    if (
+        stepSchedule.length === 0 ||
+        stepSchedule[stepSchedule.length - 1].process !== stepProcesses[highestPriorityIndex]
+    ) {
+        // Αν είναι νέα διεργασία, προσθήκη στο schedule
+        stepSchedule.push({
+            process: stepProcesses[highestPriorityIndex],
+            startTime: stepCurrentTime - 1,
+            endTime: stepCurrentTime,
+        });
+    } else {
+        // Ενημέρωση της λήξης αν είναι η ίδια διεργασία
+        stepSchedule[stepSchedule.length - 1].endTime = stepCurrentTime;
+    }
+    
     // Εκτέλεση της διεργασίας για 1 μονάδα χρόνου
     stepRemainingTime[highestPriorityIndex]--;
     stepCurrentTime++;
@@ -239,6 +314,10 @@ function stepByStepExecution() {
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
         const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
+        
+        
+        // Κλήση του Gantt Chart
+        drawGanttChart(stepSchedule);
 
         alert('Η εκτέλεση ολοκληρώθηκε!');
         document.getElementById('nextStepButton').remove();
@@ -335,7 +414,11 @@ function resetPrioritySJF() {
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
-
+     // Καθαρισμός καμβά
+     const canvas = document.getElementById('seekCanvas');
+     const ctx = canvas.getContext('2d');
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
   
 
     // Απόκρυψη κουμπιών που δεν χρειάζονται
