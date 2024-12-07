@@ -59,6 +59,7 @@ function runFCFSCPU() {
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
+
 function drawPartialGanttChart(processes, bt, at) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -87,13 +88,18 @@ function drawPartialGanttChart(processes, bt, at) {
         ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`; // Χρώμα μπάρας
         ctx.fillRect(currentX, 50, barWidth, 40);
 
-        // Προσθήκη ετικέτας διεργασίας (πάνω από τη μπάρα)
+        // Προσαρμογή γραμματοσειράς για την ετικέτα
+        const fontSize = Math.min(12, Math.floor(barWidth / 3)); // Μείωση αν η μπάρα είναι μικρή
+        ctx.font = `${fontSize}px Arial`;
         ctx.fillStyle = '#000';
-        ctx.font = '12px Arial';
-        ctx.fillText(`P${processes[i]}`, currentX + barWidth / 2 - 10, 45);
 
-        // Προσθήκη ετικέτας χρόνου εκκίνησης (κάτω από τη μπάρα)
-        ctx.fillText(`${startTime}`, currentX + 5, 110);
+        // Προσθήκη ετικέτας διεργασίας μέσα στη μπάρα
+        const label = `P${processes[i]}`;
+        const labelWidth = ctx.measureText(label).width;
+
+        if (labelWidth < barWidth) {
+            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Στο κέντρο της μπάρας
+        }
 
         currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
         currentTime = startTime + bt[i]; // Ενημέρωση του τρέχοντος χρόνου
