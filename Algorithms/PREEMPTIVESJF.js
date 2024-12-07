@@ -7,19 +7,18 @@ function runPreSJFCPU() {
     const n = burstTime.length;
     const processes = Array.from({ length: n }, (_, i) => i + 1);
 
-    const remainingBurstTime = [...burstTime]; // Αντιγραφή για αποθήκευση υπολοίπου χρόνου εκτέλεσης
+    const remainingBurstTime = [...burstTime];
     const wt = new Array(n).fill(0); // Χρόνος αναμονής
     const tat = new Array(n).fill(0); // Χρόνος επιστροφής
     const completionTime = new Array(n).fill(0); // Χρόνος ολοκλήρωσης
 
-    let currentTime = 0; // Χρονική στιγμή
+    let currentTime = 0; // Τρέχουσα χρονική στιγμή
     let completed = 0; // Μετρητής ολοκληρωμένων διεργασιών
-    let lastProcess = -1; // Διατήρηση της τρέχουσας διεργασίας για αποφυγή επαναλαμβανόμενων κουτιών
+    let lastProcess = -1; // Τελευταία διεργασία
+    const schedule = []; // Προγραμματισμός διεργασιών
     let queueOutput = ''; // Αναπαράσταση ουράς
 
-    // Εκτέλεση Preemptive SJF
     while (completed < n) {
-        // Βρες τις διαθέσιμες διεργασίες
         const availableProcesses = [];
         for (let i = 0; i < n; i++) {
             if (arrivalTime[i] <= currentTime && remainingBurstTime[i] > 0) {
@@ -36,14 +35,22 @@ function runPreSJFCPU() {
         const shortestJobIndex = availableProcesses.reduce((shortest, i) =>
             remainingBurstTime[i] < remainingBurstTime[shortest] ? i : shortest, availableProcesses[0]);
 
-        // Εμφάνιση της ουράς εκτέλεσης αν αλλάξει διεργασία
+        // Ενημέρωση ουράς αν αλλάξει διεργασία
         if (lastProcess !== shortestJobIndex) {
+            if (lastProcess !== -1) {
+                schedule[schedule.length - 1].endTime = currentTime;
+            }
+            schedule.push({
+                process: processes[shortestJobIndex],
+                startTime: currentTime,
+                processIndex: shortestJobIndex,
+            });
+
             const activeProcess = `<span class="queue-process active">P${processes[shortestJobIndex]}</span>`;
             const waitingQueue = availableProcesses
                 .filter((i) => i !== shortestJobIndex)
                 .map((i) => `<span class="queue-process">P${processes[i]}</span>`)
                 .join(' -> ') || 'Καμία';
-
             queueOutput += `
                 <div class="step-box">
                     <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
@@ -58,13 +65,17 @@ function runPreSJFCPU() {
         remainingBurstTime[shortestJobIndex]--;
         currentTime++;
 
-        // Αν η διεργασία ολοκληρώθηκε
+        // Αν ολοκληρώθηκε η διεργασία
         if (remainingBurstTime[shortestJobIndex] === 0) {
             completed++;
             completionTime[shortestJobIndex] = currentTime;
             tat[shortestJobIndex] = completionTime[shortestJobIndex] - arrivalTime[shortestJobIndex];
             wt[shortestJobIndex] = tat[shortestJobIndex] - burstTime[shortestJobIndex];
         }
+    }
+
+    if (schedule.length > 0) {
+        schedule[schedule.length - 1].endTime = currentTime;
     }
 
     // Υπολογισμός μέσου χρόνου αναμονής
@@ -79,16 +90,73 @@ function runPreSJFCPU() {
 
     // Εμφάνιση αποτελεσμάτων στη σελίδα
     document.getElementById('seek-count').innerHTML = output;
-
-    // Εμφάνιση μέσου χρόνου αναμονής
     document.getElementById('stepHistory').innerHTML = `
         <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
 
+    // Δημιουργία Gantt Chart
+    drawGanttChart(schedule);
+
     // Εμφάνιση κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
 }
+function drawGanttChart(schedule) {
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Υπολογισμός συνολικού χρόνου
+    const totalDuration = schedule[schedule.length - 1].endTime;
+
+    // Ρυθμίσεις καμβά
+    const canvasWidth = 800; // Πλάτος καμβά
+    const scaleFactor = canvasWidth / totalDuration; // Κλίμακα χρόνου
+    canvas.width = canvasWidth;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let currentX = 0; // Αρχικό X για τις μπάρες
+
+    for (let i = 0; i < schedule.length; i++) {
+        const { process, startTime, endTime } = schedule[i];
+        const duration = endTime - startTime;
+        const barWidth = duration * scaleFactor;
+
+        // Προσθήκη idle time αν υπάρχει κενό
+        if (i === 0 && startTime > 0) {
+            const idleWidth = startTime * scaleFactor;
+            ctx.fillStyle = 'gray'; // Χρώμα για idle time
+            ctx.fillRect(currentX, 50, idleWidth, 40);
+            currentX += idleWidth;
+        }
+
+        if (i > 0 && schedule[i - 1].endTime < startTime) {
+            const idleWidth = (startTime - schedule[i - 1].endTime) * scaleFactor;
+            ctx.fillStyle = 'gray';
+            ctx.fillRect(currentX, 50, idleWidth, 40);
+            currentX += idleWidth;
+        }
+
+        // Σχεδίαση μπάρας διεργασίας
+        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`; // Χρώμα διεργασίας
+        ctx.fillRect(currentX, 50, barWidth, 40);
+
+        // Ετικέτα διεργασίας μέσα στη μπάρα
+        ctx.fillStyle = '#000';
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width;
+        const fontSize = Math.min(12, barWidth / labelWidth * 10);
+        ctx.font = `${fontSize}px Arial`;
+
+        if (labelWidth <= barWidth) {
+            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75);
+        } else {
+            ctx.fillText(label, currentX + 5, 75); // Αν η ετικέτα δεν χωράει, αριστερά
+        }
+
+        currentX += barWidth; // Ενημέρωση για την επόμενη μπάρα
+    }
+}
+
 
 
 
@@ -101,6 +169,8 @@ let stepRemainingTime = [];
 let stepWaitingTime = [];
 let stepTurnAroundTime = [];
 let stepCompleted = [];
+let stepSchedule = [];
+
 
 function startStepByStep() {
     // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
@@ -147,7 +217,6 @@ function stepByStepExecution() {
         .filter((i) => i !== -1);
 
     if (availableProcesses.length === 0) {
-        // Αν δεν υπάρχουν διαθέσιμες διεργασίες, προχωράμε στον επόμενο χρόνο
         stepCurrentTime++;
         const stepBox = document.createElement('div');
         stepBox.classList.add('step-box');
@@ -163,6 +232,37 @@ function stepByStepExecution() {
     const shortestJobIndex = availableProcesses.reduce((shortest, i) =>
         stepRemainingTime[i] < stepRemainingTime[shortest] ? i : shortest, availableProcesses[0]);
 
+    // Δημιουργία της ουράς
+    const activeProcess = `<span class="queue-process active">P${stepProcesses[shortestJobIndex]}</span>`;
+    const waitingQueue = availableProcesses
+        .filter((i) => i !== shortestJobIndex)
+        .map((i) => `<span class="queue-process">P${stepProcesses[i]}</span>`)
+        .join(' -> ') || 'Καμία';
+
+    const stepBox = document.createElement('div');
+    stepBox.classList.add('step-box');
+    stepBox.innerHTML = `
+        <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
+        <div>Εκτελείται: ${activeProcess}</div>
+        <div>Αναμονή: ${waitingQueue}</div>
+    `;
+    document.getElementById('stepHistory').appendChild(stepBox);
+
+    // Ενημέρωση προγράμματος εκτέλεσης
+    if (
+        stepSchedule.length === 0 ||
+        stepSchedule[stepSchedule.length - 1].processIndex !== shortestJobIndex
+    ) {
+        if (stepSchedule.length > 0) {
+            stepSchedule[stepSchedule.length - 1].endTime = stepCurrentTime;
+        }
+        stepSchedule.push({
+            process: stepProcesses[shortestJobIndex],
+            processIndex: shortestJobIndex,
+            startTime: stepCurrentTime,
+        });
+    }
+
     // Εκτέλεση της διεργασίας για 1 μονάδα χρόνου
     stepRemainingTime[shortestJobIndex]--;
     stepCurrentTime++;
@@ -175,22 +275,6 @@ function stepByStepExecution() {
             stepTurnAroundTime[shortestJobIndex] - stepBurstTime[shortestJobIndex];
     }
 
-    // Δημιουργία του ενεργού κουτιού διεργασίας
-    const activeProcess = `<span class="queue-process active">P${stepProcesses[shortestJobIndex]}</span>`;
-    const waitingQueue = availableProcesses
-        .filter((i) => i !== shortestJobIndex)
-        .map((i) => `<span class="queue-process">P${stepProcesses[i]}</span>`)
-        .join(' -> ') || 'Καμία';
-
-    const stepBox = document.createElement('div');
-    stepBox.classList.add('step-box');
-    stepBox.innerHTML = `
-        <div class="step-time">Χρονική στιγμή: ${stepCurrentTime - 1}</div>
-        <div>Εκτελείται: ${activeProcess}</div>
-        <div>Αναμονή: ${waitingQueue}</div>
-    `;
-    document.getElementById('stepHistory').appendChild(stepBox);
-
     // Ενημέρωση του πεντάστηλου πίνακα
     const tableContainer = document.getElementById('seek-count');
     if (!document.querySelector('#preemptive-sjf-table')) {
@@ -199,7 +283,6 @@ function stepByStepExecution() {
         tableContainer.innerHTML = output + "</table>";
     }
 
-    // Αν ολοκληρώθηκε η διεργασία, ενημερώστε την αντίστοιχη γραμμή
     if (stepCompleted[shortestJobIndex]) {
         const table = document.querySelector('#preemptive-sjf-table');
         const newRow = table.insertRow(-1);
@@ -216,7 +299,14 @@ function stepByStepExecution() {
     if (stepCompleted.every((completed) => completed)) {
         alert('Η εκτέλεση ολοκληρώθηκε!');
         document.getElementById('nextStepButton').remove();
-       
+
+        // Ολοκλήρωση του τελευταίου χρονικού διαστήματος στο πρόγραμμα
+        if (stepSchedule.length > 0) {
+            stepSchedule[stepSchedule.length - 1].endTime = stepCurrentTime;
+        }
+
+        // Δημιουργία Gantt Chart
+        drawGanttChart(stepSchedule);
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
@@ -224,6 +314,7 @@ function stepByStepExecution() {
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
     }
 }
+
 
 
 
@@ -289,7 +380,11 @@ function resetPreSJF() {
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
-
+   
+     // Καθαρισμός καμβά
+     const canvas = document.getElementById('seekCanvas');
+     const ctx = canvas.getContext('2d');
+     ctx.clearRect(0, 0, canvas.width, canvas.height);
   
 
     // Απόκρυψη κουμπιών που δεν χρειάζονται
