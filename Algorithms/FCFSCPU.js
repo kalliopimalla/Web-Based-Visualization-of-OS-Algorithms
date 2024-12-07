@@ -59,42 +59,50 @@ function runFCFSCPU() {
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
-
 function drawPartialGanttChart(processes, bt, at) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Βρες τον ελάχιστο χρόνο άφιξης
+    // Εύρεση χρόνων άφιξης και συνολικού χρόνου
     const minArrivalTime = Math.min(...at);
-
-    // Υπολογισμός συνολικού χρόνου (άθροισμα όλων των burst times)
     let totalTime = Math.max(...at) + bt.reduce((sum, time) => sum + time, 0);
 
-    // Προσαρμογή πλάτους καμβά
-    canvas.width = (totalTime - minArrivalTime) * 40; // Κάθε μονάδα χρόνου = 40 pixels
+    // Υπολογισμός μήκους μπάρων για κάθε διεργασία
+    const barLengths = bt.map((time) => time * 40); // 40 pixels ανά μονάδα χρόνου
+    const maxDivisionFactor = Math.ceil(totalTime / 800); // Διαίρεση για να χωράνε όλα
+    const adjustedBarLengths = barLengths.map((length) => length / maxDivisionFactor);
 
-    // Καθαρισμός καμβά
+    // Αναπροσαρμογή πλάτους καμβά
+    canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let currentTime = minArrivalTime; // Ξεκινάμε από την πρώτη χρονική στιγμή
+    let currentTime = minArrivalTime;
+    let currentX = 0;
 
     for (let i = 0; i < processes.length; i++) {
-        const start = Math.max(currentTime, at[i]) - minArrivalTime; // Υπολογισμός με βάση τον ελάχιστο χρόνο άφιξης
+        const start = Math.max(currentTime, at[i]) - minArrivalTime;
         const end = start + bt[i];
 
-        // Γέμισμα με διαφορετικό χρώμα για κάθε διεργασία
-        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
-        ctx.fillRect(start * 40, 50, (end - start) * 40, 40);
+        const barWidth = adjustedBarLengths[i];
 
-        // Ετικέτες για διεργασίες και χρόνους
+        // Σχεδίαση μπάρας
+        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
+        ctx.fillRect(currentX, 50, barWidth, 40);
+
+        // Προσθήκη ετικέτας διεργασίας
         ctx.fillStyle = '#000';
         ctx.font = '12px Arial';
-        ctx.fillText(`P${processes[i]}`, (start * 40) + ((end - start) * 20) - 10, 75); // Κέντρο μπάρας
-        ctx.fillText(`${start + minArrivalTime}`, start * 40, 100); // Αρχή
-        ctx.fillText(`${end + minArrivalTime}`, end * 40, 100); // Τέλος
+        ctx.fillText(`P${processes[i]}`, currentX + barWidth / 2 - 10, 70); // Στο κέντρο μπάρας
 
-        // Ενημέρωση τρέχουσας χρονικής στιγμής
+        // Προσθήκη χρόνων
+        if (i === 0 || start > currentTime) {
+            ctx.fillText(`${start + minArrivalTime}`, currentX, 100); // Αρχή μπάρας
+        }
+        ctx.fillText(`${end + minArrivalTime}`, currentX + barWidth - 10, 100); // Τέλος μπάρας
+
+        // Ενημέρωση τρέχοντος χρόνου και θέσης X
         currentTime = Math.max(currentTime, at[i]) + bt[i];
+        currentX += barWidth; // Ενιαίες μπάρες
     }
 }
 
