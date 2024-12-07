@@ -373,21 +373,19 @@ function generateRandomSequence(length = 6, max = 50) {
     return sequence;
 }
 
-// Σύνδεση της λειτουργίας με το κουμπί
+// Σύνδεση της λειτουργίας με το κουμπί για το burst-time
 document.getElementById("generateSequenceButton1").addEventListener("click", function() {
     const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
     document.getElementById("burst-time").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
-    //document.getElementById("arrival-time").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
-
 });
 
-// Σύνδεση της λειτουργίας με το κουμπί
+// Σύνδεση της λειτουργίας με το κουμπί για το arrival-time (ξεκινά πάντα από 0)
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
     const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
-   // document.getElementById("burst-time").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+    randomSequence[0] = 0; // Ορισμός του πρώτου στοιχείου ως 0
     document.getElementById("arrival-time").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
-
 });
+
 
 function resetSJF() {
     // Καθαρισμός των πεδίων εισόδου
