@@ -12,25 +12,31 @@ let seekSequence = []; // Global μεταβλητή
  * @throws {Error} Αν δεν υπάρχουν έγκυρες εισροές, εμφανίζει μήνυμα σφάλματος.
  */
 function executeCSCAN() {
-    // Λήψη και επεξεργασία των εισροών
-    let tracksInput = document.getElementById("process-queue").value.trim();
-    let head = parseInt(document.getElementById("head-position").value);
-    let direction = document.getElementById("direction").value;  // Αποθήκευση της κατεύθυνσης
-    
-    // Έλεγχος για έγκυρη είσοδο
-    if (!tracksInput) {
-        alert("Παρακαλώ εισάγετε μια λίστα αριθμών, χωρισμένων με κόμματα!");
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
+    // Ανάκτηση και έλεγχος δεδομένων εισόδου
+    const tracksInputElement = document.getElementById("process-queue");
+    const tracksInput = tracksInputElement.value.trim();
+    const headPositionElement = document.getElementById("head-position");
+    const headPosition = parseInt(headPositionElement.value, 10);
+    const directionElement = document.getElementById("direction");
+    const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
+    const disk_size = 200; // Παράδειγμα μεγέθους δίσκου
+
+    if (!tracksInput || isNaN(headPosition) || headPosition < 0 || !direction || (direction !== "left" && direction !== "right")) {
+        if (!tracksInput) displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
+        if (isNaN(headPosition) || headPosition < 0) displayError(headPositionElement, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
+        if (!direction || (direction !== "left" && direction !== "right")) displayError(directionElement, "Παρακαλώ επιλέξτε κατεύθυνση (left ή right)!");
         return;
     }
-  
-   
-    let tracks = tracksInput.split(',').map(item => item.trim()).map(Number).filter(num => !isNaN(num));
 
-  // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
-if (tracks.length === 0 || tracks.length > 100) {
-    alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό και όχι περισσότερους από 100!");
-    return;
-}
+    // Μετατροπή εισόδου σε πίνακα αριθμών
+    const tracks = tracksInput.split(",").map(Number).filter(num => !isNaN(num));
+    if (tracks.length === 0 || tracks.length > 100) {
+        if (tracks.length === 0) displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
+        if (tracks.length > 100) displayError(tracksInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+        return;
+    }
 
     // Εξασφάλιση ότι το 0 περιλαμβάνεται
     if (!tracks.includes(0)) {
@@ -287,10 +293,7 @@ function resetCanvasAndInputs() {
 
 function generateRandomSequence(length, max = 200) {
 
-    if (length > 100) {
-        alert("Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
-        return [];
-    }
+  
 
     let sequence = [];
     for (let i = 0; i < length; i++) {
@@ -320,27 +323,32 @@ function adjustCanvasSpacing() {
 
 
 
-
-
+// Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton").addEventListener("click", function () {
-    const sequenceLengthInput = document.getElementById("sequenceLength").value.trim();
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
+    // Λήψη του μήκους από το πεδίο εισαγωγής
+    const sequenceLengthInputElement = document.getElementById("sequence-length");
+    const sequenceLengthInput = sequenceLengthInputElement.value.trim();
     const sequenceLength = parseInt(sequenceLengthInput, 10);
 
+    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
     if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
         return;
     }
 
-    const randomSequence = generateRandomSequence(sequenceLength, 200); // Παροχή μήκους και μέγιστου ορίου
-    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
-
-    // Ενημέρωση καμβά αν η ακολουθία είναι μεγάλη
+    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
     const canvas = document.getElementById("seekCanvas");
     if (sequenceLength > 30) {
         canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
     } else {
         canvas.height = 600; // Επαναφορά στο αρχικό ύψος
     }
+
+    // Δημιουργία τυχαίας ακολουθίας
+    const randomSequence = generateRandomSequence(sequenceLength);
+    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
 });
 
 
@@ -407,3 +415,31 @@ document.addEventListener("DOMContentLoaded", () => {
         seekSequenceBoxes.appendChild(arrow);
     }
 });
+
+
+// Συνάρτηση για εμφάνιση μηνύματος σφάλματος
+function displayError(inputElement, errorMessage) {
+    // Βεβαιωθείτε ότι το στοιχείο εισαγωγής υπάρχει
+    if (!inputElement) return;
+
+    // Κοκκίνισμα του πλαισίου
+    inputElement.style.borderColor = "red";
+
+    // Δημιουργία στοιχείου για το μήνυμα σφάλματος
+    const errorBox = document.createElement("div");
+    errorBox.className = "error-message";
+    errorBox.textContent = errorMessage;
+    errorBox.style.color = "red";
+    errorBox.style.fontSize = "14px";
+    errorBox.style.marginTop = "5px";
+
+    // Προσθήκη του μηνύματος κάτω από το πεδίο εισαγωγής
+    inputElement.parentElement.appendChild(errorBox);
+}
+
+
+// Συνάρτηση για εκκαθάριση μηνυμάτων σφάλματος
+function clearErrorMessages() {
+    document.querySelectorAll(".error-message").forEach(el => el.remove());
+    document.querySelectorAll("input").forEach(input => (input.style.borderColor = ""));
+}

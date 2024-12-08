@@ -5,6 +5,8 @@ const disk_size = 199; // Μέγεθος δίσκου
  * Εκτελεί τον αλγόριθμο SCAN και σχεδιάζει την αναπαράσταση.
  */
 function executeSCAN() {
+
+    
       // Ανάκτηση στοιχείων εισόδου
     const tracksInputElement = document.getElementById("process-queue");
     const tracksInput = tracksInputElement.value.trim();
@@ -22,8 +24,7 @@ if (isNaN(headPosition) || headPosition < 0) {
 }
 clearErrorMessages()
    
-    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
-
+  
  
     
     // Έλεγχος έγκυρων δεδομένων
