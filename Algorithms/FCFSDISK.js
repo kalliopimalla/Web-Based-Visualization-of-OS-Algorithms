@@ -7,15 +7,24 @@ function runFCFS() {
     const inputQueue = document.getElementById("process-queue").value.trim();
     const headPositionInput = document.getElementById("head-position");
     const headPosition = parseInt(headPositionInput.value);
+    const headPositionElement = document.getElementById("head-position");
+   
+/**Σφαλμα για το αν η θεση της κεφαλης ειναι αρνητικος  */    
+    if (isNaN(headPosition) || headPosition < 0) {
+        displayError(headPositionElement, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
+        return;
+    }
+    clearErrorMessages()
 
-
-    clearErrorMessages();
-
+/**Σφάλμα για το αν υπαρχει αρχη κεφαλης κι ακολουθια  */
     if (!inputQueue || isNaN(headPosition)) {
         displayError(headPositionInput, "Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
+    clearErrorMessages()
 
+
+   /**Σφάλμα για το αν υπαρχουν κενά στην εισοδο ή αν υπαρχει χαρακτήρας αντι για αριθμός  */
     const requestQueue = inputQueue.split(",").map(item => {
         const num = Number(item.trim());
         if (isNaN(num)) {
@@ -25,12 +34,16 @@ function runFCFS() {
         }
         return num;
     });
+    clearErrorMessages()
 
+   /**Σφάλμα για το αν η ακολουθια ειναι μεγαλυτερη απο 100 αριθμοι */
     if (requestQueue.length > 100) {
         displayError(document.getElementById("process-queue"), 
             "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
         return;
     }
+    clearErrorMessages()
+
     let seekCount = 0;
     let seekSequence = [headPosition];
     let currentPosition = headPosition;
@@ -89,6 +102,7 @@ function runFCFS() {
     // Εμφάνιση του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "inline-block";
     hideFooter(); // Απόκρυψη του footer
+   
 }
 
 // Συνάρτηση για την επαναφορά του καμβά και των πεδίων εισόδου
@@ -254,17 +268,13 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     const sequenceLengthValue = sequenceLengthInput.value.trim();
     const sequenceLength = parseInt(sequenceLengthValue, 10);
 
-    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
+    // Σφαλμα για το αν το μήκος είναι αριθμός και θετικό
     if (isNaN(sequenceLength) || sequenceLength <= 0) {
         displayError(sequenceLengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
         return;
     }
    
-     // Έλεγχος αν το μήκος υπερβαίνει το 100
-     if (sequenceLength > 100) {
-        displayError(sequenceLengthInput, "Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
-        return;
-    }
+     
 
     // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
     const canvas = document.getElementById("seekCanvas");
@@ -332,32 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
 }
 
-// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    clearErrorMessages(); // Καθαρίζει προηγούμενα μηνύματα σφάλματος
 
-    const sequenceLengthInput = document.getElementById("sequence-length");
-    const sequenceLengthValue = sequenceLengthInput.value.trim();
-    const sequenceLength = parseInt(sequenceLengthValue, 10);
-
-    if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        // Εμφάνιση μηνύματος σφάλματος με χρήση της displayError
-        displayError(sequenceLengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
-        return;
-    }
-
-    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
-    const canvas = document.getElementById("seekCanvas");
-    if (sequenceLength > 30) {
-        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
-    } else {
-        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
-    }
-
-    // Ρύθμιση του container για να μετακινηθεί σωστά
-    const canvasContainer = document.querySelector(".canvas-container");
-    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
-});
 
 
 function showFooter() {
