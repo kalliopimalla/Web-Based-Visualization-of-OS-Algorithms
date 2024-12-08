@@ -790,3 +790,13 @@ footer {
   text-align: center;
   min-width: 50px; /* Πλάτος κάθε κουτιού */
 }
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+}
+input {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

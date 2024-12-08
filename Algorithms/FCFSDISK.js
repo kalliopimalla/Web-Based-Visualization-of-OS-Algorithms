@@ -5,29 +5,36 @@
  */
 function runFCFS() {
     const inputQueue = document.getElementById("process-queue").value.trim();
-    const headPosition = parseInt(document.getElementById("head-position").value);
+    const headPositionInput = document.getElementById("head-position");
+    const headPosition = parseInt(headPositionInput.value);
+
+
+    clearErrorMessages();
 
     if (!inputQueue || isNaN(headPosition)) {
-        alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
+        displayError(headPositionInput, "Παρακαλώ εισάγετε έγκυρα δεδομένα!");
         return;
     }
 
     const requestQueue = inputQueue.split(",").map(item => {
         const num = Number(item.trim());
         if (isNaN(num)) {
-            alert("Παρακαλώ εισάγετε έγκυρους αριθμούς διαχωρισμένους με κόμματα στην ουρά διεργασιών!");
+            displayError(document.getElementById("process-queue"), 
+                "Παρακαλώ εισάγετε έγκυρους αριθμούς διαχωρισμένους με κόμματα στην ουρά διεργασιών!");
             throw new Error("Invalid input in process queue");
         }
         return num;
     });
- // Έλεγχος για μέγιστο μήκος 100 αριθμών
- if (requestQueue.length > 100) {
-    alert("Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
-    return;
-}
+
+    if (requestQueue.length > 100) {
+        displayError(document.getElementById("process-queue"), 
+            "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+        return;
+    }
     let seekCount = 0;
     let seekSequence = [headPosition];
     let currentPosition = headPosition;
+    
 
     for (let i = 0; i < requestQueue.length; i++) {
         let distance = Math.abs(currentPosition - requestQueue[i]);
@@ -224,12 +231,11 @@ function visualizeSeekSequence(seekSequence) {
 
 
 
-// Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
-    if (length > 100) {
-        alert("Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
-        return [];
-    }
+    clearErrorMessages(); // Καθαρίζει προηγούμενα μηνύματα σφάλματος
+
+ 
+
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
@@ -241,13 +247,22 @@ function generateRandomSequence(length = sequenceLength, max = 200) {
 
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     // Λήψη του μήκους από το πεδίο εισαγωγής
-    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
-    const sequenceLength = parseInt(sequenceLengthInput, 10);
+    const sequenceLengthInput = document.getElementById("sequence-length");
+    const sequenceLengthValue = sequenceLengthInput.value.trim();
+    const sequenceLength = parseInt(sequenceLengthValue, 10);
 
     // Έλεγχος αν το μήκος είναι αριθμός και θετικό
     if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        displayError(sequenceLengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        return;
+    }
+   
+     // Έλεγχος αν το μήκος υπερβαίνει το 100
+     if (sequenceLength > 100) {
+        displayError(sequenceLengthInput, "Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
         return;
     }
 
@@ -260,7 +275,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     }
 
     // Δημιουργία τυχαίας ακολουθίας
-    const randomSequence = generateRandomSequence(sequenceLength); 
+    const randomSequence = generateRandomSequence(sequenceLength);
     document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
 });
 
@@ -319,11 +334,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
-    const sequenceLength = parseInt(sequenceLengthInput, 10);
+    clearErrorMessages(); // Καθαρίζει προηγούμενα μηνύματα σφάλματος
+
+    const sequenceLengthInput = document.getElementById("sequence-length");
+    const sequenceLengthValue = sequenceLengthInput.value.trim();
+    const sequenceLength = parseInt(sequenceLengthValue, 10);
 
     if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        // Εμφάνιση μηνύματος σφάλματος με χρήση της displayError
+        displayError(sequenceLengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
         return;
     }
 
@@ -339,6 +358,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     const canvasContainer = document.querySelector(".canvas-container");
     canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
 });
+
 
 function showFooter() {
     const footer = document.querySelector("footer");
@@ -374,3 +394,31 @@ seekSequence.forEach((position, index) => {
         seekSequenceBoxes.appendChild(lineBreak);
     }
 });
+
+
+// Συνάρτηση για εμφάνιση μηνύματος σφάλματος
+function displayError(inputElement, errorMessage) {
+    // Βεβαιωθείτε ότι το στοιχείο εισαγωγής υπάρχει
+    if (!inputElement) return;
+
+    // Κοκκίνισμα του πλαισίου
+    inputElement.style.borderColor = "red";
+
+    // Δημιουργία στοιχείου για το μήνυμα σφάλματος
+    const errorBox = document.createElement("div");
+    errorBox.className = "error-message";
+    errorBox.textContent = errorMessage;
+    errorBox.style.color = "red";
+    errorBox.style.fontSize = "14px";
+    errorBox.style.marginTop = "5px";
+
+    // Προσθήκη του μηνύματος κάτω από το πεδίο εισαγωγής
+    inputElement.parentElement.appendChild(errorBox);
+}
+
+
+// Συνάρτηση για εκκαθάριση μηνυμάτων σφάλματος
+function clearErrorMessages() {
+    document.querySelectorAll(".error-message").forEach(el => el.remove());
+    document.querySelectorAll("input").forEach(input => (input.style.borderColor = ""));
+}
