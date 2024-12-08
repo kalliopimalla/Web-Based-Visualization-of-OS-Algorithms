@@ -28,26 +28,32 @@ function initializeSimulation() {
 
 }
 
-
 function isValidInput(pageInput, maxFrames) {
-    // Έλεγχος αν η ακολουθία σελίδων είναι κενή ή περιέχει μη έγκυρους αριθμούς
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     const pageArray = pageInput.split(',').map(num => num.trim());
+    const pageInputElement = document.getElementById("pages");
+
     for (let page of pageArray) {
         if (isNaN(page) || page === "") {
-            alert("Η ακολουθία σελίδων πρέπει να περιέχει μόνο έγκυρους αριθμούς διαχωρισμένους με κόμμα.");
+            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο έγκυρους αριθμούς διαχωρισμένους με κόμμα.");
             return false;
         }
     }
 
-    // Έλεγχος αν ο αριθμός πλαισίων είναι έγκυρος
-    if (isNaN(maxFrames) || maxFrames <= 0) {
-        alert("Παρακαλώ εισάγετε έναν έγκυρο αριθμό πλαισίων.");
+    if (pageArray.length > 100) {
+        displayError(pageInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
         return false;
     }
 
-    return true; // Αν όλα είναι σωστά
-}
+    const frameInputElement = document.getElementById("frame-number");
+    if (isNaN(maxFrames) || maxFrames <= 0) {
+        displayError(frameInputElement, "Παρακαλώ εισάγετε έναν έγκυρο αριθμό πλαισίων.");
+        return false;
+    }
 
+    return true;
+}
 function createTable() {
     const seekSequence = document.getElementById("seek-sequence");
     seekSequence.innerHTML = ''; // Καθαρισμός του πίνακα
@@ -94,43 +100,53 @@ function nextStep() {
         initializeSimulation(); // Ξεκινά νέα προσομοίωση αν δεν έχει ξεκινήσει
     }
 
-    if (step < pages.length) {
-        const page = pages[step];
-        const pageTable = Array.from(table.getElementsByTagName("td"));
-        let isFault = false;
-
-        if (!pageFrames.includes(page)) { // Page fault
-            pageFaults++;
-            isFault = true;
-            if (pageFrames.includes(null)) {
-                const index = pageFrames.indexOf(null); // Βρες την πρώτη κενή θέση
-                pageFrames[index] = page; // Προσθήκη στη θέση
-            } else {
-                const replaceIndex = predict(pages, pageFrames, pages.length, step + 1); // Βρες τη θέση αντικατάστασης
-                pageFrames[replaceIndex] = page; // Αντικατάσταση
-            }
-        } else {
-            hits++; // Αύξηση hits
+    if (step >= pages.length) {
+        // Δημιουργία δυναμικού μηνύματος ολοκλήρωσης
+        const completionMessage = document.getElementById("completionMessage");
+        if (!completionMessage) {
+            const message = document.createElement("div");
+            message.id = "completionMessage";
+            message.textContent = "Η προσομοίωση ολοκληρώθηκε!";
+            message.style.color = "blue";
+            message.style.marginTop = "10px";
+            document.getElementById("seek-sequence").appendChild(message);
         }
-
-        // Ενημέρωση πίνακα: Χρωματίζεται μόνο το κελί που αντιστοιχεί σε fault ή hit
-        pageTable.forEach(cell => {
-            const frameIndex = cell.getAttribute("data-frame");
-            if (cell.getAttribute("data-step") == step) {
-                if (pageFrames[frameIndex] === page) {
-                    cell.innerText = page;
-                    cell.style.backgroundColor = isFault ? '#f8d7da' : '#d4edda'; // Κόκκινο για fault, πράσινο για hit
-                } else {
-                    cell.innerText = pageFrames[frameIndex] ?? '';
-                    cell.style.backgroundColor = ''; // Επαναφορά για μη σχετιζόμενα κελιά
-                }
-            }
-        });
-
-        step++;
-    } else {
-        alert("Η προσομοίωση ολοκληρώθηκε!");
+        return; // Επιστροφή αν η προσομοίωση ολοκληρώθηκε
     }
+
+    const page = pages[step];
+    const pageTable = Array.from(table.getElementsByTagName("td"));
+    let isFault = false;
+
+    if (!pageFrames.includes(page)) { // Page fault
+        pageFaults++;
+        isFault = true;
+        if (pageFrames.includes(null)) {
+            const index = pageFrames.indexOf(null); // Βρες την πρώτη κενή θέση
+            pageFrames[index] = page; // Προσθήκη στη θέση
+        } else {
+            const replaceIndex = predict(pages, pageFrames, pages.length, step + 1); // Βρες τη θέση αντικατάστασης
+            pageFrames[replaceIndex] = page; // Αντικατάσταση
+        }
+    } else {
+        hits++; // Αύξηση hits
+    }
+
+    // Ενημέρωση πίνακα: Χρωματίζεται μόνο το κελί που αντιστοιχεί σε fault ή hit
+    pageTable.forEach(cell => {
+        const frameIndex = cell.getAttribute("data-frame");
+        if (cell.getAttribute("data-step") == step) {
+            if (pageFrames[frameIndex] === page) {
+                cell.innerText = page;
+                cell.style.backgroundColor = isFault ? '#f8d7da' : '#d4edda'; // Κόκκινο για fault, πράσινο για hit
+            } else {
+                cell.innerText = pageFrames[frameIndex] ?? '';
+                cell.style.backgroundColor = ''; // Επαναφορά για μη σχετιζόμενα κελιά
+            }
+        }
+    });
+
+    step++;
 
     // Ενημέρωση αποτελεσμάτων
     resultText.innerHTML = `
@@ -138,6 +154,7 @@ function nextStep() {
         <span class="hits">Συνολικός αριθμός hits: ${hits}</span>
     `;
 }
+
 
 
 
@@ -222,50 +239,34 @@ function predict(pg, fr, pn, index) {
 }
 
 
-
 function generateSequence() {
-    // Παίρνουμε τις τιμές από τα πεδία
-    const lengthInput = document.getElementById("sequenceLength").value.trim();
-    const maxPageInput = document.getElementById("maxPageNumber").value.trim();
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
-    const length = parseInt(lengthInput, 10); // Μήκος ακολουθίας
-    const maxPageNumber = parseInt(maxPageInput, 10); // Μέγιστος αριθμός σελίδας
+    const lengthInputElement = document.getElementById("sequenceLength");
+    const maxPageInputElement = document.getElementById("maxPageNumber");
+    const lengthInput = lengthInputElement.value.trim();
+    const maxPageInput = maxPageInputElement.value.trim();
 
-    // Έλεγχος εγκυρότητας για το μήκος ακολουθίας
+    const length = parseInt(lengthInput, 10);
+    const maxPageNumber = parseInt(maxPageInput, 10);
+
     if (isNaN(length) || length <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας (θετικός αριθμός)!");
+        displayError(lengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας (θετικός αριθμός)!");
         return;
     }
 
-    // Έλεγχος εγκυρότητας για τον μέγιστο αριθμό σελίδας
     if (isNaN(maxPageNumber) || maxPageNumber <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας (θετικός αριθμός)!");
+        displayError(maxPageInputElement, "Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας (θετικός αριθμός)!");
         return;
     }
 
-    // Δημιουργία τυχαίας ακολουθίας σελίδων από 1 έως maxPageNumber
     const sequence = [];
     for (let i = 0; i < length; i++) {
         const randomPage = Math.floor(Math.random() * maxPageNumber) + 1;
         sequence.push(randomPage);
     }
 
-    // Ενημέρωση του πεδίου "pages" με την τυχαία ακολουθία
     document.getElementById("pages").value = sequence.join(',');
-
-    // Καθαρισμός προηγούμενου περιεχομένου (προαιρετικά)
-    const sequenceBoxes = document.getElementById("seek-sequence-boxes");
-    if (sequenceBoxes) {
-        sequenceBoxes.innerHTML = ''; 
-
-        // Δημιουργία των στοιχείων της ακολουθίας για οπτικοποίηση
-        sequence.forEach(page => {
-            const box = document.createElement("div");
-            box.classList.add("sequence-box");
-            box.innerText = page;
-            sequenceBoxes.appendChild(box);
-        });
-    }
 }
 
 
@@ -348,3 +349,29 @@ document.addEventListener("DOMContentLoaded", () => {
     seekSequence.style.width = `${newWidth}px`; // Ενημέρωση του πλάτους
     seekSequence.style.overflowX = "auto"; // Ενεργοποίηση οριζόντιας κύλισης
 }
+
+// Συνάρτηση για εμφάνιση μηνύματος σφάλματος
+function displayError(inputElement, errorMessage) {
+    if (!inputElement) return;
+
+    // Κοκκίνισμα του πλαισίου
+    inputElement.style.borderColor = "red";
+
+    // Δημιουργία στοιχείου για το μήνυμα σφάλματος
+    const errorBox = document.createElement("div");
+    errorBox.className = "error-message";
+    errorBox.textContent = errorMessage;
+    errorBox.style.color = "red";
+    errorBox.style.fontSize = "14px";
+    errorBox.style.marginTop = "5px";
+
+    // Προσθήκη του μηνύματος κάτω από το πεδίο εισόδου
+    inputElement.parentElement.appendChild(errorBox);
+}
+
+// Συνάρτηση για εκκαθάριση μηνυμάτων σφάλματος
+function clearErrorMessages() {
+    document.querySelectorAll(".error-message").forEach(el => el.remove());
+    document.querySelectorAll("input").forEach(input => (input.style.borderColor = ""));
+}
+
