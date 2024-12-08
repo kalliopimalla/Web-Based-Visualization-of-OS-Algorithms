@@ -7,39 +7,72 @@ let showNumbersOnArrows = true; // Εναλλαγή εμφάνισης αριθ�
  * Εκτελεί τον αλγόριθμο LOOK για χρονοπρογραμματισμό δίσκου.
  */
 function executeLOOK() {
-    let tracksInput = document.getElementById("process-queue").value;
-    let head = parseInt(document.getElementById("head-position").value);
-    let direction = document.getElementById("direction").value;
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
-    if (!tracksInput || isNaN(head)) {
-        alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
+    // Λήψη δεδομένων εισόδου
+    const tracksInputElement = document.getElementById("process-queue");
+    const tracksInput = tracksInputElement.value.trim();
+    const headPositionElement = document.getElementById("head-position");
+    const headPosition = parseInt(headPositionElement.value, 10);
+    const directionElement = document.getElementById("direction");
+    const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
+
+    // Έλεγχος αν η είσοδος είναι έγκυρη
+    if (!tracksInput || isNaN(headPosition)) {
+        if (!tracksInput) {
+            displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
+        }
+        if (isNaN(headPosition)) {
+            displayError(headPositionElement, "Παρακαλώ εισάγετε έγκυρη θέση κεφαλής!");
+        }
         return;
     }
 
     // Μετατροπή των αιτημάτων σε πίνακα αριθμών
-    let tracks = tracksInput.split(',').map(item => Number(item.trim())).filter(num => !isNaN(num));
+    const tracks = tracksInput.split(",").map(item => Number(item.trim())).filter(num => !isNaN(num));
 
-   // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
-if (tracks.length === 0 || tracks.length > 100) {
-    alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό και όχι περισσότερους από 100!");
-    return;
-}
+    // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
+    if (tracks.length === 0 || tracks.length > 100) {
+        if (tracks.length === 0) {
+            displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
+        }
+        if (tracks.length > 100) {
+            displayError(tracksInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+        }
+        return;
+    }
 
     // Κλήση της συνάρτησης LOOK
-    LOOK(tracks, head, direction);
-      // Εμφάνιση κουμπιού επαναφοράς
-      document.getElementById("resetButton").style.display = "inline-block";
-      hideFooter(); // Απόκρυψη του footer
+    LOOK(tracks, headPosition, direction);
+
+    // Εμφάνιση κουμπιού επαναφοράς
+    document.getElementById("resetButton").style.display = "inline-block";
+    hideFooter(); // Απόκρυψη του footer
 }
+
 
 /**
  * Υλοποιεί τον αλγόριθμο LOOK.
  */
 function LOOK(arr, head, direction) {
-    if (!Array.isArray(arr) || arr.length === 0 || arr.some(num => typeof num !== 'number' || isNaN(num))) {
-        alert("Παρακαλώ εισάγετε έγκυρους αριθμούς για τα αιτήματα.");
-        return;
-    }
+      // Καθαρισμός μηνυμάτων σφάλματος
+      clearErrorMessages();
+
+      // Έλεγχος εγκυρότητας εισόδου
+      if (!Array.isArray(arr) || arr.length === 0 || arr.some(num => typeof num !== 'number' || isNaN(num))) {
+          displayError(document.getElementById("process-queue"), "Παρακαλώ εισάγετε έγκυρους αριθμούς για τα αιτήματα.");
+          return;
+      }
+  
+      if (isNaN(head) || head < 0) {
+          displayError(document.getElementById("head-position"), "Παρακαλώ εισάγετε έγκυρη θέση κεφαλής (μη αρνητικός αριθμός).");
+          return;
+      }
+  
+      if (!direction || (direction !== "left" && direction !== "right")) {
+          displayError(document.getElementById("direction"), "Παρακαλώ επιλέξτε κατεύθυνση (left ή right).");
+          return;
+      }
 
     let seek_count = 0;
     let distance, cur_track;
@@ -280,10 +313,7 @@ function resetCanvasAndInputs() {
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
 
-    if (length > 100) {
-        alert("Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
-        return [];
-    }
+   
 
     let sequence = [];
     for (let i = 0; i < length; i++) {
@@ -295,14 +325,17 @@ function generateRandomSequence(length = sequenceLength, max = 200) {
 
 
 // Σύνδεση της λειτουργίας με το κουμπί
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
+document.getElementById("generateSequenceButton").addEventListener("click", function () {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     // Λήψη του μήκους από το πεδίο εισαγωγής
-    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLengthInputElement = document.getElementById("sequence-length");
+    const sequenceLengthInput = sequenceLengthInputElement.value.trim();
     const sequenceLength = parseInt(sequenceLengthInput, 10);
 
     // Έλεγχος αν το μήκος είναι αριθμός και θετικό
     if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
         return;
     }
 
@@ -315,9 +348,10 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     }
 
     // Δημιουργία τυχαίας ακολουθίας
-    const randomSequence = generateRandomSequence(sequenceLength); 
+    const randomSequence = generateRandomSequence(sequenceLength);
     document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
 });
+
 
 
 
@@ -372,28 +406,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
 }
 
-// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
-    const sequenceLength = parseInt(sequenceLengthInput, 10);
-
-    if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
-        return;
-    }
-
-    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
-    const canvas = document.getElementById("seekCanvas");
-    if (sequenceLength > 30) {
-        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
-    } else {
-        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
-    }
-
-    // Ρύθμιση του container για να μετακινηθεί σωστά
-    const canvasContainer = document.querySelector(".canvas-container");
-    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
-});
 
 function showFooter() {
     const footer = document.querySelector("footer");
@@ -429,3 +441,31 @@ seekSequence.forEach((position, index) => {
         seekSequenceBoxes.appendChild(lineBreak);
     }
 });
+
+
+// Συνάρτηση για εμφάνιση μηνύματος σφάλματος
+function displayError(inputElement, errorMessage) {
+    // Βεβαιωθείτε ότι το στοιχείο εισαγωγής υπάρχει
+    if (!inputElement) return;
+
+    // Κοκκίνισμα του πλαισίου
+    inputElement.style.borderColor = "red";
+
+    // Δημιουργία στοιχείου για το μήνυμα σφάλματος
+    const errorBox = document.createElement("div");
+    errorBox.className = "error-message";
+    errorBox.textContent = errorMessage;
+    errorBox.style.color = "red";
+    errorBox.style.fontSize = "14px";
+    errorBox.style.marginTop = "5px";
+
+    // Προσθήκη του μηνύματος κάτω από το πεδίο εισαγωγής
+    inputElement.parentElement.appendChild(errorBox);
+}
+
+
+// Συνάρτηση για εκκαθάριση μηνυμάτων σφάλματος
+function clearErrorMessages() {
+    document.querySelectorAll(".error-message").forEach(el => el.remove());
+    document.querySelectorAll("input").forEach(input => (input.style.borderColor = ""));
+}

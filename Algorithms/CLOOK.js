@@ -5,34 +5,59 @@ let showNumbersOnArrows = true; // Εναλλαγή εμφάνισης αριθ�
  * Εκτελεί τον αλγόριθμο C-LOOK για χρονοπρογραμματισμό δίσκου.
  */
 function executeCLOOK() {
-    let tracksInput = document.getElementById("process-queue").value;
-    let head = parseInt(document.getElementById("head-position").value);
-    let direction = document.getElementById("direction").value;
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
-    if (!tracksInput || isNaN(head)) {
-        alert("Παρακαλώ εισάγετε έγκυρα δεδομένα!");
+    // Λήψη δεδομένων εισόδου
+    const tracksInputElement = document.getElementById("process-queue");
+    const tracksInput = tracksInputElement.value.trim();
+    const headPositionElement = document.getElementById("head-position");
+    const headPosition = parseInt(headPositionElement.value, 10);
+    const directionElement = document.getElementById("direction");
+    const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
+
+    // Έλεγχος έγκυρων δεδομένων
+    if (!tracksInput || isNaN(headPosition)) {
+        if (!tracksInput) {
+            displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
+        }
+        if (isNaN(headPosition)) {
+            displayError(headPositionElement, "Παρακαλώ εισάγετε έγκυρη θέση κεφαλής!");
+        }
         return;
     }
 
     // Μετατροπή των αιτημάτων σε πίνακα αριθμών
-    let tracks = tracksInput.split(',').map(item => Number(item.trim())).filter(num => !isNaN(num));
+    const tracks = tracksInput.split(",").map(item => Number(item.trim())).filter(num => !isNaN(num));
 
-   // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
-if (tracks.length === 0 || tracks.length > 100) {
-    alert("Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό και όχι περισσότερους από 100!");
+    // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
+    if (tracks.length === 0 || tracks.length > 100) {
+        if (tracks.length === 0) {
+            displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
+        }
+        if (tracks.length > 100) {
+            displayError(tracksInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+        }
+        return;
+    }
+     
+ // Έλεγχος αν η κεφαλή είναι μη αρνητικός αριθμός
+ if (headPosition < 0) {
+    displayError(headPositionElement, "Παρακαλώ εισάγετε έγκυρη θέση κεφαλής (μη αρνητικός αριθμός).");
     return;
 }
 
-
     // Διαχωρισμός αιτημάτων
-    let left = tracks.filter(track => track < head).sort((a, b) => a - b);
-    let right = tracks.filter(track => track >= head).sort((a, b) => a - b);
+    const left = tracks.filter(track => track < headPosition).sort((a, b) => a - b);
+    const right = tracks.filter(track => track >= headPosition).sort((a, b) => a - b);
 
     // Δημιουργία ακολουθίας αναζήτησης
-    let seekSequence = direction === "right" ? [head, ...right, ...left] : [head, ...left.reverse(), ...right.reverse()];
+    const seekSequence =
+        direction === "right"
+            ? [headPosition, ...right, ...left]
+            : [headPosition, ...left.reverse(), ...right.reverse()];
 
     let seekCount = 0;
-    let currentPos = head;
+    let currentPos = headPosition;
 
     // Υπολογισμός του συνολικού κόστους αναζήτησης
     seekSequence.forEach(track => {
@@ -244,10 +269,7 @@ function resetCanvasAndInputs() {
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
 
-    if (length > 100) {
-        alert("Το μήκος της ακολουθίας δεν μπορεί να υπερβαίνει τους 100 αριθμούς!");
-        return [];
-    }
+
 
     let sequence = [];
     for (let i = 0; i < length; i++) {
@@ -258,15 +280,19 @@ function generateRandomSequence(length = sequenceLength, max = 200) {
 }
 
 
+
 // Σύνδεση της λειτουργίας με το κουμπί
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
+document.getElementById("generateSequenceButton").addEventListener("click", function () {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     // Λήψη του μήκους από το πεδίο εισαγωγής
-    const sequenceLengthInput = document.getElementById("sequence-length").value.trim();
+    const sequenceLengthInputElement = document.getElementById("sequence-length");
+    const sequenceLengthInput = sequenceLengthInputElement.value.trim();
     const sequenceLength = parseInt(sequenceLengthInput, 10);
 
     // Έλεγχος αν το μήκος είναι αριθμός και θετικό
     if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
         return;
     }
 
@@ -279,7 +305,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     }
 
     // Δημιουργία τυχαίας ακολουθίας
-    const randomSequence = generateRandomSequence(sequenceLength); 
+    const randomSequence = generateRandomSequence(sequenceLength);
     document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
 });
 
@@ -372,3 +398,32 @@ seekSequence.forEach((position, index) => {
         seekSequenceBoxes.appendChild(lineBreak);
     }
 });
+
+
+
+// Συνάρτηση για εμφάνιση μηνύματος σφάλματος
+function displayError(inputElement, errorMessage) {
+    // Βεβαιωθείτε ότι το στοιχείο εισαγωγής υπάρχει
+    if (!inputElement) return;
+
+    // Κοκκίνισμα του πλαισίου
+    inputElement.style.borderColor = "red";
+
+    // Δημιουργία στοιχείου για το μήνυμα σφάλματος
+    const errorBox = document.createElement("div");
+    errorBox.className = "error-message";
+    errorBox.textContent = errorMessage;
+    errorBox.style.color = "red";
+    errorBox.style.fontSize = "14px";
+    errorBox.style.marginTop = "5px";
+
+    // Προσθήκη του μηνύματος κάτω από το πεδίο εισαγωγής
+    inputElement.parentElement.appendChild(errorBox);
+}
+
+
+// Συνάρτηση για εκκαθάριση μηνυμάτων σφάλματος
+function clearErrorMessages() {
+    document.querySelectorAll(".error-message").forEach(el => el.remove());
+    document.querySelectorAll("input").forEach(input => (input.style.borderColor = ""));
+}
