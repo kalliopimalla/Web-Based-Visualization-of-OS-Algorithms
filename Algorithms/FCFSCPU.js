@@ -41,12 +41,20 @@ function runFCFSCPU() {
         currentTime = end;
     }
 
-    // Εμφάνιση της ουράς και του μέσου χρόνου αναμονής
-document.getElementById('stepHistory').innerHTML = `
-<p><strong>Μέσος Χρόνος Αναμονής:</strong> ${averageWaitingTime.toFixed(2)}</p>
-${queueOutput}
-`;
+    // Προσθήκη του τελικού κουτιού για τη χρονική στιγμή ολοκλήρωσης
+    queueOutput += `
+        <div class="step-box">
+            <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
+            <div>Όλες οι διεργασίες έχουν ολοκληρωθεί!</div>
+            <div>Αναμονή: Καμία</div>
+        </div>
+    `;
 
+    // Εμφάνιση της ουράς και του μέσου χρόνου αναμονής
+    document.getElementById('stepHistory').innerHTML = `
+        <p><strong>Μέσος Χρόνος Αναμονής:</strong> ${averageWaitingTime.toFixed(2)}</p>
+        ${queueOutput}
+    `;
 
     // Δημιουργία του πίνακα 5 στηλών
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
@@ -61,6 +69,7 @@ ${queueOutput}
 
     // Εμφάνιση του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "inline-block";
+    document.getElementById('runButton').style.display = 'none';
 }
 
 
@@ -155,10 +164,6 @@ function startStepByStep() {
     stepWaitingTime = new Array(n).fill(0);
     stepTurnAroundTime = new Array(n).fill(0);
 
-    if (stepBurstTime.length !== stepArrivalTime.length) {
-        alert('Οι χρόνοι εκτέλεσης και άφιξης πρέπει να έχουν το ίδιο μήκος!');
-        return;
-    }
 
     stepIndex = 0;
     stepCurrentTime = 0;
@@ -183,6 +188,7 @@ function startStepByStep() {
 
     // Εμφάνιση κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
+    document.getElementById('stepByStepBtn').style.display = 'none';
 }
 
 
@@ -341,12 +347,50 @@ function findTurnAroundTime(processes, n, bt, wt, tat) {
 
 //Δημιουργεί τον αρχικό πίνακα 
 function createThreeColumnTable() {
-    const btInput = document.getElementById('burst-time').value;
-    const atInput = document.getElementById('arrival-time').value;
+    const btInput = document.getElementById('burst-time');
+    const atInput = document.getElementById('arrival-time');
+
+    const btValue = btInput.value.trim();
+    const atValue = atInput.value.trim();
+
+    // Έλεγχος αν έχουν συμπληρωθεί και τα δύο πεδία
+    if (!btValue || !atValue) {
+        // Εμφάνιση μηνύματος σφάλματος
+        const errorContainer = document.getElementById('error-container');
+        errorContainer.textContent = 'Παρακαλώ συμπληρώστε τόσο τους χρόνους εκτέλεσης όσο και τους χρόνους άφιξης!';
+        errorContainer.style.display = 'block';
+
+        // Εφαρμογή της κλάσης σφάλματος
+        if (!btValue) btInput.classList.add('input-error');
+        if (!atValue) atInput.classList.add('input-error');
+        return;
+    }
+
+    // Απόκρυψη του μηνύματος σφάλματος και αφαίρεση της κλάσης σφάλματος
+    const errorContainer = document.getElementById('error-container');
+    errorContainer.style.display = 'none';
+    btInput.classList.remove('input-error');
+    atInput.classList.remove('input-error');
 
     // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
-    const burstTime = btInput.split(',').map(Number);
-    const arrivalTime = atInput.split(',').map(Number);
+    const burstTime = btValue.split(',').map(Number);
+    const arrivalTime = atValue.split(',').map(Number);
+
+    if (burstTime.length !== arrivalTime.length) {
+        // Εμφάνιση μηνύματος σφάλματος αν τα πεδία δεν έχουν ίσο μήκος
+        errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης και άφιξης πρέπει να είναι ίδιος!';
+        errorContainer.style.display = 'block';
+
+        // Εφαρμογή της κλάσης σφάλματος
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
+
+    // Αφαίρεση της κλάσης σφάλματος
+    btInput.classList.remove('input-error');
+    atInput.classList.remove('input-error');
+
     const n = burstTime.length;
 
     // Δημιουργία πίνακα διεργασιών
@@ -354,8 +398,8 @@ function createThreeColumnTable() {
 
     // Δημιουργία HTML για τον πίνακα
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
-    output += "<tr><th>Διεργασίες</th><th>Χρόνος εκτέλεσης</th><th>Χρόνος άφιξης</th></tr>";
-    
+    output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th></tr>";
+
     for (let i = 0; i < n; i++) {
         output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td></tr>`;
     }
@@ -366,6 +410,7 @@ function createThreeColumnTable() {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
 }
+
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = 6, max = 50) {

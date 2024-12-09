@@ -793,10 +793,18 @@ footer {
 
 .error-message {
   color: red;
+  box-shadow: 0 0 5px red;
+  border: 2px solid red;
   font-size: 14px;
   margin-top: 5px;
 }
 input {
   border: 1px solid #ccc;
   border-radius: 5px;
+}
+
+
+.input-error {
+  border: 2px solid red;
+  box-shadow: 0 0 5px red;
 }
