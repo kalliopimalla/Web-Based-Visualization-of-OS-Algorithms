@@ -18,7 +18,7 @@ function runPreSJFCPU() {
     const schedule = []; // Προγραμματισμός διεργασιών
     let queueOutput = ''; // Αναπαράσταση ουράς
 
-    while (completed < n) {
+    while (completed < n || remainingBurstTime.some(bt => bt > 0)) {
         const availableProcesses = [];
         for (let i = 0; i < n; i++) {
             if (arrivalTime[i] <= currentTime && remainingBurstTime[i] > 0) {
@@ -27,6 +27,13 @@ function runPreSJFCPU() {
         }
 
         if (availableProcesses.length === 0) {
+            queueOutput += `
+                <div class="step-box">
+                    <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
+                    <div>Εκτελείται: Καμία</div>
+                    <div>Αναμονή: Καμία</div>
+                </div>
+            `;
             currentTime++;
             continue;
         }
@@ -78,6 +85,15 @@ function runPreSJFCPU() {
         schedule[schedule.length - 1].endTime = currentTime;
     }
 
+    // Τελική κατάσταση ουράς
+    queueOutput += `
+        <div class="step-box">
+            <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
+            <div>Όλες οι διεργασίες έχουν ολοκληρωθεί!</div>
+            <div>Αναμονή: Καμία</div>
+        </div>
+    `;
+
     // Υπολογισμός μέσου χρόνου αναμονής
     const averageWaitingTime = wt.reduce((sum, time) => sum + time, 0) / n;
 
@@ -91,7 +107,7 @@ function runPreSJFCPU() {
     // Εμφάνιση αποτελεσμάτων στη σελίδα
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById('stepHistory').innerHTML = `
-        <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
+        <p><strong>Μέσος Χρόνος Αναμονής :</strong> ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
 
@@ -101,6 +117,7 @@ function runPreSJFCPU() {
     // Εμφάνιση κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
 }
+
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -115,47 +132,42 @@ function drawGanttChart(schedule) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentX = 0; // Αρχικό X για τις μπάρες
+    const barHeight = 40; // Ύψος μπάρας
+    const labelFontSize = 12; // Σταθερό μέγεθος γραμματοσειράς
+
+    // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
+    const processColors = {};
 
     for (let i = 0; i < schedule.length; i++) {
         const { process, startTime, endTime } = schedule[i];
         const duration = endTime - startTime;
-        const barWidth = duration * scaleFactor;
+        let barWidth = duration * scaleFactor;
 
-        // Προσθήκη idle time αν υπάρχει κενό
-        if (i === 0 && startTime > 0) {
-            const idleWidth = startTime * scaleFactor;
-            ctx.fillStyle = 'gray'; // Χρώμα για idle time
-            ctx.fillRect(currentX, 50, idleWidth, 40);
-            currentX += idleWidth;
+        // Υπολογισμός πλάτους μπάρας ώστε να χωράει η ετικέτα
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width + 10; // Επιπλέον περιθώριο 10px
+        if (barWidth < labelWidth) {
+            barWidth = labelWidth; // Επέκταση της μπάρας αν είναι πολύ μικρή
         }
 
-        if (i > 0 && schedule[i - 1].endTime < startTime) {
-            const idleWidth = (startTime - schedule[i - 1].endTime) * scaleFactor;
-            ctx.fillStyle = 'gray';
-            ctx.fillRect(currentX, 50, idleWidth, 40);
-            currentX += idleWidth;
+        // Ανάθεση ή ανάκτηση χρώματος για τη διεργασία
+        if (!processColors[process]) {
+            processColors[process] = `hsl(${(Object.keys(processColors).length * 60) % 360}, 70%, 70%)`;
         }
+        ctx.fillStyle = processColors[process]; // Χρησιμοποιούμε το ίδιο χρώμα για την ίδια διεργασία
 
         // Σχεδίαση μπάρας διεργασίας
-        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`; // Χρώμα διεργασίας
-        ctx.fillRect(currentX, 50, barWidth, 40);
+        ctx.fillRect(currentX, 50, barWidth, barHeight);
 
         // Ετικέτα διεργασίας μέσα στη μπάρα
         ctx.fillStyle = '#000';
-        const label = `P${process}`;
-        const labelWidth = ctx.measureText(label).width;
-        const fontSize = Math.min(12, barWidth / labelWidth * 10);
-        ctx.font = `${fontSize}px Arial`;
-
-        if (labelWidth <= barWidth) {
-            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75);
-        } else {
-            ctx.fillText(label, currentX + 5, 75); // Αν η ετικέτα δεν χωράει, αριστερά
-        }
+        ctx.font = `${labelFontSize}px Arial`;
+        ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75); // Κέντρο μπάρας
 
         currentX += barWidth; // Ενημέρωση για την επόμενη μπάρα
     }
 }
+
 
 
 
@@ -186,11 +198,6 @@ function startStepByStep() {
     stepWaitingTime = new Array(n).fill(0);
     stepTurnAroundTime = new Array(n).fill(0);
     stepCompleted = new Array(n).fill(false);
-
-    if (stepBurstTime.length !== stepArrivalTime.length) {
-        alert('Οι χρόνοι εκτέλεσης και άφιξης πρέπει να έχουν το ίδιο μήκος!');
-        return;
-    }
 
     stepCurrentTime = 0;
 
@@ -297,7 +304,7 @@ function stepByStepExecution() {
 
     // Ελέγξτε αν όλες οι διεργασίες έχουν ολοκληρωθεί
     if (stepCompleted.every((completed) => completed)) {
-        alert('Η εκτέλεση ολοκληρώθηκε!');
+        
         document.getElementById('nextStepButton').remove();
 
         // Ολοκλήρωση του τελευταίου χρονικού διαστήματος στο πρόγραμμα
@@ -317,24 +324,62 @@ function stepByStepExecution() {
 
 
 
-
-
 function createThreeColumnTable() {
-    const btInput = document.getElementById('burst-time').value;
-    const atInput = document.getElementById('arrival-time').value;
+    const btInput = document.getElementById('burst-time');
+    const atInput = document.getElementById('arrival-time');
+    const errorContainer = document.getElementById('error-container');
+
+    const btValue = btInput.value.trim();
+    const atValue = atInput.value.trim();
+
+    // Κανονική έκφραση για έλεγχο αριθμών χωρισμένων με κόμμα χωρίς κενά
+    const validFormat = /^(\d+)(,\d+)*$/;
+
+    // Έλεγχος αν τα inputs είναι κενά
+    if (!btValue || !atValue) {
+        errorContainer.textContent = 'Παρακαλώ συμπληρώστε τόσο τους χρόνους εκτέλεσης όσο και τους χρόνους άφιξης!';
+        errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
+
+    // Έλεγχος αν τα inputs περιέχουν μόνο αριθμούς χωρισμένους με κόμματα
+    if (!validFormat.test(btValue) || !validFormat.test(atValue)) {
+        errorContainer.textContent = 'Τα πεδία πρέπει να περιέχουν μόνο αριθμούς χωρισμένους με κόμματα, χωρίς κενά!';
+        errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
 
     // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
-    const burstTime = btInput.split(',').map(Number);
-    const arrivalTime = atInput.split(',').map(Number);
+    const burstTime = btValue.split(',').map(Number);
+    const arrivalTime = atValue.split(',').map(Number);
+
+    // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
+    if (burstTime.length !== arrivalTime.length) {
+        errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης και άφιξης πρέπει να είναι ίδιος!';
+        errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
+
+    // Απόκρυψη του μηνύματος σφάλματος και αφαίρεση της κλάσης σφάλματος
+    errorContainer.style.display = 'none';
+    btInput.classList.remove('input-error');
+    atInput.classList.remove('input-error');
+
     const n = burstTime.length;
 
     // Δημιουργία πίνακα διεργασιών
     const processes = Array.from({ length: n }, (_, i) => i + 1);
 
     // Δημιουργία HTML για τον πίνακα
-    let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
-    output += "<tr><th>Διεργασίες</th><th>Χρόνος εκτέλεσης</th><th>Χρόνος άφιξης</th></tr>";
-    
+    let output = "<table border='1' style='border-collapse: collapse; width: 100%; text-align: center;'>";
+    output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th></tr>";
+
     for (let i = 0; i < n; i++) {
         output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td></tr>`;
     }
@@ -345,6 +390,7 @@ function createThreeColumnTable() {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
 }
+
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = 6, max = 50) {
