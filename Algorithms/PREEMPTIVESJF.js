@@ -136,28 +136,22 @@ function drawGanttChart(schedule) {
     for (let i = 0; i < schedule.length; i++) {
         const { process, startTime, endTime } = schedule[i];
         const duration = endTime - startTime;
-        let barWidth = duration * scaleFactor;
-
-        // Υπολογισμός πλάτους μπάρας ώστε να χωράει η ετικέτα
-        const label = `P${process}`;
-        const labelWidth = ctx.measureText(label).width + 10; // Επιπλέον περιθώριο 10px
-        if (barWidth < labelWidth) {
-            barWidth = labelWidth; // Επέκταση της μπάρας αν είναι πολύ μικρή
-        }
+        const barWidth = duration * scaleFactor;
 
         // Ανάθεση ή ανάκτηση χρώματος για τη διεργασία
         if (!processColors[process]) {
             processColors[process] = `hsl(${(Object.keys(processColors).length * 60) % 360}, 70%, 70%)`;
         }
-        ctx.fillStyle = processColors[process]; // Χρησιμοποιούμε το ίδιο χρώμα για την ίδια διεργασία
+        ctx.fillStyle = processColors[process];
 
         // Σχεδίαση μπάρας διεργασίας
         ctx.fillRect(currentX, 50, barWidth, barHeight);
 
         // Ετικέτα διεργασίας μέσα στη μπάρα
+        const label = `P${process}`;
         ctx.fillStyle = '#000';
         ctx.font = `${labelFontSize}px Arial`;
-        ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75); // Κέντρο μπάρας
+        ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75);
 
         currentX += barWidth; // Ενημέρωση για την επόμενη μπάρα
     }
@@ -213,20 +207,34 @@ function startStepByStep() {
 function stepByStepExecution() {
     const n = stepProcesses.length;
 
+    const stepHistoryContainer = document.getElementById('stepHistory');
+
+    // Προσθήκη κουτιού έναρξης αν είναι το πρώτο βήμα
+    if (stepCurrentTime === 0 && !document.querySelector('.start-box')) {
+        const startBox = document.createElement('div');
+        startBox.classList.add('step-box', 'start-box');
+        startBox.innerHTML = `
+            <div class="step-time">Εκκίνηση διαδικασίας!</div>
+            <div>Αριθμός διεργασιών: ${n}</div>
+        `;
+        stepHistoryContainer.appendChild(startBox);
+    }
+
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
         .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 ? i : -1))
         .filter((i) => i !== -1);
 
+    // Αν δεν υπάρχουν διαθέσιμες διεργασίες
     if (availableProcesses.length === 0) {
-        stepCurrentTime++;
-        const stepBox = document.createElement('div');
-        stepBox.classList.add('step-box');
-        stepBox.innerHTML = `
+        const idleBox = document.createElement('div');
+        idleBox.classList.add('step-box');
+        idleBox.innerHTML = `
             <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
-            <div>Καμία διεργασία διαθέσιμη. Αναμονή...</div>
+            <div>Καμία διεργασία διαθέσιμη ή σε αναμονή.</div>
         `;
-        document.getElementById('stepHistory').appendChild(stepBox);
+        stepHistoryContainer.appendChild(idleBox);
+        stepCurrentTime++;
         return;
     }
 
@@ -248,7 +256,7 @@ function stepByStepExecution() {
         <div>Εκτελείται: ${activeProcess}</div>
         <div>Αναμονή: ${waitingQueue}</div>
     `;
-    document.getElementById('stepHistory').appendChild(stepBox);
+    stepHistoryContainer.appendChild(stepBox);
 
     // Ενημέρωση προγράμματος εκτέλεσης
     if (
@@ -277,29 +285,8 @@ function stepByStepExecution() {
             stepTurnAroundTime[shortestJobIndex] - stepBurstTime[shortestJobIndex];
     }
 
-    // Ενημέρωση του πεντάστηλου πίνακα
-    const tableContainer = document.getElementById('seek-count');
-    if (!document.querySelector('#preemptive-sjf-table')) {
-        let output = "<table id='preemptive-sjf-table' border='1' style='border-collapse: collapse; width: 100%;'>";
-        output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
-        tableContainer.innerHTML = output + "</table>";
-    }
-
-    if (stepCompleted[shortestJobIndex]) {
-        const table = document.querySelector('#preemptive-sjf-table');
-        const newRow = table.insertRow(-1);
-        newRow.innerHTML = `
-            <td>${stepProcesses[shortestJobIndex]}</td>
-            <td>${stepBurstTime[shortestJobIndex]}</td>
-            <td>${stepArrivalTime[shortestJobIndex]}</td>
-            <td>${stepWaitingTime[shortestJobIndex]}</td>
-            <td>${stepTurnAroundTime[shortestJobIndex]}</td>
-        `;
-    }
-
     // Ελέγξτε αν όλες οι διεργασίες έχουν ολοκληρωθεί
     if (stepCompleted.every((completed) => completed)) {
-        
         document.getElementById('nextStepButton').remove();
 
         // Ολοκλήρωση του τελευταίου χρονικού διαστήματος στο πρόγραμμα
@@ -307,15 +294,58 @@ function stepByStepExecution() {
             stepSchedule[stepSchedule.length - 1].endTime = stepCurrentTime;
         }
 
+        // Προσθήκη κουτιού για την τελευταία χρονική στιγμή
+        const finalIdleBox = document.createElement('div');
+        finalIdleBox.classList.add('step-box');
+        finalIdleBox.innerHTML = `
+            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
+            <div>Όλες οι διεργασίες έχουν ολοκληρωθεί και δεν υπάρχει αναμονή.</div>
+        `;
+        stepHistoryContainer.appendChild(finalIdleBox);
+
         // Δημιουργία Gantt Chart
         drawGanttChart(stepSchedule);
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
         const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
-        document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
+        stepHistoryContainer.insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
+
+        // Προσθήκη κουτιού τέλους διαδικασίας
+        const endBox = document.createElement('div');
+        endBox.classList.add('step-box');
+        endBox.innerHTML = `
+            <div class="step-time">Τέλος Αλγορίθμου!</div>
+            <div>Όλες οι διεργασίες έχουν εκτελεστεί επιτυχώς.</div>
+        `;
+        stepHistoryContainer.appendChild(endBox);
+
+        // Δημιουργία πεντάστηλου πίνακα
+        createFinalTable();
     }
 }
+
+
+// Συνάρτηση δημιουργίας του πεντάστηλου πίνακα
+function createFinalTable() {
+    const tableContainer = document.getElementById('seek-count');
+    let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+    output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
+
+    for (let i = 0; i < stepProcesses.length; i++) {
+        output += `<tr>
+            <td>${stepProcesses[i]}</td>
+            <td>${stepBurstTime[i]}</td>
+            <td>${stepArrivalTime[i]}</td>
+            <td>${stepWaitingTime[i]}</td>
+            <td>${stepTurnAroundTime[i]}</td>
+        </tr>`;
+    }
+
+    output += "</table>";
+    tableContainer.innerHTML = output;
+}
+
 
 
 
