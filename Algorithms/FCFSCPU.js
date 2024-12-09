@@ -1,3 +1,4 @@
+
 // Εκτέλεση FCFS Scheduling
 function runFCFSCPU() {
     const btInput = document.getElementById('burst-time').value;
@@ -17,9 +18,11 @@ function runFCFSCPU() {
     // Υπολογισμός μέσου χρόνου αναμονής
     const averageWaitingTime = wt.reduce((sum, time) => sum + time, 0) / n;
 
+    // Βρες τον ελάχιστο χρόνο άφιξης
+    let currentTime = Math.min(...arrivalTime);
+
     // Δημιουργία της ουράς εκτέλεσης
     let queueOutput = '';
-    let currentTime = 0;
 
     for (let i = 0; i < n; i++) {
         const start = Math.max(currentTime, arrivalTime[i]);
@@ -39,10 +42,11 @@ function runFCFSCPU() {
     }
 
     // Εμφάνιση της ουράς και του μέσου χρόνου αναμονής
-    document.getElementById('stepHistory').innerHTML = `
-        <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
-        ${queueOutput}
-    `;
+document.getElementById('stepHistory').innerHTML = `
+<p><strong>Μέσος Χρόνος Αναμονής:</strong> ${averageWaitingTime.toFixed(2)}</p>
+${queueOutput}
+`;
+
 
     // Δημιουργία του πίνακα 5 στηλών
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
@@ -52,12 +56,13 @@ function runFCFSCPU() {
     output += "</table>";
     document.getElementById('seek-count').innerHTML = output;
 
-   // Κλήση για τη σχεδίαση του Gantt Chart
-   drawPartialGanttChart(processes, burstTime, arrivalTime);
+    // Κλήση για τη σχεδίαση του Gantt Chart
+    drawPartialGanttChart(processes, burstTime, arrivalTime);
 
     // Εμφάνιση του κουμπιού "Επαναφορά"
     document.getElementById("resetButton").style.display = "inline-block";
 }
+
 
 
 function drawPartialGanttChart(processes, bt, at) {
@@ -182,7 +187,7 @@ function startStepByStep() {
 
 
 function stepByStepExecution() {
-    // Έλεγχος αν υπάρχουν υπόλοιπα burst times για εκτέλεση
+    // Έλεγχος αν υπάρχουν υπόλοιπα burst times για εκτέλεση ή αν υπάρχει διεργασία σε αναμονή
     if (stepBurstTime.some((bt) => bt > 0)) {
         // Εύρεση της διεργασίας που εκτελείται στην τρέχουσα χρονική στιγμή
         let executingProcessIndex = -1;
@@ -229,10 +234,19 @@ function stepByStepExecution() {
 
         // Αύξηση της χρονικής στιγμής
         stepCurrentTime++;
-
-    } else {
-        // Αν ολοκληρωθούν όλες οι διεργασίες
+    } else if (stepBurstTime.every((bt) => bt === 0)) {
+        // Αν όλες οι διεργασίες έχουν εκτελεστεί
         const stepHistoryContainer = document.getElementById('stepHistory');
+
+        // Δημιουργία κουτιού για την τελευταία χρονική στιγμή
+        const stepBox = document.createElement('div');
+        stepBox.classList.add('step-box');
+        stepBox.innerHTML = `
+            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
+            <div>Όλες οι διεργασίες ολοκληρώθηκαν!</div>
+            <div>Αναμονή: Καμία</div>
+        `;
+        stepHistoryContainer.appendChild(stepBox);
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const totalWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0);
@@ -271,6 +285,7 @@ function stepByStepExecution() {
         }
     }
 }
+
 
 // Συνάρτηση δημιουργίας 5-στήλου πίνακα
 function createFiveColumnTable(processes, bt, at, wt) {
