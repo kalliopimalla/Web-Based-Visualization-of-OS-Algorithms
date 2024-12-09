@@ -346,25 +346,33 @@ function findTurnAroundTime(processes, n, bt, wt, tat) {
 function createThreeColumnTable() {
     const btInput = document.getElementById('burst-time');
     const atInput = document.getElementById('arrival-time');
+    const errorContainer = document.getElementById('error-container');
 
     const btValue = btInput.value.trim();
     const atValue = atInput.value.trim();
 
-    // Έλεγχος αν έχουν συμπληρωθεί και τα δύο πεδία
+    // Κανονική έκφραση για έλεγχο αριθμών χωρισμένων με κόμμα χωρίς κενά
+    const validFormat = /^(\d+)(,\d+)*$/;
+
+    // Έλεγχος αν τα inputs είναι κενά
     if (!btValue || !atValue) {
-        // Εμφάνιση μηνύματος σφάλματος
-        const errorContainer = document.getElementById('error-container');
         errorContainer.textContent = 'Παρακαλώ συμπληρώστε τόσο τους χρόνους εκτέλεσης όσο και τους χρόνους άφιξης!';
         errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
 
-        // Εφαρμογή της κλάσης σφάλματος
-        if (!btValue) btInput.classList.add('input-error');
-        if (!atValue) atInput.classList.add('input-error');
+    // Έλεγχος αν τα inputs περιέχουν μόνο αριθμούς χωρισμένους με κόμματα
+    if (!validFormat.test(btValue) || !validFormat.test(atValue)) {
+        errorContainer.textContent = 'Τα πεδία πρέπει να περιέχουν μόνο αριθμούς χωρισμένους με κόμματα, χωρίς κενά!';
+        errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
         return;
     }
 
     // Απόκρυψη του μηνύματος σφάλματος και αφαίρεση της κλάσης σφάλματος
-    const errorContainer = document.getElementById('error-container');
     errorContainer.style.display = 'none';
     btInput.classList.remove('input-error');
     atInput.classList.remove('input-error');
@@ -373,31 +381,23 @@ function createThreeColumnTable() {
     const burstTime = btValue.split(',').map(Number);
     const arrivalTime = atValue.split(',').map(Number);
 
+    // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
     if (burstTime.length !== arrivalTime.length) {
-        // Εμφάνιση μηνύματος σφάλματος αν τα πεδία δεν έχουν ίσο μήκος
         errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης και άφιξης πρέπει να είναι ίδιος!';
         errorContainer.style.display = 'block';
-
-        // Εφαρμογή της κλάσης σφάλματος
         btInput.classList.add('input-error');
         atInput.classList.add('input-error');
         return;
     }
 
-    // Αφαίρεση της κλάσης σφάλματος
-    btInput.classList.remove('input-error');
-    atInput.classList.remove('input-error');
-
-    const n = burstTime.length;
-
     // Δημιουργία πίνακα διεργασιών
-    const processes = Array.from({ length: n }, (_, i) => i + 1);
+    const processes = Array.from({ length: burstTime.length }, (_, i) => i + 1);
 
     // Δημιουργία HTML για τον πίνακα
-    let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+    let output = "<table border='1' style='border-collapse: collapse; width: 100%; text-align: center;'>";
     output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th></tr>";
 
-    for (let i = 0; i < n; i++) {
+    for (let i = 0; i < processes.length; i++) {
         output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td></tr>`;
     }
     output += "</table>";
@@ -407,6 +407,7 @@ function createThreeColumnTable() {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
 }
+
 
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας

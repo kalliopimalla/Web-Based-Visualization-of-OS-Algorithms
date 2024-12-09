@@ -332,18 +332,19 @@ function drawGanttChart(processes, burstTime, arrivalTime, completionOrder) {
 
 
 
-
-
 function createThreeColumnTable() {
     const btInput = document.getElementById('burst-time');
     const atInput = document.getElementById('arrival-time');
+    const errorContainer = document.getElementById('error-container');
 
     const btValue = btInput.value.trim();
     const atValue = atInput.value.trim();
 
-    // Έλεγχος αν έχουν συμπληρωθεί και τα δύο πεδία
+    // Κανονική έκφραση για έλεγχο αριθμών χωρισμένων με κόμμα χωρίς κενά
+    const validFormat = /^(\d+)(,\d+)*$/;
+
+    // Έλεγχος αν τα inputs είναι κενά
     if (!btValue || !atValue) {
-        const errorContainer = document.getElementById('error-container');
         errorContainer.textContent = 'Παρακαλώ συμπληρώστε τόσο τους χρόνους εκτέλεσης όσο και τους χρόνους άφιξης!';
         errorContainer.style.display = 'block';
 
@@ -353,31 +354,35 @@ function createThreeColumnTable() {
         return;
     }
 
-    // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
-    const burstTime = btValue.split(',').map(Number);
-    const arrivalTime = atValue.split(',').map(Number);
-
-    // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
-    if (burstTime.length !== arrivalTime.length) {
-        const errorContainer = document.getElementById('error-container');
-        errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης και άφιξης πρέπει να είναι ίδιος!';
+    // Έλεγχος αν τα inputs περιέχουν μόνο αριθμούς χωρισμένους με κόμματα
+    if (!validFormat.test(btValue) || !validFormat.test(atValue)) {
+        errorContainer.textContent = 'Τα πεδία πρέπει να περιέχουν μόνο αριθμούς χωρισμένους με κόμματα, χωρίς κενά!';
         errorContainer.style.display = 'block';
-
-        // Εφαρμογή της κλάσης σφάλματος
         btInput.classList.add('input-error');
         atInput.classList.add('input-error');
         return;
     }
 
     // Απόκρυψη του μηνύματος σφάλματος και αφαίρεση της κλάσης σφάλματος
-    const errorContainer = document.getElementById('error-container');
     errorContainer.style.display = 'none';
     btInput.classList.remove('input-error');
     atInput.classList.remove('input-error');
 
-    const n = burstTime.length;
+    // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
+    const burstTime = btValue.split(',').map(Number);
+    const arrivalTime = atValue.split(',').map(Number);
+
+    // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
+    if (burstTime.length !== arrivalTime.length) {
+        errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης και άφιξης πρέπει να είναι ίδιος!';
+        errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
 
     // Δημιουργία πίνακα διεργασιών
+    const n = burstTime.length;
     const processes = Array.from({ length: n }, (_, i) => i + 1);
 
     // Δημιουργία HTML για τον πίνακα
@@ -394,6 +399,7 @@ function createThreeColumnTable() {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
 }
+
 
 
 
