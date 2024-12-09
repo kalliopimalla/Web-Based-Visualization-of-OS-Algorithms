@@ -26,14 +26,8 @@ function runPreSJFCPU() {
             }
         }
 
+        // Αν δεν υπάρχουν διαθέσιμες διεργασίες, απλά αυξάνουμε το currentTime
         if (availableProcesses.length === 0) {
-            queueOutput += `
-                <div class="step-box">
-                    <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
-                    <div>Εκτελείται: Καμία</div>
-                    <div>Αναμονή: Καμία</div>
-                </div>
-            `;
             currentTime++;
             continue;
         }
@@ -117,6 +111,7 @@ function runPreSJFCPU() {
     // Εμφάνιση κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
 }
+
 
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
