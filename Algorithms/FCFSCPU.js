@@ -73,7 +73,6 @@ function runFCFSCPU() {
 }
 
 
-
 function drawPartialGanttChart(processes, bt, at) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -85,7 +84,7 @@ function drawPartialGanttChart(processes, bt, at) {
     // Υπολογισμός δυναμικής κλίμακας
     const canvasBaseWidth = 800; // Βασικό πλάτος καμβά
     const scaleFactor = Math.max(canvasBaseWidth / totalTime, 5); // Ελάχιστο πλάτος μονάδας
-    const adjustedBarLengths = bt.map((time) => time * scaleFactor);
+    let adjustedBarLengths = bt.map((time) => time * scaleFactor);
 
     // Προσαρμογή πλάτους καμβά
     canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 50;
@@ -97,23 +96,21 @@ function drawPartialGanttChart(processes, bt, at) {
     for (let i = 0; i < processes.length; i++) {
         const startTime = Math.max(currentTime, at[i]); // Χρόνος εκκίνησης της διεργασίας
 
-        // Σχεδίαση μπάρας διεργασίας
-        const barWidth = adjustedBarLengths[i];
-        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`; // Χρώμα μπάρας
-        ctx.fillRect(currentX, 50, barWidth, 40);
-
-        // Προσαρμογή γραμματοσειράς για την ετικέτα
-        const fontSize = Math.min(12, Math.floor(barWidth / 3)); // Μείωση αν η μπάρα είναι μικρή
-        ctx.font = `${fontSize}px Arial`;
-        ctx.fillStyle = '#000';
-
-        // Προσθήκη ετικέτας διεργασίας μέσα στη μπάρα
+        // Ετικέτα διεργασίας
         const label = `P${processes[i]}`;
         const labelWidth = ctx.measureText(label).width;
 
-        if (labelWidth < barWidth) {
-            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Στο κέντρο της μπάρας
-        }
+        // Σχεδίαση μπάρας διεργασίας
+        const barWidth = Math.max(adjustedBarLengths[i], labelWidth + 10); // Εξασφάλιση ότι η μπάρα χωράει την ετικέτα
+        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`; // Χρώμα μπάρας
+        ctx.fillRect(currentX, 50, barWidth, 40);
+
+        // Γραμματοσειρά για την ετικέτα
+        ctx.font = '12px Arial';
+        ctx.fillStyle = '#000';
+
+        // Προσθήκη ετικέτας διεργασίας μέσα στη μπάρα
+        ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Στο κέντρο της μπάρας
 
         currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
         currentTime = startTime + bt[i]; // Ενημέρωση του τρέχοντος χρόνου

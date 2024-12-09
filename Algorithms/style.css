@@ -565,6 +565,7 @@ footer {
       font-size: 14px;
       text-align: center;
       white-space: normal; /* Επιτρέπει την αναδίπλωση του κειμένου */
+      
     }
     
     .visual-table th {
@@ -807,4 +808,19 @@ input {
 .input-error {
   border: 2px solid red;
   box-shadow: 0 0 5px red;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table th, table td {
+  text-align: center; /* Κεντράρισμα στοιχείων */
+  padding: 8px; /* Προαιρετικό για καλύτερη εμφάνιση */
+  border: 1px solid #ddd; /* Προαιρετικό για διαχωρισμό γραμμών */
+}
+
+table th {
+  background-color: #f4f4f4; /* Προαιρετικό για διαφορετικό χρώμα κεφαλίδας */
 }
