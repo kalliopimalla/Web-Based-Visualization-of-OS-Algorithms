@@ -403,8 +403,9 @@ function createThreeColumnTable() {
 
 
 
+
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length = 6, max = 50) {
+function generateRandomSequence(length, max = 50) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
@@ -413,18 +414,23 @@ function generateRandomSequence(length = 6, max = 50) {
     return sequence;
 }
 
-// Σύνδεση της λειτουργίας με το κουμπί για το burst-time
-document.getElementById("generateSequenceButton1").addEventListener("click", function() {
-    const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
-    document.getElementById("burst-time").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
+
+// Συνάρτηση δημιουργίας τυχαίων ακολουθιών για burst και arrival time
+document.getElementById("generateSequenceButton").addEventListener("click", function () {
+    const sequenceLengthInput = document.getElementById("sequenceLength").value;
+    const sequenceLength = parseInt(sequenceLengthInput);
+
+  
+    // Δημιουργία τυχαίων ακολουθιών
+    const burstTimeSequence = generateRandomSequence(sequenceLength); // Για burst time
+    const arrivalTimeSequence = generateRandomSequence(sequenceLength); // Για arrival time
+
+    // Ενημέρωση των πεδίων εισόδου
+    document.getElementById("burst-time").value = burstTimeSequence.join(",");
+    document.getElementById("arrival-time").value = arrivalTimeSequence.join(",");
+
 });
 
-// Σύνδεση της λειτουργίας με το κουμπί για το arrival-time (ξεκινά πάντα από 0)
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
-    randomSequence[0] = 0; // Ορισμός του πρώτου στοιχείου ως 0
-    document.getElementById("arrival-time").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
-});
 
 
 function resetSJF() {
@@ -437,6 +443,8 @@ function resetSJF() {
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
+
+    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
 
     // Καθαρισμός καμβά
     const canvas = document.getElementById('seekCanvas');

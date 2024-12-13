@@ -137,21 +137,18 @@
             <div class="input-steps">
                 <h2>Δημιουργία Πίνακα Διεργασιών</h2>
                 <div class="input-group">
-                    <div class="popup">
-                    <label for="burst-time">Χρόνοι Εκτέλεσης :</label>
-                    <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                    <input type="text" id="burst-time" placeholder="π.χ. 5,3,8">
-                    <button id="generateSequenceButton1">Δημιουργία Τυχαίας Ακολουθίας</button>
-                    </div>
-                </div>
-                <div class="input-group">
-                <div class="popup">
-                    <label for="arrival-time">Χρόνοι Άφιξης :</label>
-                    <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-                    <input type="text" id="arrival-time" placeholder="π.χ. 0,1,2">
-                    <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
-                </div>
-                </div>
+                  <label for="sequenceLength"><strong>Μήκος Ακολουθίας Διεργασιών:</strong></label>
+                  <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 150px;">
+                  <button id="generateSequenceButton">Δημιουργία Τυχαίων Ακολουθιών</button>
+              </div>
+              <div class="input-group">
+                  <label for="burst-time"><strong>Χρόνοι Εκτέλεσης:</strong></label>
+                  <input type="text" id="burst-time" placeholder="π.χ. 8,4,9,5">
+              </div>
+              <div class="input-group">
+                  <label for="arrival-time"><strong>Χρόνοι Άφιξης:</strong></label>
+                  <input type="text" id="arrival-time" placeholder="π.χ. 1,2,3,4">
+              </div>
                 <div>
                     <label for="priority">Προτεραιότητες (διαχωρισμένες με κόμμα):</label>
                     <input type="text" id="priority" placeholder="π.χ., 1,3,2,4">
