@@ -131,8 +131,10 @@
         <p>Η ακολουθία σελιδών:</p>
         <div class="popup">
           <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
-          <input type="number" id="sequenceLength" placeholder="Μήκος ακολουθίας" min="1" style="width: 150px;">
-          <input type="number" id="maxPageNumber" placeholder="Μέγιστος αριθμός σελίδας" min="1" style="width: 200px;">
+          <p>Μήκος ακολουθία:</p>
+          <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 150px;">
+          <p>Μέγιστος αριθμός σελίδας:</p>
+          <input type="number" id="maxPageNumber" placeholder="π.χ. 5" min="1" style="width: 200px;">
 
           <button onclick="generateSequence()">Δημιουργία Τυχαίας Ακολουθίας</button>
           <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
@@ -157,7 +159,6 @@
       <div class="sequence-container">
         <div id="seek-sequence" class="seek-sequence">
           <table class="visual-table">
-            <!-- Ο Πίνακας σου -->
           </table>
         </div>
       </div>
