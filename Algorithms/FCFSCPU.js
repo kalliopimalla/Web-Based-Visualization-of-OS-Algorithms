@@ -381,14 +381,18 @@ function createThreeColumnTable() {
         return;
     }
 
-    // Απόκρυψη του μηνύματος σφάλματος και αφαίρεση της κλάσης σφάλματος
-    errorContainer.style.display = 'none';
-    btInput.classList.remove('input-error');
-    atInput.classList.remove('input-error');
-
     // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
     const burstTime = btValue.split(',').map(Number);
     const arrivalTime = atValue.split(',').map(Number);
+
+    // Έλεγχος αν το μήκος των ακολουθιών υπερβαίνει το όριο των 100
+    if (burstTime.length > 100 || arrivalTime.length > 100) {
+        errorContainer.textContent = 'Το μήκος των ακολουθιών δεν πρέπει να υπερβαίνει τα 100!';
+        errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
 
     // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
     if (burstTime.length !== arrivalTime.length) {
@@ -398,6 +402,11 @@ function createThreeColumnTable() {
         atInput.classList.add('input-error');
         return;
     }
+
+    // Απόκρυψη του μηνύματος σφάλματος και αφαίρεση της κλάσης σφάλματος
+    errorContainer.style.display = 'none';
+    btInput.classList.remove('input-error');
+    atInput.classList.remove('input-error');
 
     // Δημιουργία πίνακα διεργασιών
     const processes = Array.from({ length: burstTime.length }, (_, i) => i + 1);
@@ -416,6 +425,7 @@ function createThreeColumnTable() {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
 }
+
 
 
 
