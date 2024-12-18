@@ -118,7 +118,7 @@
                 <li>Εισάγετε την σειρά των αιτήσεων που θέλετε να οπτικοποιήσετε με τον αλγόριθμο. Προσέξτε να είναι σωστά μορφοποιημένη </li>
   
                 <label>ΒΗΜΑ 2 :</label>
-                <li>Εισάγετε τη τρέχουσα θέση της κεφαλής.</li>
+                <li>Εισάγετε τη τρέχουσα θέση της κεφαλής και την αρχική κατεύθυνση.</li>
                 
                 <label>ΒΗΜΑ 3 :</label>
                 <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
@@ -135,18 +135,26 @@
         <div class="content">
    
                 <div class="input-steps">
-                    <p>Η σειρά των αιτήσεων:</p>
-                    <div class="popup">
-                        <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)">
-                        <div>
-                          <label for="sequenceLength">Μήκος ακολουθίας:</label>
-                          <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 100px;">
 
-                          <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
 
-                      </div>
-                        <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+
+                  <p>Η σειρά των αιτήσεων:</p>
+                  <div class="popup">
+                      <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)" style="width: 600px;">
+                      <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
                     </div>
+            
+                    <div class="popup">
+                      <div class="input-container"> 
+                        <label for="sequence-length">Μήκος ακολουθίας:</label>
+                        <input type="number" id="sequence-length" placeholder="π.χ. 10" min="1" style="width: 100px;">
+                        <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+                    </div>
+                      <span class="popuptext">Μέγιστο μήκος ακολουθιας το 100</span>
+                  </div>
+
+
+
                     <p>Αρχική κατεύθυνση:</p>
                     <div class="popup">
                         <select id="direction">
