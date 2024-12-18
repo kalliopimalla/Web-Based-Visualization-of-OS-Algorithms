@@ -11,6 +11,11 @@ function runFCFSCPU() {
     wt = new Array(n);
     tat = new Array(n);
 
+const sortedData = sortByArrival(processes, burstTime, arrivalTime);
+processes = sortedData.sortedProcesses;
+burstTime = sortedData.sortedBurstTime;
+arrivalTime = sortedData.sortedArrivalTime;
+
     // Υπολογισμός χρόνων
     findWaitingTime(processes, n, burstTime, wt, arrivalTime);
     findTurnAroundTime(processes, n, burstTime, wt, tat);
@@ -59,7 +64,8 @@ function runFCFSCPU() {
     // Δημιουργία του πίνακα 5 στηλών
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
+        output += `<tr><td>P${processes[i]}</td>
+<td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
     document.getElementById('seek-count').innerHTML = output;
@@ -76,54 +82,58 @@ function drawPartialGanttChart(processes, bt, at) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Εύρεση χρόνων άφιξης και συνολικού χρόνου
     const minArrivalTime = Math.min(...at);
-    let totalTime = bt.reduce((sum, time) => sum + time, 0);
+    let currentTime = minArrivalTime;
 
-    // Υπολογισμός δυναμικής κλίμακας
-    const canvasBaseWidth = 800; // Βασικό πλάτος καμβά
-    const scaleFactor = Math.max(canvasBaseWidth / totalTime, 5); // Ελάχιστο πλάτος μονάδας
-    let adjustedBarLengths = bt.map((time) => time * scaleFactor);
+    const canvasBaseWidth = 800;
+    const scaleFactor = Math.max(canvasBaseWidth / bt.reduce((sum, time) => sum + time, 0), 5);
+    const adjustedBarLengths = bt.map((time) => time * scaleFactor);
 
-    // Προσαρμογή πλάτους καμβά
     canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 100;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let currentX = 0; // Τρέχουσα θέση στον καμβά
-    let currentTime = minArrivalTime; // Τρέχων χρόνος στο Gantt Chart
+    let currentX = 0;
 
     for (let i = 0; i < processes.length; i++) {
-        const startTime = Math.max(currentTime, at[i]); // Χρόνος εκκίνησης της διεργασίας
+        const startTime = Math.max(currentTime, at[i]);
 
-        // Ετικέτα διεργασίας
         const label = `P${processes[i]}`;
-        const labelWidth = ctx.measureText(label).width;
-
-        // Σχεδίαση μπάρας διεργασίας
-        const barWidth = Math.max(adjustedBarLengths[i], labelWidth + 10); // Εξασφάλιση ότι η μπάρα χωράει την ετικέτα
-        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`; // Χρώμα μπάρας
+        const barWidth = adjustedBarLengths[i];
+        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
         ctx.fillRect(currentX, 50, barWidth, 40);
 
-        // Γραμματοσειρά για την ετικέτα
         ctx.font = '10px Arial';
         ctx.fillStyle = '#000';
+        ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75);
+        ctx.fillText(startTime, currentX, 45);
 
-        // Προσθήκη ετικέτας διεργασίας μέσα στη μπάρα
-        ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Στο κέντρο της μπάρας
-
-        // Ετικέτα για χρονική στιγμή έναρξης
-        ctx.fillText(currentTime, currentX, 45);
-
-        currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
-        currentTime = startTime + bt[i]; // Ενημέρωση του τρέχοντος χρόνου
-
-        // Ετικέτα για χρονική στιγμή λήξης
+        currentX += barWidth;
+        currentTime = startTime + bt[i];
         ctx.fillText(currentTime, currentX, 45);
     }
 }
 
 
 
+
+
+
+// Συνάρτηση για ταξινόμηση με βάση το χρόνο άφιξης
+function sortByArrival(processes, bt, at) {
+    const combined = processes.map((_, i) => ({
+        process: processes[i],
+        burstTime: bt[i],
+        arrivalTime: at[i],
+    }));
+
+    combined.sort((a, b) => a.arrivalTime - b.arrivalTime);
+
+    const sortedProcesses = combined.map((item) => item.process);
+    const sortedBurstTime = combined.map((item) => item.burstTime);
+    const sortedArrivalTime = combined.map((item) => item.arrivalTime);
+
+    return { sortedProcesses, sortedBurstTime, sortedArrivalTime };
+}
 
 
 
@@ -160,17 +170,21 @@ function startStepByStep() {
 
     stepBurstTime = btInput.split(',').map(Number);
     stepArrivalTime = atInput.split(',').map(Number);
+    const n = stepBurstTime.length;
+    stepProcesses = Array.from({ length: n }, (_, i) => i + 1);
 
-    // Αποθήκευση των αρχικών δεδομένων για το Gantt Chart
+    // Ταξινόμηση δεδομένων
+    const sortedStepData = sortByArrival(stepProcesses, stepBurstTime, stepArrivalTime);
+    stepProcesses = sortedStepData.sortedProcesses;
+    stepBurstTime = sortedStepData.sortedBurstTime;
+    stepArrivalTime = sortedStepData.sortedArrivalTime;
+
+    // Αποθήκευση των αρχικών δεδομένων
     originalBurstTimes = [...stepBurstTime];
     originalArrivalTimes = [...stepArrivalTime];
 
-    const n = stepBurstTime.length;
-    stepProcesses = Array.from({ length: n }, (_, i) => i + 1);
     stepWaitingTime = new Array(n).fill(0);
     stepTurnAroundTime = new Array(n).fill(0);
-
-
     stepIndex = 0;
     stepCurrentTime = 0;
 
@@ -196,6 +210,7 @@ function startStepByStep() {
     document.getElementById("resetButton").style.display = "inline-block";
     document.getElementById('stepByStepBtn').style.display = 'none';
 }
+
 
 
 function stepByStepExecution() {
@@ -301,14 +316,15 @@ function stepByStepExecution() {
 
 // Συνάρτηση δημιουργίας 5-στήλου πίνακα
 function createFiveColumnTable(processes, bt, at, wt) {
-    const tat = processes.map((_, i) => bt[i] + wt[i]); // Υπολογισμός Turnaround Time
+    const tat = processes.map((_, i) => bt[i] + wt[i]);
 
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
     output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
 
     for (let i = 0; i < processes.length; i++) {
         output += `<tr>
-            <td>${processes[i]}</td>
+           <td>P${processes[i]}</td>
+
             <td>${bt[i]}</td>
             <td>${at[i]}</td>
             <td>${wt[i]}</td>
@@ -317,10 +333,9 @@ function createFiveColumnTable(processes, bt, at, wt) {
     }
 
     output += "</table>";
-
-    // Εμφάνιση του πίνακα στη σελίδα
     document.getElementById('seek-count').innerHTML = output;
 }
+
 
 
 
