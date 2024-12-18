@@ -72,7 +72,6 @@ function runFCFSCPU() {
     document.getElementById('runButton').style.display = 'none';
 }
 
-
 function drawPartialGanttChart(processes, bt, at) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -87,7 +86,7 @@ function drawPartialGanttChart(processes, bt, at) {
     let adjustedBarLengths = bt.map((time) => time * scaleFactor);
 
     // Προσαρμογή πλάτους καμβά
-    canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 50;
+    canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 100;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentX = 0; // Τρέχουσα θέση στον καμβά
@@ -106,16 +105,26 @@ function drawPartialGanttChart(processes, bt, at) {
         ctx.fillRect(currentX, 50, barWidth, 40);
 
         // Γραμματοσειρά για την ετικέτα
-        ctx.font = '12px Arial';
+        ctx.font = '10px Arial';
         ctx.fillStyle = '#000';
 
         // Προσθήκη ετικέτας διεργασίας μέσα στη μπάρα
         ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Στο κέντρο της μπάρας
 
+        // Ετικέτα για χρονική στιγμή έναρξης
+        ctx.fillText(currentTime, currentX, 45);
+
         currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
         currentTime = startTime + bt[i]; // Ενημέρωση του τρέχοντος χρόνου
+
+        // Ετικέτα για χρονική στιγμή λήξης
+        ctx.fillText(currentTime, currentX, 45);
     }
 }
+
+
+
+
 
 
 
