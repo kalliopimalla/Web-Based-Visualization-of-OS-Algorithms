@@ -153,6 +153,11 @@ function drawGanttChart(schedule) {
         ctx.font = `${labelFontSize}px Arial`;
         ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75);
 
+        // Ετικέτες χρόνου (start time, end time)
+        ctx.fillText(startTime, currentX, 45); // Χρόνος έναρξης
+        ctx.fillText(endTime, currentX + barWidth, 45); // Χρόνος λήξης
+
+
         currentX += barWidth; // Ενημέρωση για την επόμενη μπάρα
     }
 }
@@ -308,7 +313,7 @@ function stepByStepExecution() {
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
-        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
+        const avgWaitingTimeBox = `<p><strong>Μέσος Χρόνος Αναμονής :</strong> ${averageWaitingTime.toFixed(2)}</p>`;
         stepHistoryContainer.insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
 
         // Προσθήκη κουτιού τέλους διαδικασίας
@@ -334,7 +339,7 @@ function createFinalTable() {
 
     for (let i = 0; i < stepProcesses.length; i++) {
         output += `<tr>
-            <td>${stepProcesses[i]}</td>
+            <td>P${stepProcesses[i]}</td>
             <td>${stepBurstTime[i]}</td>
             <td>${stepArrivalTime[i]}</td>
             <td>${stepWaitingTime[i]}</td>
@@ -382,6 +387,16 @@ function createThreeColumnTable() {
     const burstTime = btValue.split(',').map(Number);
     const arrivalTime = atValue.split(',').map(Number);
 
+
+    // Έλεγχος αν το μήκος των ακολουθιών υπερβαίνει το όριο των 100
+if (burstTime.length > 100 || arrivalTime.length > 100) {
+    errorContainer.textContent = 'Το μήκος των ακολουθιών δεν πρέπει να υπερβαίνει τα 100!';
+    errorContainer.style.display = 'block';
+    btInput.classList.add('input-error');
+    atInput.classList.add('input-error');
+    return;
+}
+
     // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
     if (burstTime.length !== arrivalTime.length) {
         errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης και άφιξης πρέπει να είναι ίδιος!';
@@ -406,7 +421,7 @@ function createThreeColumnTable() {
     output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th></tr>";
 
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td></tr>`;
+        output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td></tr>`;
     }
     output += "</table>";
 
@@ -414,6 +429,7 @@ function createThreeColumnTable() {
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
+    document.getElementById("resetButton").style.display = "inline-block";
 }
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας

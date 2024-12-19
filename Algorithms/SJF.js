@@ -378,6 +378,7 @@ function createThreeColumnTable() {
     errorContainer.style.display = 'none';
     btInput.classList.remove('input-error');
     atInput.classList.remove('input-error');
+    
 // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
 const burstTime = btValue.split(',').map(Number);
 const arrivalTime = atValue.split(',').map(Number);
