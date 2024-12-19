@@ -5,22 +5,13 @@ function runPriorityCPU() {
     const prInput = document.getElementById('priority').value;
     const schedule = []; // Πίνακας προγραμματισμού για το Gantt Chart
 
-    // Έλεγχος αν τα πεδία είναι σωστά
-    if (!btInput || !atInput || !prInput) {
-        alert('Παρακαλώ εισάγετε όλους τους χρόνους εκτέλεσης, άφιξης και προτεραιότητες!');
-        return;
-    }
-
+  
     // Διαχωρισμός δεδομένων σε πίνακες
     const burstTime = btInput.split(',').map(Number);
     const arrivalTime = atInput.split(',').map(Number);
     const priority = prInput.split(',').map(Number);
     const n = burstTime.length;
 
-    if (arrivalTime.length !== n || priority.length !== n) {
-        alert('Τα πεδία πρέπει να έχουν ίσο αριθμό τιμών!');
-        return;
-    }
 
     const processes = Array.from({ length: n }, (_, i) => i + 1);
     const remainingBurstTime = [...burstTime];
@@ -101,14 +92,14 @@ function runPriorityCPU() {
     // Δημιουργία πίνακα αποτελεσμάτων
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${priority[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
+        output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${priority[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
     
     // Εμφάνιση αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById('stepHistory').innerHTML = `
-        <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
+        <p><strong>Μέσος Χρόνος Αναμονής :</strong> ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
     // Δημιουργία του Gantt Chart
@@ -190,10 +181,6 @@ function startStepByStep() {
     stepTurnAroundTime = new Array(n).fill(0);
     stepCompleted = new Array(n).fill(false);
 
-    if (stepBurstTime.length !== stepArrivalTime.length || stepBurstTime.length !== stepPriority.length) {
-        alert('Οι χρόνοι εκτέλεσης, άφιξης και προτεραιότητας πρέπει να έχουν το ίδιο μήκος!');
-        return;
-    }
 
     stepCurrentTime = 0;
     document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
@@ -290,7 +277,7 @@ function stepByStepExecution() {
         const table = document.querySelector('#priority-scheduling-table');
         const newRow = table.insertRow(-1);
         newRow.innerHTML = `
-            <td>${stepProcesses[highestPriorityIndex]}</td>
+            <td>P${stepProcesses[highestPriorityIndex]}</td>
             <td>${stepBurstTime[highestPriorityIndex]}</td>
             <td>${stepArrivalTime[highestPriorityIndex]}</td>
             <td>${stepPriority[highestPriorityIndex]}</td>
@@ -312,39 +299,99 @@ function stepByStepExecution() {
 
         // Υπολογισμός μέσου χρόνου αναμονής
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
-        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
+        const avgWaitingTimeBox = `<p><strong>Μέσος Χρόνος Αναμονής : </strong>${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
         
         
         // Κλήση του Gantt Chart
         drawGanttChart(stepSchedule);
 
-        alert('Η εκτέλεση ολοκληρώθηκε!');
+      
         document.getElementById('nextStepButton').remove();
         document.getElementById("resetButton").style.display = "inline-block";
     }
 }
 
 
-
 function createThreeColumnTable() {
-    const btInput = document.getElementById('burst-time').value;
-    const atInput = document.getElementById('arrival-time').value;
+    const btInput = document.getElementById('burst-time');
+    const atInput = document.getElementById('arrival-time');
+    const prInput = document.getElementById('priority');
+    const errorContainer = document.getElementById('error-container');
+
+    const btValue = btInput.value.trim();
+    const atValue = atInput.value.trim();
+    const prValue = prInput.value.trim();
+
+    // Κανονική έκφραση για έλεγχο αριθμών χωρισμένων με κόμμα χωρίς κενά
+    const validFormat = /^(\d+)(,\d+)*$/;
+
+    // Έλεγχος αν τα inputs είναι κενά
+    if (!btValue || !atValue || !prValue) {
+        errorContainer.textContent = 'Παρακαλώ συμπληρώστε τόσο τους χρόνους εκτέλεσης, τους χρόνους άφιξης όσο και τις προτεραιότητες!';
+        errorContainer.style.display = 'block';
+
+        // Προσθήκη της κλάσης σφάλματος
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        prInput.classList.add('input-error');
+        return;
+    }
+
+    // Αφαίρεση του σφάλματος αν τα πεδία δεν είναι κενά
+    errorContainer.style.display = 'none';
+    btInput.classList.remove('input-error');
+    atInput.classList.remove('input-error');
+    prInput.classList.remove('input-error');
+
+    // Έλεγχος αν τα inputs περιέχουν μόνο αριθμούς χωρισμένους με κόμματα
+    if (!validFormat.test(btValue) || !validFormat.test(atValue) || !validFormat.test(prValue)) {
+        errorContainer.textContent = 'Τα πεδία πρέπει να περιέχουν μόνο αριθμούς διαχωρισμένους με κόμμα.';
+        errorContainer.style.display = 'block';
+        return;
+    }
 
     // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
-    const burstTime = btInput.split(',').map(Number);
-    const arrivalTime = atInput.split(',').map(Number);
+    const burstTime = btValue.split(',').map(Number);
+    const arrivalTime = atValue.split(',').map(Number);
+    const priority = prValue.split(',').map(Number);
+
     const n = burstTime.length;
+
+        // Έλεγχος αν το μήκος των ακολουθιών υπερβαίνει το όριο των 100
+if (burstTime.length > 100 || arrivalTime.length > 100 || priority.length > 100)  {
+    errorContainer.textContent = 'Το μήκος των ακολουθιών δεν πρέπει να υπερβαίνει τα 100!';
+    errorContainer.style.display = 'block';
+    btInput.classList.add('input-error');
+    atInput.classList.add('input-error');
+    prInput.classList.add('input-error');
+    return;
+}
+
+
+
+
+    // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
+    if (burstTime.length !== arrivalTime.length || burstTime.length !== priority.length) {
+        errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης, άφιξης και προτεραιοτήτων πρέπει να είναι ίδιος.';
+        errorContainer.style.display = 'block';
+        return;
+    }
 
     // Δημιουργία πίνακα διεργασιών
     const processes = Array.from({ length: n }, (_, i) => i + 1);
 
     // Δημιουργία HTML για τον πίνακα
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
-    output += "<tr><th>Διεργασίες</th><th>Χρόνος εκτέλεσης</th><th>Χρόνος άφιξης</th></tr>";
+    output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th></tr>";
     
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td></tr>`;
+        output += `<tr>
+            <td>P${processes[i]}</td>
+            <td>${burstTime[i]}</td>
+            <td>${arrivalTime[i]}</td>
+            <td>${priority[i]}</td>
+        </tr>`;
     }
     output += "</table>";
 
@@ -352,7 +399,9 @@ function createThreeColumnTable() {
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
+    document.getElementById("resetButton").style.display = "inline-block";
 }
+
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length, max = 50) {
@@ -396,10 +445,7 @@ function generateRandomPrioritySequence(length) {
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton2").addEventListener("click", function () {
     const burstInput = document.getElementById("burst-time").value; // Παίρνουμε το μήκος από το burst-time
-    if (!burstInput) {
-        alert("Παρακαλώ εισάγετε χρόνους εκτέλεσης για να ορίσετε αριθμό διεργασιών!");
-        return;
-    }
+   
     const processCount = burstInput.split(",").length; // Υπολογισμός αριθμού διεργασιών
     const randomSequence = generateRandomPrioritySequence(processCount); // Δημιουργία τυχαίας σειράς
     document.getElementById("priority").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου για προτεραιότητες
