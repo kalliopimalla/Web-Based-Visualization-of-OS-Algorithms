@@ -120,6 +120,7 @@ function runRoundRobinCPU() {
 
 }
 
+
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -140,14 +141,14 @@ function drawGanttChart(schedule) {
 
     // Καθορισμός πλάτους καμβά ανάλογα με τη συνολική διάρκεια
     canvas.width = Math.max(containerWidth, totalBurstTime * minBarWidth);
-    canvas.height = barHeight + 60; // Προσθήκη περιθωρίου για καλύτερη εμφάνιση
+    canvas.height = barHeight + 80; // Προσθήκη περιθωρίου για καλύτερη εμφάνιση
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentX = 0;
     ctx.font = '12px Arial';
 
-    schedule.forEach(({ process, startTime, endTime }) => {
+    schedule.forEach(({ process, startTime, endTime }, index) => {
         const duration = endTime - startTime;
         const barWidth = Math.max(duration * scaleFactor, minBarWidth); // Χρήση ελάχιστου πλάτους
 
@@ -162,10 +163,17 @@ function drawGanttChart(schedule) {
         ctx.fillStyle = '#000'; // Χρώμα ετικέτας
         ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Τοποθέτηση στο κέντρο της μπάρας
 
+        // Ετικέτα για την αρχή κάθε διεργασίας
+        ctx.fillText(startTime, currentX, 45); // Ετικέτα πάνω από την μπάρα
+
+        // Ετικέτα για τη λήξη της τελευταίας διεργασίας
+        if (index === schedule.length - 1) {
+            ctx.fillText(endTime, currentX + barWidth, 45); // Ετικέτα δεξιά από την τελευταία μπάρα
+        }
+
         currentX += barWidth; // Ενημέρωση της θέσης X
     });
 }
-
 
 
 
