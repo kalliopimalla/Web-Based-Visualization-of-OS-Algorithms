@@ -438,6 +438,8 @@ function createThreeColumnTable() {
     // Εμφάνιση του πίνακα στη σελίδα
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById("runButton").style.display = "inline-block";
+    document.getElementById("resetButton").style.display = "inline-block";
+
     document.getElementById("stepByStepBtn").style.display = "inline-block";
 }
 

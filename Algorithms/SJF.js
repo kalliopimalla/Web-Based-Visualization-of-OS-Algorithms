@@ -87,7 +87,7 @@ function runSJFCPU() {
     // Εμφάνιση αποτελεσμάτων
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
+        output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
 
@@ -270,7 +270,7 @@ function createFiveColumnTable(processes, bt, at, wt) {
 
     for (let i = 0; i < processes.length; i++) {
         output += `<tr>
-            <td>${processes[i]}</td>
+           <td>P${processes[i]}</td>
             <td>${bt[i]}</td>
             <td>${at[i]}</td>
             <td>${wt[i]}</td>
@@ -363,14 +363,25 @@ function createThreeColumnTable() {
         return;
     }
 
+     
+
     // Απόκρυψη του μηνύματος σφάλματος και αφαίρεση της κλάσης σφάλματος
     errorContainer.style.display = 'none';
     btInput.classList.remove('input-error');
     atInput.classList.remove('input-error');
+// Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
+const burstTime = btValue.split(',').map(Number);
+const arrivalTime = atValue.split(',').map(Number);
 
-    // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
-    const burstTime = btValue.split(',').map(Number);
-    const arrivalTime = atValue.split(',').map(Number);
+// Έλεγχος αν το μήκος των ακολουθιών υπερβαίνει το όριο των 100
+if (burstTime.length > 100 || arrivalTime.length > 100) {
+    errorContainer.textContent = 'Το μήκος των ακολουθιών δεν πρέπει να υπερβαίνει τα 100!';
+    errorContainer.style.display = 'block';
+    btInput.classList.add('input-error');
+    atInput.classList.add('input-error');
+    return;
+}
+
 
     // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
     if (burstTime.length !== arrivalTime.length) {
@@ -398,6 +409,7 @@ function createThreeColumnTable() {
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
+    document.getElementById("resetButton").style.display = "inline-block";
 }
 
 
