@@ -286,50 +286,59 @@ function createFiveColumnTable(processes, bt, at, wt) {
 
 // Δημιουργία του Gantt Chart
 function drawGanttChart(processes, burstTime, arrivalTime, completionOrder) {
-    const canvas = document.getElementById('seekCanvas');
-    const ctx = canvas.getContext('2d');
-
-    // Υπολογισμός της συνολικής διάρκειας
-    const totalBurstTime = burstTime.reduce((sum, time) => sum + time, 0);
-
-    // Βασικό πλάτος καμβά
-    const baseWidth = 800;
-    const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
-
-    // Καθαρισμός του καμβά
-    canvas.width = Math.max(baseWidth, totalBurstTime * scaleFactor + 50); // Δυναμικό πλάτος καμβά
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Αρχικοποίηση
-    let currentX = 0;
-    ctx.font = '12px Arial';
-
-    for (const processIndex of completionOrder) {
-        const process = processes[processIndex];
-        const burst = burstTime[processIndex];
-
-        // Υπολογισμός πλάτους μπάρας
-        let barWidth = burst * scaleFactor;
-
-        // Προσαρμογή πλάτους αν είναι μικρότερο από το ελάχιστο
-        const label = `P${process}`;
-        const labelWidth = ctx.measureText(label).width + 10; // Επιπλέον περιθώριο για να χωράει η ετικέτα
-        if (barWidth < labelWidth) {
-            barWidth = labelWidth; // Προσαρμογή πλάτους
+        const canvas = document.getElementById('seekCanvas');
+        const ctx = canvas.getContext('2d');
+    
+        // Υπολογισμός της συνολικής διάρκειας
+        const totalBurstTime = burstTime.reduce((sum, time) => sum + time, 0);
+    
+        // Βασικό πλάτος καμβά
+        const baseWidth = 800;
+        const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
+    
+        // Καθαρισμός και δυναμικό πλάτος καμβά
+        canvas.width = Math.max(baseWidth, totalBurstTime * scaleFactor + 100);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+        // Αρχικοποίηση
+        let currentX = 0;
+        let currentTime = Math.min(...arrivalTime); // Ξεκινάμε από το ελάχιστο arrival time
+        ctx.font = '12px Arial';
+    
+        for (const processIndex of completionOrder) {
+            const process = processes[processIndex];
+            const burst = burstTime[processIndex];
+            const arrival = arrivalTime[processIndex];
+    
+            // Ξεκινάμε το process μόνο αν έχει φτάσει (arrival <= currentTime)
+            const startTime = Math.max(currentTime, arrival);
+    
+            // Υπολογισμός πλάτους μπάρας
+            let barWidth = burst * scaleFactor;
+    
+            // Προσαρμογή πλάτους αν είναι μικρότερο από το ελάχιστο
+            const label = `P${process}`;
+            const labelWidth = ctx.measureText(label).width + 10; // Επιπλέον περιθώριο για να χωράει η ετικέτα
+            if (barWidth < labelWidth) {
+                barWidth = labelWidth; // Προσαρμογή πλάτους
+            }
+    
+            // Σχεδίαση μπάρας
+            ctx.fillStyle = `hsl(${(processIndex * 60) % 360}, 70%, 70%)`; // Χρώμα ανά διεργασία
+            ctx.fillRect(currentX, 50, barWidth, 40);
+    
+            // Ετικέτα διεργασίας μέσα στη μπάρα
+            ctx.fillStyle = '#000';
+            ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75); // Κέντρο μπάρας
+    
+            // Ετικέτες χρόνου (start time, end time)
+            ctx.fillText(startTime, currentX, 45); // Χρόνος έναρξης
+            currentTime = startTime + burst; // Ενημέρωση τρέχοντος χρόνου
+            currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
+            ctx.fillText(currentTime, currentX, 45); // Χρόνος λήξης
         }
-
-        // Σχεδίαση μπάρας
-        ctx.fillStyle = `hsl(${(processIndex * 60) % 360}, 70%, 70%)`; // Χρώμα ανά διεργασία
-        ctx.fillRect(currentX, 50, barWidth, 40);
-
-        // Ετικέτα διεργασίας μέσα στη μπάρα
-        ctx.fillStyle = '#000';
-        ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75); // Κέντρο μπάρας
-
-        currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
     }
-}
-
+    
 
 
 function createThreeColumnTable() {
