@@ -110,19 +110,23 @@
       <div class="container">
         <h2>Βήματα</h2>
         <ol>
-            <ul>
-              <label><strong>ΒΗΜΑ 1 :</strong></label>
-              <li>Εισάγετε τον χρόνο εκτέλεσης για κάθε διαδικασία(ακολουθία χωρισμένη με κόμμα).</li>
-      
-              <label><strong>ΒΗΜΑ 2 :</strong></label>
-              <li>Εισάγετε και τον χρόνο άφιξής τους(ακολουθία χωρισμένη με κόμμα).</li>
+          <ul>
+            <label><strong>ΒΗΜΑ 1 :</strong></label>
+          <li>Εισαγάγετε τον χρόνο εκτέλεσης για κάθε διεργασία, διασφαλίζοντας ότι είναι σωστά μορφοποιημένος. </li>
   
-              <label><strong>ΒΗΜΑ 3 :</strong></label>
-              <li>Επιλέξτε την επιθυμητή προτεραιότητα.</li>
-              
-              <label><strong>ΒΗΜΑ 4 :</strong></label>
-             <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
-              </ul>
+          <label><strong>ΒΗΜΑ 2 :</strong></label>
+       
+          <li>Εισαγάγετε τον χρόνο άφιξης για κάθε διεργασία, διασφαλίζοντας ότι είναι σωστά μορφοποιημένος. </li>
+
+          <label><strong>ΒΗΜΑ 3 :</strong></label>
+          <li>Εισαγάγετε την επιθυμητή προτεραιότητα ή δημιουργήστε μία τυχαία. </li>
+
+          <label><strong>ΒΗΜΑ 4 :</strong></label>
+         <li>Πατήστε το κουμπί "Δημιουργία Πίνακα" για να εμφανιστούν οι δύο διαθέσιμες επιλογές οπτικοποίησης. Μπορείτε είτε να εκτελέσετε τον αλγόριθμο άμεσα επιλέγοντας "Απευθείας Εκτέλεση" είτε να τον εκτελέσετε σταδιακά επιλέγοντας "Βήμα προς Βήμα".</li>
+            </ul>
+  
+        
+             
         </ol>
       </div>
     </section>
@@ -135,26 +139,45 @@
         <div class="content">
           <div class="container">
             <div class="input-steps">
-                <h2>Δημιουργία Πίνακα Διεργασιών</h2>
+                <h2>Υλοποίηση</h2>
+
+
+                <div class="popup">
+                  <div class="input-group">
+                    <label for="sequenceLength"><strong>Μήκος Ακολουθίας Διεργασιών:</strong></label>
+                    <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 150px;">
+                    <button id="generateSequenceButton">Δημιουργία Τυχαίων Ακολουθιών</button>
+                    </div>
+                    <span class="popuptext"> Μέγιστο μήκος ακολουθιας το 100</span>
+                </div>
+    
+                <div class="popup">
                 <div class="input-group">
-                  <label for="sequenceLength"><strong>Μήκος Ακολουθίας Διεργασιών:</strong></label>
-                  <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 150px;">
-                  <button id="generateSequenceButton">Δημιουργία Τυχαίων Ακολουθιών</button>
+                    <label for="burst-time"><strong>Χρόνοι Εκτέλεσης:</strong></label>
+                    <input type="text" id="burst-time" placeholder="π.χ. 8,4,9,5">
+                </div>
+                <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
               </div>
-              <div class="input-group">
-                  <label for="burst-time"><strong>Χρόνοι Εκτέλεσης:</strong></label>
-                  <input type="text" id="burst-time" placeholder="π.χ. 8,4,9,5">
+    
+                <div class="popup">
+                <div class="input-group">
+                    <label for="arrival-time"><strong>Χρόνοι Άφιξης:</strong></label>
+                    <input type="text" id="arrival-time" placeholder="π.χ. 1,2,3,4">
+                </div>
+                <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
               </div>
-              <div class="input-group">
-                  <label for="arrival-time"><strong>Χρόνοι Άφιξης:</strong></label>
-                  <input type="text" id="arrival-time" placeholder="π.χ. 1,2,3,4">
-              </div>
+    
+
+              <div class="popup">
                 <div>
-                    <label for="priority">Προτεραιότητες (διαχωρισμένες με κόμμα):</label>
+                    <label for="priority"><strong>Προτεραιότητες:</strong></label>
                     <input type="text" id="priority" placeholder="π.χ., 1,3,2,4">
                     <button id="generateSequenceButton2">Δημιουργία Τυχαίας Ακολουθίας</button>
                 </div>
+                <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
+              </div>
                 
+              <br>
                 <br>
                 <button onclick="createThreeColumnTable()">Δημιουργία Πίνακα</button>
                 <br><br>
