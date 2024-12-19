@@ -6,20 +6,13 @@ function runRoundRobinCPU() {
     const atInput = document.getElementById('arrival-time').value;
     const quantumInput = document.getElementById('quantum').value;
 
-    if (!btInput || !atInput || !quantumInput) {
-        alert('Παρακαλώ εισάγετε όλους τους χρόνους εκτέλεσης, άφιξης και το quantum!');
-        return;
-    }
+
 
     const burstTime = btInput.split(',').map(Number);
     const arrivalTime = atInput.split(',').map(Number);
     const quantum = parseInt(quantumInput);
     const n = burstTime.length;
 
-    if (arrivalTime.length !== n) {
-        alert('Τα πεδία χρόνου εκτέλεσης και άφιξης πρέπει να έχουν ίσο αριθμό τιμών!');
-        return;
-    }
 
     const processes = Array.from({ length: n }, (_, i) => i + 1);
     const remainingBurstTime = [...burstTime];
@@ -113,13 +106,13 @@ function runRoundRobinCPU() {
     // Δημιουργία πίνακα αποτελεσμάτων
     let output = "<table border='1'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
+        output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
 
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById('stepHistory').innerHTML = `
-        <p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>
+        <p><strong>Μέσος Χρόνος Αναμονής :<\strong> ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
     document.getElementById("resetButton").style.display = "inline-block";
@@ -205,10 +198,7 @@ function startStepByStep() {
     stepTurnAroundTime = new Array(n).fill(0);
     stepCompleted = new Array(n).fill(false);
 
-    if (stepBurstTime.length !== stepArrivalTime.length || isNaN(stepQuantum) || stepQuantum <= 0) {
-        alert('Οι χρόνοι εκτέλεσης, άφιξης και quantum πρέπει να έχουν σωστές τιμές!');
-        return;
-    }
+
 
     stepCurrentTime = 0;
     stepQueue = []; // Καθαρισμός της ουράς
@@ -334,10 +324,8 @@ function stepByStepExecution() {
         document.getElementById('stepHistory').appendChild(endBox);
 
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
-        const avgWaitingTimeBox = `<p>Μέσος Χρόνος Αναμονής : ${averageWaitingTime.toFixed(2)}</p>`;
+        const avgWaitingTimeBox = `<p><strong>Μέσος Χρόνος Αναμονής :<strong> ${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
-
-        alert('Η εκτέλεση ολοκληρώθηκε!');
 
         // Σχεδιάστε το Gantt Chart στο τέλος
         drawGanttChart(schedule);
@@ -350,23 +338,79 @@ function stepByStepExecution() {
 
 
 function createThreeColumnTable() {
-    const btInput = document.getElementById('burst-time').value;
-    const atInput = document.getElementById('arrival-time').value;
+    const btInput = document.getElementById('burst-time');
+    const atInput = document.getElementById('arrival-time');
+    const quantumInput = document.getElementById('quantum'); // Νέο πεδίο για το quantum
+    const errorContainer = document.getElementById('error-container');
+
+    const btValue = btInput.value.trim();
+    const atValue = atInput.value.trim();
+    const quantumValue = quantumInput.value.trim();
+
+    // Κανονική έκφραση για έλεγχο αριθμών χωρισμένων με κόμμα χωρίς κενά
+    const validFormat = /^(\d+)(,\d+)*$/;
+
+    // Έλεγχος αν τα inputs είναι κενά
+    if (!btValue || !atValue || !quantumValue) {
+        errorContainer.textContent = 'Παρακαλώ συμπληρώστε τους χρόνους εκτέλεσης, τους χρόνους άφιξης και το χρονικό κβάντο!';
+        errorContainer.style.display = 'block';
+
+        // Προσθήκη της κλάσης σφάλματος
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        quantumInput.classList.add('input-error');
+        return;
+    }
+
+    // Αφαίρεση του σφάλματος αν τα πεδία δεν είναι κενά
+    errorContainer.style.display = 'none';
+    btInput.classList.remove('input-error');
+    atInput.classList.remove('input-error');
+    quantumInput.classList.remove('input-error');
+
+    // Έλεγχος αν τα inputs περιέχουν μόνο αριθμούς χωρισμένους με κόμματα
+    if (!validFormat.test(btValue) || !validFormat.test(atValue) || isNaN(quantumValue) || Number(quantumValue) <= 0) {
+        errorContainer.textContent = 'Οι χρόνοι πρέπει να περιέχουν μόνο αριθμούς διαχωρισμένους με κόμμα, και το χρονικό κβάντο πρέπει να είναι θετικός αριθμός!';
+        errorContainer.style.display = 'block';
+        return;
+    }
 
     // Διαχωρισμός τιμών και μετατροπή σε αριθμητικούς πίνακες
-    const burstTime = btInput.split(',').map(Number);
-    const arrivalTime = atInput.split(',').map(Number);
+    const burstTime = btValue.split(',').map(Number);
+    const arrivalTime = atValue.split(',').map(Number);
+    const quantum = Number(quantumValue);
+
     const n = burstTime.length;
+
+    // Έλεγχος αν το μήκος των ακολουθιών υπερβαίνει το όριο των 100
+    if (burstTime.length > 100 || arrivalTime.length > 100) {
+        errorContainer.textContent = 'Το μήκος των ακολουθιών δεν πρέπει να υπερβαίνει τα 100!';
+        errorContainer.style.display = 'block';
+        btInput.classList.add('input-error');
+        atInput.classList.add('input-error');
+        return;
+    }
+
+    // Έλεγχος αν τα μήκη των πινάκων ταιριάζουν
+    if (burstTime.length !== arrivalTime.length) {
+        errorContainer.textContent = 'Ο αριθμός των χρόνων εκτέλεσης και άφιξης πρέπει να είναι ίδιος.';
+        errorContainer.style.display = 'block';
+        return;
+    }
 
     // Δημιουργία πίνακα διεργασιών
     const processes = Array.from({ length: n }, (_, i) => i + 1);
 
     // Δημιουργία HTML για τον πίνακα
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
-    output += "<tr><th>Διεργασίες</th><th>Χρόνος εκτέλεσης</th><th>Χρόνος άφιξης</th></tr>";
-    
+    output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th></tr>";
+
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td></tr>`;
+        output += `<tr>
+            <td>P${processes[i]}</td>
+            <td>${burstTime[i]}</td>
+            <td>${arrivalTime[i]}</td>
+        </tr>`;
     }
     output += "</table>";
 
@@ -374,6 +418,11 @@ function createThreeColumnTable() {
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
+    document.getElementById("resetButton").style.display = "inline-block";
+
+    // Εμφάνιση του quantum στην οθόνη
+    const quantumDisplay = `<p><strong>Χρονικό Κβάντο:</strong> ${quantum}</p>`;
+    document.getElementById('quantum-display').innerHTML = quantumDisplay;
 }
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
