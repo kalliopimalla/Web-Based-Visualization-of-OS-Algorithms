@@ -108,46 +108,63 @@ drawGanttChart(schedule);
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
+
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Υπολογισμός της συνολικής διάρκειας
+    // Υπολογισμός συνολικής διάρκειας
     const totalBurstTime = schedule[schedule.length - 1].endTime;
 
-    // Βασικό πλάτος καμβά
-    const baseWidth = 800;
-    const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
-
-    // Καθαρισμός του καμβά
+    // Ρυθμίσεις καμβά
+    const baseWidth = 800; // Πλάτος καμβά
+    const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου
     canvas.width = baseWidth;
-    canvas.height = 100;
+    canvas.height = 150; // Αύξηση ύψους για επιπλέον ετικέτες
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    let currentX = 0;
-    ctx.font = '12px Arial';
+    let currentX = 0; // Αρχική θέση X για τις μπάρες
+    const barHeight = 40; // Ύψος μπάρας
+    const labelFontSize = 12; // Μέγεθος γραμματοσειράς για ετικέτες
 
-    schedule.forEach(({ process, startTime, endTime }) => {
+    // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
+    const processColors = {};
+
+    for (let i = 0; i < schedule.length; i++) {
+        const { process, startTime, endTime } = schedule[i];
         const duration = endTime - startTime;
         const barWidth = duration * scaleFactor;
 
-        // Σχεδίαση μπάρας
-        ctx.fillStyle = `hsl(${(process * 60) % 360}, 70%, 70%)`; // Χρώμα ανά διεργασία
-        ctx.fillRect(currentX, 50, barWidth, 40);
+        // Ανάθεση ή ανάκτηση χρώματος για κάθε διεργασία
+        if (!processColors[process]) {
+            processColors[process] = `hsl(${(Object.keys(processColors).length * 60) % 360}, 70%, 70%)`;
+        }
+        ctx.fillStyle = processColors[process];
+
+        // Σχεδίαση μπάρας διεργασίας
+        ctx.fillRect(currentX, 50, barWidth, barHeight);
 
         // Ετικέτα διεργασίας μέσα στη μπάρα
         const label = `P${process}`;
+        ctx.fillStyle = '#000';
+        ctx.font = `${labelFontSize}px Arial`;
         const labelWidth = ctx.measureText(label).width;
 
         if (labelWidth < barWidth) {
-            ctx.fillStyle = '#000'; // Χρώμα ετικέτας
             ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Κέντρο μπάρας
         }
 
-        currentX += barWidth; // Ενημέρωση της θέσης X
-    });
-}
+        // Εμφάνιση χρόνου εκκίνησης κάτω από την αριστερή άκρη της μπάρας
+        ctx.fillStyle = '#000';
+        ctx.fillText(startTime, currentX, 45); // Χρόνος εκκίνησης
 
+        currentX += barWidth; // Ενημέρωση της θέσης X
+    }
+
+    // Εμφάνιση χρόνου λήξης της τελευταίας διεργασίας στο τέλος
+    const lastEndTime = schedule[schedule.length - 1].endTime;
+    ctx.fillText(lastEndTime, currentX, 45); // Χρόνος λήξης
+}
 
 
 
