@@ -124,11 +124,6 @@ function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
 
-    if (schedule.length === 0) {
-        console.error("Το Gantt Chart δεν μπορεί να σχεδιαστεί, το schedule είναι κενό.");
-        return;
-    }
-
     // Υπολογισμός της συνολικής διάρκειας
     const totalBurstTime = schedule[schedule.length - 1].endTime;
 
@@ -137,7 +132,7 @@ function drawGanttChart(schedule) {
     const barHeight = 40; // Ύψος κάθε μπάρας
     const minBarWidth = 50; // Ελάχιστο πλάτος για τη μπάρα (ώστε να χωράει η ετικέτα)
     const scaleFactor = containerWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
-    const totalWidth = Math.max(totalBurstTime * Math.max(scaleFactor, minBarWidth / totalBurstTime), minBarWidth * schedule.length); // Υπολογισμός απαιτούμενου πλάτους
+    const totalWidth = Math.max(totalBurstTime * Math.max(scaleFactor, minBarWidth / totalBurstTime), minBarWidth * schedule.length)+100; // Υπολογισμός απαιτούμενου πλάτους
 
     // Ρύθμιση του πλάτους και του ύψους του καμβά
     canvas.width = totalWidth;
