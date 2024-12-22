@@ -87,8 +87,12 @@ function drawPartialGanttChart(processes, bt, at) {
 
     const canvasBaseWidth = 800;
     const scaleFactor = Math.max(canvasBaseWidth / bt.reduce((sum, time) => sum + time, 0), 5);
-    const adjustedBarLengths = bt.map((time) => time * scaleFactor);
+    const minBarWidth = 50; // Ελάχιστο πλάτος για κάθε μπάρα
 
+    // Υπολογισμός προσαρμοσμένων μηκών μπαρών
+    const adjustedBarLengths = bt.map((time) => Math.max(time * scaleFactor, minBarWidth));
+
+    // Προσαρμογή του πλάτους του canvas
     canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 100;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -102,11 +106,13 @@ function drawPartialGanttChart(processes, bt, at) {
         ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
         ctx.fillRect(currentX, 50, barWidth, 40);
 
-        ctx.font = '10px Arial';
+        // Ζωγραφική της ετικέτας διεργασίας
+        ctx.font = '12px Arial';
         ctx.fillStyle = '#000';
         ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75);
-        ctx.fillText(startTime, currentX, 45);
 
+        // Ζωγραφική χρόνων έναρξης και λήξης
+        ctx.fillText(startTime, currentX, 45);
         currentX += barWidth;
         currentTime = startTime + bt[i];
         ctx.fillText(currentTime, currentX, 45);
@@ -445,35 +451,33 @@ function createThreeColumnTable() {
 
 
 
-
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length, max = 50) {
+function generateRandomSequence(length, max = 100, startFromZero = false) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
         sequence.push(randomNum);
     }
+    if (startFromZero && sequence.length > 0) {
+        sequence[0] = 0; // Το πρώτο στοιχείο γίνεται 0
+    }
     return sequence;
 }
-
-
-
 
 // Συνάρτηση δημιουργίας τυχαίων ακολουθιών για burst και arrival time
 document.getElementById("generateSequenceButton").addEventListener("click", function () {
     const sequenceLengthInput = document.getElementById("sequenceLength").value;
     const sequenceLength = parseInt(sequenceLengthInput);
 
-  
     // Δημιουργία τυχαίων ακολουθιών
     const burstTimeSequence = generateRandomSequence(sequenceLength); // Για burst time
-    const arrivalTimeSequence = generateRandomSequence(sequenceLength); // Για arrival time
+    const arrivalTimeSequence = generateRandomSequence(sequenceLength, 100, true); // Για arrival time με πρώτο στοιχείο 0
 
     // Ενημέρωση των πεδίων εισόδου
     document.getElementById("burst-time").value = burstTimeSequence.join(",");
     document.getElementById("arrival-time").value = arrivalTimeSequence.join(",");
-
 });
+
 
 
 
