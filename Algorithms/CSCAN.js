@@ -1,28 +1,24 @@
-// Ορισμός του μεγέθους του δίσκου
-let disk_size = 199;
-let seekSequence = []; // Global μεταβλητή
-/**
- * Εκτελεί τον αλγόριθμο C-SCAN για την αναζήτηση δίσκου.
- * Λαμβάνει τις εισροές από τον χρήστη, επεξεργάζεται τις θέσεις των κομματιών,
- * υπολογίζει την ακολουθία αναζήτησης και εμφανίζει τα αποτελέσματα.
- *
- * @function executeCSCAN
- * @returns {void} Δεν επιστρέφει καμία τιμή. Ενημερώνει το DOM με τα αποτελέσματα.
- *
- * @throws {Error} Αν δεν υπάρχουν έγκυρες εισροές, εμφανίζει μήνυμα σφάλματος.
- */
+let disk_size = 199; // Μέγεθος δίσκου
+let seekSequence = []; // Ακολουθία αναζήτησης
+
 function executeCSCAN() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
     // Ανάκτηση και έλεγχος δεδομένων εισόδου
     const tracksInputElement = document.getElementById("process-queue");
-    const tracksInput = tracksInputElement.value.trim();
     const headPositionElement = document.getElementById("head-position");
-    const headPosition = parseInt(headPositionElement.value, 10);
     const directionElement = document.getElementById("direction");
-    const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
-    const disk_size = 200; // Παράδειγμα μεγέθους δίσκου
 
+    if (!tracksInputElement || !headPositionElement || !directionElement) {
+        console.error("Κάποια από τα απαραίτητα στοιχεία DOM λείπουν.");
+        return;
+    }
+
+    const tracksInput = tracksInputElement.value.trim();
+    const headPosition = parseInt(headPositionElement.value, 10);
+    const direction = directionElement.value.trim().toLowerCase();
+
+    // Έλεγχος εγκυρότητας εισόδων
     if (!tracksInput || isNaN(headPosition) || headPosition < 0 || !direction || (direction !== "left" && direction !== "right")) {
         if (!tracksInput) displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
         if (isNaN(headPosition) || headPosition < 0) displayError(headPositionElement, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
@@ -32,88 +28,61 @@ function executeCSCAN() {
 
     // Μετατροπή εισόδου σε πίνακα αριθμών
     const tracks = tracksInput.split(",").map(Number).filter(num => !isNaN(num));
-    if (tracks.length === 0 || tracks.length > 100) {
-        if (tracks.length === 0) displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
-        if (tracks.length > 100) displayError(tracksInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+    if (tracks.length === 0) {
+        displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
         return;
     }
 
-    // Εξασφάλιση ότι το 0 περιλαμβάνεται
-    if (!tracks.includes(0)) {
-        tracks.push(0);
-    }
-
+    if (!tracks.includes(0)) tracks.push(0); // Προσθήκη 0 αν δεν υπάρχει
     tracks.sort((a, b) => a - b);
-    let left = [], right = [];
-    let seekSequence = [];
-    let seekCount = 0;
 
-    // Διαχωρισμός των κομματιών σε δύο ομάδες (αριστερά και δεξιά από την κεφαλή)
-    for (let i = 0; i < tracks.length; i++) {
-        if (tracks[i] < head) left.push(tracks[i]);
-        if (tracks[i] > head) right.push(tracks[i]);
-    }
+    const left = tracks.filter(track => track < headPosition);
+    const right = tracks.filter(track => track >= headPosition);
+
+    // Δημιουργία ακολουθίας αναζήτησης
     if (direction === "right") {
-        right.push(disk_size); // Προσθέτουμε το μέγιστο κομμάτι στο τέλος των δεξιών
-        seekSequence = [head, ...right, 0, ...left]; // Προσθέτουμε την κεφαλή στην αρχή
+        seekSequence = [headPosition, ...right, disk_size, 0, ...left];
     } else {
-        left.unshift(0); // Προσθέτουμε το 0 στην αρχή των αριστερών
-        seekSequence = [head, ...left.reverse(), disk_size, ...right.reverse()]; // Προσθέτουμε την κεφαλή στην αρχή
+        seekSequence = [headPosition, ...left.reverse(), 0, disk_size, ...right.reverse()];
     }
-    
-    
-    // Αφαίρεση τυχόν διπλοεμφανίσεων του 0
-    seekSequence = seekSequence.filter((value, index, self) => value !== 0 || self.indexOf(0) === index);
-    
 
     // Υπολογισμός του συνολικού κόστους αναζήτησης
-    let currentPos = head;
-    for (let i = 0; i < seekSequence.length; i++) {
-        seekCount += Math.abs(seekSequence[i] - currentPos);
-        currentPos = seekSequence[i];
-    }
-
- 
-
-    // Εμφάνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση
-    const seekCountDisplay = document.getElementById("seek-count-display");
-seekCountDisplay.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
-let currentCount = 0;
-const incrementValue = Math.ceil(seekCount / 20); // Βήμα αύξησης
-const interval = setInterval(() => {
-    if (currentCount + incrementValue >= seekCount) {
-        currentCount = seekCount;
-        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
-        clearInterval(interval); // Τερματισμός του interval
-    } else {
-        currentCount += incrementValue;
-        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
-    }
-}, 50); // Χρονικό διάστημα ενημέρωσης (50ms)
-
-
-    // Δημιουργία κουτιών για τη σειρά εξυπηρέτησης
-    const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
-    seekSequenceBoxes.innerHTML = "";
-    seekSequence.forEach((position, index) => {
-        const box = document.createElement("div");
-        box.className = "sequence-box";
-        box.textContent = position;
-
-        seekSequenceBoxes.appendChild(box);
-        if (index < seekSequence.length - 1) {
-            const arrow = document.createElement("span");
-            arrow.className = "arrow";
-            arrow.textContent = "→";
-            seekSequenceBoxes.appendChild(arrow);
-        }
+    let seekCount = 0;
+    let currentPos = headPosition;
+    seekSequence.forEach(pos => {
+        seekCount += Math.abs(pos - currentPos);
+        currentPos = pos;
     });
 
+    // Ενημέρωση DOM με τα αποτελέσματα
+    const seekCountDisplay = document.getElementById("seek-count-display");
+    if (seekCountDisplay) {
+        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${seekCount}`;
+    }
 
-    
-    drawCSCAN(seekSequence); // Σχεδίαση της ακολουθίας C-SCAN
-    document.getElementById("resetButton").style.display = "inline-block";
-    hideFooter(); // Απόκρυψη του footer
+    const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
+    if (seekSequenceBoxes) {
+        seekSequenceBoxes.innerHTML = "";
+        seekSequence.forEach((position, index) => {
+            const box = document.createElement("div");
+            box.className = "sequence-box";
+            box.textContent = position;
+            seekSequenceBoxes.appendChild(box);
+            if (index < seekSequence.length - 1) {
+                const arrow = document.createElement("span");
+                arrow.className = "arrow";
+                arrow.textContent = "→";
+                seekSequenceBoxes.appendChild(arrow);
+            }
+        });
+    }
+
+    drawCSCAN(seekSequence); // Σχεδίαση της ακολουθίας
+    const resetButton = document.getElementById("resetButton");
+    if (resetButton) {
+        resetButton.style.display = "inline-block";
+    }
+    hideFooter();
 }
 
 
