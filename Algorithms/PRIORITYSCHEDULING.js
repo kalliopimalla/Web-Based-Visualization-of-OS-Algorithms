@@ -108,7 +108,6 @@ drawGanttChart(schedule);
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
-
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -119,7 +118,8 @@ function drawGanttChart(schedule) {
     // Ρυθμίσεις καμβά
     const baseWidth = 800; // Πλάτος καμβά
     const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου
-    canvas.width = baseWidth;
+    const minBarWidth = 50; // Ελάχιστο πλάτος μπάρας
+    canvas.width = baseWidth + 300;
     canvas.height = 150; // Αύξηση ύψους για επιπλέον ετικέτες
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -129,15 +129,19 @@ function drawGanttChart(schedule) {
 
     // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
     const processColors = {};
+    const colorStep = 360 / schedule.length; // Βήμα για ομοιόμορφη κατανομή χρωμάτων
 
     for (let i = 0; i < schedule.length; i++) {
         const { process, startTime, endTime } = schedule[i];
         const duration = endTime - startTime;
-        const barWidth = duration * scaleFactor;
+        let barWidth = duration * scaleFactor;
+
+        // Εξασφάλιση ελάχιστου πλάτους για κάθε μπάρα
+        barWidth = Math.max(barWidth, minBarWidth);
 
         // Ανάθεση ή ανάκτηση χρώματος για κάθε διεργασία
         if (!processColors[process]) {
-            processColors[process] = `hsl(${(Object.keys(processColors).length * 60) % 360}, 70%, 70%)`;
+            processColors[process] = `hsl(${Object.keys(processColors).length * colorStep}, 70%, 70%)`;
         }
         ctx.fillStyle = processColors[process];
 
@@ -151,7 +155,7 @@ function drawGanttChart(schedule) {
         const labelWidth = ctx.measureText(label).width;
 
         if (labelWidth < barWidth) {
-            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Κέντρο μπάρας
+            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Τοποθέτηση στο κέντρο της μπάρας
         }
 
         // Εμφάνιση χρόνου εκκίνησης κάτω από την αριστερή άκρη της μπάρας
@@ -165,6 +169,7 @@ function drawGanttChart(schedule) {
     const lastEndTime = schedule[schedule.length - 1].endTime;
     ctx.fillText(lastEndTime, currentX, 45); // Χρόνος λήξης
 }
+
 
 
 

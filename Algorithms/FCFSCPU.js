@@ -78,6 +78,8 @@ arrivalTime = sortedData.sortedArrivalTime;
     document.getElementById('runButton').style.display = 'none';
 }
 
+
+
 function drawPartialGanttChart(processes, bt, at) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -93,8 +95,10 @@ function drawPartialGanttChart(processes, bt, at) {
     const adjustedBarLengths = bt.map((time) => Math.max(time * scaleFactor, minBarWidth));
 
     // Προσαρμογή του πλάτους του canvas
-    canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 100;
+    canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 150;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const colorStep = 360 / processes.length; // Υπολογισμός βήματος χρώματος
 
     let currentX = 0;
 
@@ -103,7 +107,9 @@ function drawPartialGanttChart(processes, bt, at) {
 
         const label = `P${processes[i]}`;
         const barWidth = adjustedBarLengths[i];
-        ctx.fillStyle = `hsl(${(i * 60) % 360}, 70%, 70%)`;
+
+        // Διαφορετικό χρώμα για κάθε διεργασία
+        ctx.fillStyle = `hsl(${i * colorStep}, 70%, 70%)`;
         ctx.fillRect(currentX, 50, barWidth, 40);
 
         // Ζωγραφική της ετικέτας διεργασίας

@@ -120,7 +120,6 @@ function runRoundRobinCPU() {
 
 }
 
-
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -133,27 +132,39 @@ function drawGanttChart(schedule) {
     // Υπολογισμός της συνολικής διάρκειας
     const totalBurstTime = schedule[schedule.length - 1].endTime;
 
-    // Λήψη του διαθέσιμου πλάτους από το container του καμβά
+    // Ρυθμίσεις για τον καμβά
     const containerWidth = canvas.parentElement.clientWidth; // Το πλάτος του container
-    const scaleFactor = containerWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
     const barHeight = 40; // Ύψος κάθε μπάρας
     const minBarWidth = 50; // Ελάχιστο πλάτος για τη μπάρα (ώστε να χωράει η ετικέτα)
+    const scaleFactor = containerWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
+    const totalWidth = Math.max(totalBurstTime * Math.max(scaleFactor, minBarWidth / totalBurstTime), minBarWidth * schedule.length); // Υπολογισμός απαιτούμενου πλάτους
 
-    // Καθορισμός πλάτους καμβά ανάλογα με τη συνολική διάρκεια
-    canvas.width = Math.max(containerWidth, totalBurstTime * minBarWidth);
+    // Ρύθμιση του πλάτους και του ύψους του καμβά
+    canvas.width = totalWidth;
     canvas.height = barHeight + 80; // Προσθήκη περιθωρίου για καλύτερη εμφάνιση
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentX = 0;
     ctx.font = '12px Arial';
 
+    // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
+    const processColors = {};
+    const uniqueProcesses = [...new Set(schedule.map(({ process }) => process))]; // Μοναδικές διεργασίες
+    const colorStep = 360 / uniqueProcesses.length; // Βήμα για ομοιόμορφη κατανομή χρωμάτων
+
+    // Ανάθεση χρωμάτων σε κάθε διεργασία
+    uniqueProcesses.forEach((process, index) => {
+        processColors[process] = `hsl(${index * colorStep}, 70%, 70%)`;
+    });
+
     schedule.forEach(({ process, startTime, endTime }, index) => {
         const duration = endTime - startTime;
         const barWidth = Math.max(duration * scaleFactor, minBarWidth); // Χρήση ελάχιστου πλάτους
 
+        // Ανάκτηση χρώματος για τη διεργασία
+        ctx.fillStyle = processColors[process];
+
         // Σχεδίαση μπάρας
-        ctx.fillStyle = `hsl(${(process * 60) % 360}, 70%, 70%)`; // Χρώμα ανά διεργασία
         ctx.fillRect(currentX, 50, barWidth, barHeight);
 
         // Ετικέτα διεργασίας μέσα στη μπάρα
@@ -161,7 +172,9 @@ function drawGanttChart(schedule) {
         const labelWidth = ctx.measureText(label).width;
 
         ctx.fillStyle = '#000'; // Χρώμα ετικέτας
-        ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Τοποθέτηση στο κέντρο της μπάρας
+        if (labelWidth < barWidth) {
+            ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Τοποθέτηση στο κέντρο της μπάρας
+        }
 
         // Ετικέτα για την αρχή κάθε διεργασίας
         ctx.fillText(startTime, currentX, 45); // Ετικέτα πάνω από την μπάρα

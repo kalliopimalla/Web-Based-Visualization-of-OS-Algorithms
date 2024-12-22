@@ -94,7 +94,7 @@ function runPreSJFCPU() {
     // Δημιουργία πίνακα αποτελεσμάτων
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
+        output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
 
@@ -112,7 +112,6 @@ function runPreSJFCPU() {
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
-
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -123,7 +122,7 @@ function drawGanttChart(schedule) {
     // Ρυθμίσεις καμβά
     const canvasWidth = 800; // Πλάτος καμβά
     const scaleFactor = canvasWidth / totalDuration; // Κλίμακα χρόνου
-    canvas.width = canvasWidth;
+    canvas.width = canvasWidth +150;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentX = 0; // Αρχικό X για τις μπάρες
@@ -132,6 +131,7 @@ function drawGanttChart(schedule) {
 
     // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
     const processColors = {};
+    const colorStep = 360 / schedule.length; // Υπολογισμός βήματος χρώματος
 
     for (let i = 0; i < schedule.length; i++) {
         const { process, startTime, endTime } = schedule[i];
@@ -140,7 +140,7 @@ function drawGanttChart(schedule) {
 
         // Ανάθεση ή ανάκτηση χρώματος για τη διεργασία
         if (!processColors[process]) {
-            processColors[process] = `hsl(${(Object.keys(processColors).length * 60) % 360}, 70%, 70%)`;
+            processColors[process] = `hsl(${(Object.keys(processColors).length * colorStep) % 360}, 70%, 70%)`;
         }
         ctx.fillStyle = processColors[process];
 
@@ -157,10 +157,10 @@ function drawGanttChart(schedule) {
         ctx.fillText(startTime, currentX, 45); // Χρόνος έναρξης
         ctx.fillText(endTime, currentX + barWidth, 45); // Χρόνος λήξης
 
-
         currentX += barWidth; // Ενημέρωση για την επόμενη μπάρα
     }
 }
+
 
 
 
