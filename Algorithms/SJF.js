@@ -427,30 +427,30 @@ if (burstTime.length > 100 || arrivalTime.length > 100) {
 
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length, max = 50) {
+function generateRandomSequence(length, max = 100, startFromZero = false) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
         sequence.push(randomNum);
     }
+    if (startFromZero && sequence.length > 0) {
+        sequence[0] = 0; // Το πρώτο στοιχείο γίνεται 0
+    }
     return sequence;
 }
-
 
 // Συνάρτηση δημιουργίας τυχαίων ακολουθιών για burst και arrival time
 document.getElementById("generateSequenceButton").addEventListener("click", function () {
     const sequenceLengthInput = document.getElementById("sequenceLength").value;
     const sequenceLength = parseInt(sequenceLengthInput);
 
-  
     // Δημιουργία τυχαίων ακολουθιών
     const burstTimeSequence = generateRandomSequence(sequenceLength); // Για burst time
-    const arrivalTimeSequence = generateRandomSequence(sequenceLength); // Για arrival time
+    const arrivalTimeSequence = generateRandomSequence(sequenceLength, 100, true); // Για arrival time με πρώτο στοιχείο 0
 
     // Ενημέρωση των πεδίων εισόδου
     document.getElementById("burst-time").value = burstTimeSequence.join(",");
     document.getElementById("arrival-time").value = arrivalTimeSequence.join(",");
-
 });
 
 
