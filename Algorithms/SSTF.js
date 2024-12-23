@@ -20,6 +20,18 @@ function runSSTF() {
     const headPositionInput = document.getElementById("head-position");
     const headPosition = parseInt(headPositionInput.value);
     const headPositionElement = document.getElementById("head-position");
+    const cylinderRangeInput = document.getElementById("cylinder-number");
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+
+   
+   
+      // Επικύρωση του αριθμού κυλίνδρων
+      if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
+        displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
+        return;
+    }
+ clearErrorMessages();
+ 
 /**Σφαλμα για το αν η θεση της κεφαλης ειναι αρνητικος  */    
 if (isNaN(headPosition) || headPosition < 0) {
     displayError(headPositionElement, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
@@ -104,7 +116,8 @@ clearErrorMessages()
         }
     });
 
-    visualizeSeekSequence(seekSequence);
+    visualizeSeekSequence(seekSequence, cylinderRange);
+
 
     // Εμφάνιση του κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
@@ -118,7 +131,7 @@ function resetCanvasAndInputs() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
      // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
      canvas.height = 600;
-
+     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
     document.getElementById("seek-count-display").innerText = "";
@@ -156,18 +169,20 @@ document.getElementById("toggleNumbersButton").addEventListener("click", functio
  *                                   στον δίσκο.
  * @returns {void} Δεν επιστρέφει τιμή.
  */
-function visualizeSeekSequence(seekSequence) {
+function visualizeSeekSequence(seekSequence, cylinderRange) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
 
     // Καθαρίστε την προηγούμενη οπτικοποίηση
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+     
+
+    // Προσαρμογή ύψους καμβά με βάση το μήκος της ακολουθίας
+    adjustCanvasHeight(seekSequence.length);
 
     // Υπολογισμός τιμών για την κλίμακα και τις συντεταγμένες
-    const minInput = Math.min(...seekSequence);
-    const maxInput = Math.max(...seekSequence);
-    const startScale = Math.floor(minInput / 20) * 20;
-    const endScale = Math.ceil(maxInput / 20) * 20;
+    const startScale = 0; // Η κλίμακα ξεκινά πάντα από το 0
+    const endScale = cylinderRange; // Μέγιστη τιμή από το εύρος κυλίνδρων
 
     const lineLength = canvas.width - 40; // Μήκος της οριζόντιας γραμμής
     const trackHeight = canvas.height - 40; // Ύψος του καμβά
@@ -258,48 +273,41 @@ function visualizeSeekSequence(seekSequence) {
         }
     }
 }
-// Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
-function generateRandomSequence(length = sequenceLength, max = 200) {
-  
 
+document.getElementById("generateSequenceButton").addEventListener("click", function() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
+    // Λήψη του αριθμού κυλίνδρων
+    const cylinderRangeInput = document.getElementById("cylinder-number");
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+
+  
+
+    // Λήψη του μήκους της ακολουθίας
+    const sequenceLengthInput = document.getElementById("sequence-length");
+    const sequenceLength = parseInt(sequenceLengthInput.value.trim(), 10);
+
+    // Επικύρωση του μήκους της ακολουθίας
+    if (isNaN(sequenceLength) || sequenceLength <= 0) {
+        displayError(sequenceLengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας!");
+        return;
+    }
+
+    // Δημιουργία τυχαίας ακολουθίας
+    const randomSequence = generateRandomSequence(sequenceLength, cylinderRange);
+
+    // Ενημέρωση του πεδίου εισόδου με την τυχαία ακολουθία
+    document.getElementById("process-queue").value = randomSequence.join(",");
+});
+
+function generateRandomSequence(length, max) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
-        let randomNum = Math.floor(Math.random() * max); // Τυχαίος αριθμός από 0 έως max
+        let randomNum = Math.floor(Math.random() * (max + 1)); // Εντός του εύρους
         sequence.push(randomNum);
     }
     return sequence;
 }
-
-
-// Σύνδεση της λειτουργίας με το κουμπί
-document.getElementById("generateSequenceButton").addEventListener("click", function () {
-    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
-
-    // Λήψη του μήκους από το πεδίο εισαγωγής
-    const sequenceLengthInputElement = document.getElementById("sequence-length");
-    const sequenceLengthInput = sequenceLengthInputElement.value.trim();
-    const sequenceLength = parseInt(sequenceLengthInput, 10);
-
-    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
-    if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
-        return;
-    }
-
-    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
-    const canvas = document.getElementById("seekCanvas");
-    if (sequenceLength > 30) {
-        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
-    } else {
-        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
-    }
-
-    // Δημιουργία τυχαίας ακολουθίας
-    const randomSequence = generateRandomSequence(sequenceLength);
-    document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
-});
 
 
 
@@ -307,7 +315,8 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
-    const randomSequence = generateRandomSequence(); // Δημιουργία τυχαίας ακολουθίας
+    const randomSequence = generateRandomSequence(sequenceLength, cylinderRange);
+
     document.getElementById("process-queue").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου
 
 });
@@ -323,6 +332,19 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
       e.target.classList.add('active');
     });
   });
+
+  function adjustCanvasHeight(sequenceLength) {
+    const canvas = document.getElementById("seekCanvas");
+
+    // Ορισμός δυναμικού ύψους με βάση το μήκος της ακολουθίας
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Προσθήκη επιπλέον ύψους για κάθε στοιχείο μετά το 30
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+}
+
+
 
   function adjustCanvasSpacing() {
     const canvas = document.getElementById("seekCanvas");
