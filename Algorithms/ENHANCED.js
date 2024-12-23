@@ -10,9 +10,13 @@ let resultText = document.getElementById('resultText');
 let faultCount = 0;
 let hitCount = 0;
 let pageFrames = [];
+
 function initializeSimulation() {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     const pageInput = document.getElementById("pages").value.trim();
-    maxFrames = parseInt(document.getElementById("frame-number").value);
+    const frameNumberInput = document.getElementById("frame-number").value;
+    const maxFrames = parseInt(frameNumberInput, 10);
 
     if (!isValidInput(pageInput, maxFrames)) {
         return;
@@ -29,19 +33,35 @@ function initializeSimulation() {
     enableResetButton(); // Ενεργοποίηση κουμπιού επαναφοράς
 }
 
-
-
 function isValidInput(pageInput, maxFrames) {
-    const pageArray = pageInput.split(',').map(num => num.trim());
-    for (let page of pageArray) {
-        if (isNaN(page) || page === "") {
-            alert("Η ακολουθία σελίδων πρέπει να περιέχει μόνο έγκυρους αριθμούς διαχωρισμένους με κόμμα.");
-            return false;
-        }
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
+    const pageInputElement = document.getElementById("pages");
+    const frameNumberElement = document.getElementById("frame-number");
+
+    // Έλεγχος για την ακολουθία σελίδων
+    if (!pageInput || !maxFrames) {
+        displayError(pageInputElement, "Η είσοδος πρέπει να περιλαμβάνει την ακολουθία σελίδων και τον αριθμό πλαισίων μνήμης.");
+        displayError(frameNumberElement, "Η είσοδος πρέπει να περιλαμβάνει την ακολουθία σελίδων και τον αριθμό πλαισίων μνήμης.");
+        return false;
     }
 
+    // Έλεγχος για τη μορφή της ακολουθίας σελίδων
+    const pageArray = pageInput.split(',').map(num => num.trim());
+    if (pageArray.some(page => isNaN(page) || page === "")) {
+        displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο έγκυρους αριθμούς διαχωρισμένους με κόμμα.");
+        return false;
+    }
+
+    // Έλεγχος μήκους ακολουθίας
+    if (pageArray.length > 100) {
+        displayError(pageInputElement, "Το μέγιστο επιτρεπτό μήκος της ακολουθίας σελίδων είναι 100 αριθμοί.");
+        return false;
+    }
+
+    // Έλεγχος για τον αριθμό πλαισίων μνήμης
     if (isNaN(maxFrames) || maxFrames <= 0) {
-        alert("Παρακαλώ εισάγετε έναν έγκυρο αριθμό πλαισίων.");
+        displayError(frameNumberElement, "Ο αριθμός των πλαισίων μνήμης θα πρέπει να είναι θετικός αριθμός.");
         return false;
     }
 
@@ -49,6 +69,8 @@ function isValidInput(pageInput, maxFrames) {
 }
 
 function createTable() {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     const seekSequence = document.getElementById("seek-sequence");
     seekSequence.innerHTML = ''; // Καθαρισμός του πίνακα
     table = document.createElement("table");
@@ -86,8 +108,9 @@ function createTable() {
     adjustCanvasWidth(pages.length);
 }
 
-
 function nextStep() {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     // Αν η προσομοίωση δεν έχει ξεκινήσει, αρχικοποίησε την
     if (pages.length === 0 || frames.length === 0) {
         initializeSimulation(); // Αυτόματη εκκίνηση
@@ -141,13 +164,12 @@ function nextStep() {
     <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
 `;
 
-
     step++;
 }
 
-
-
 function updateTable() {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     let faultCount = 0;
     let hitCount = 0;
     const pageTable = Array.from(table.getElementsByTagName("td"));
@@ -204,9 +226,9 @@ function updateTable() {
     `;
 }
 
-
-
 function runENHANCED() {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     initializeSimulation(); // Αρχικοποίηση
     while (step < pages.length) {
         nextStep(); // Εκτέλεση όλων των βημάτων
@@ -214,22 +236,26 @@ function runENHANCED() {
 }
 
 function generateSequence() {
-    // Παίρνουμε τις τιμές από τα πεδία
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     const lengthInput = document.getElementById("sequenceLength").value.trim();
     const maxPageInput = document.getElementById("maxPageNumber").value.trim();
 
     const length = parseInt(lengthInput, 10); // Μήκος ακολουθίας
     const maxPageNumber = parseInt(maxPageInput, 10); // Μέγιστος αριθμός σελίδας
 
+    const lengthElement = document.getElementById("sequenceLength");
+    const maxPageElement = document.getElementById("maxPageNumber");
+
     // Έλεγχος εγκυρότητας για το μήκος ακολουθίας
     if (isNaN(length) || length <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας (θετικός αριθμός)!");
+        displayError(lengthElement, "Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας (θετικός αριθμός)!");
         return;
     }
 
     // Έλεγχος εγκυρότητας για τον μέγιστο αριθμό σελίδας
     if (isNaN(maxPageNumber) || maxPageNumber <= 0) {
-        alert("Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας (θετικός αριθμός)!");
+        displayError(maxPageElement, "Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας (θετικός αριθμός)!");
         return;
     }
 
@@ -243,12 +269,10 @@ function generateSequence() {
     // Ενημέρωση του πεδίου "pages" με την τυχαία ακολουθία
     document.getElementById("pages").value = sequence.join(',');
 
-    // Καθαρισμός προηγούμενου περιεχομένου (προαιρετικά)
+    // Οπτικοποίηση της ακολουθίας
     const sequenceBoxes = document.getElementById("seek-sequence-boxes");
     if (sequenceBoxes) {
-        sequenceBoxes.innerHTML = ''; 
-
-        // Δημιουργία των στοιχείων της ακολουθίας για οπτικοποίηση
+        sequenceBoxes.innerHTML = '';
         sequence.forEach(page => {
             const box = document.createElement("div");
             box.classList.add("sequence-box");
@@ -258,10 +282,11 @@ function generateSequence() {
     }
 }
 
-
 const resetButton = document.getElementById('resetButton');
 
 resetButton.addEventListener('click', () => {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
     // Επαναφορά όλων των δεδομένων
     document.getElementById('pages').value = '';
     document.getElementById('frame-number').value = '';
@@ -284,6 +309,34 @@ resetButton.addEventListener('click', () => {
 function enableResetButton() {
     resetButton.style.display = 'block';
 }
+
+// Συνάρτηση για εμφάνιση μηνύματος σφάλματος
+function displayError(inputElement, errorMessage) {
+    if (!inputElement) return;
+
+    // Κοκκίνισμα του πλαισίου
+    inputElement.style.borderColor = "red";
+
+    // Δημιουργία στοιχείου για το μήνυμα σφάλματος
+    const errorBox = document.createElement("div");
+    errorBox.className = "error-message";
+    errorBox.textContent = errorMessage;
+    errorBox.style.color = "red";
+    errorBox.style.fontSize = "14px";
+    errorBox.style.marginTop = "5px";
+
+    // Προσθήκη του μηνύματος κάτω από το πεδίο εισόδου
+    inputElement.parentElement.appendChild(errorBox);
+}
+
+// Συνάρτηση για εκκαθάριση μηνυμάτων σφάλματος
+function clearErrorMessages() {
+    document.querySelectorAll(".error-message").forEach(el => el.remove());
+    document.querySelectorAll("input").forEach(input => (input.style.borderColor = ""));
+}
+
+
+
 // script.js
 document.addEventListener("DOMContentLoaded", () => {
     const openSidebar = document.getElementById("open-sidebar");
@@ -326,3 +379,4 @@ document.addEventListener("DOMContentLoaded", () => {
     seekSequence.style.width = `${newWidth}px`; // Ενημέρωση του πλάτους
     seekSequence.style.overflowX = "auto"; // Ενεργοποίηση οριζόντιας κύλισης
 }
+
