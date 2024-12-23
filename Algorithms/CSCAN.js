@@ -122,11 +122,19 @@ function drawCScan(seekSequence, cylinderRange) {
         ctx.lineTo(xPosition, canvas.height - margin); // Μέχρι το τέλος του grid
         ctx.stroke();
 
-        // Σχεδιασμός αριθμών πάνω από τις κάθετες γραμμές
-        ctx.fillStyle = "green";
+        // Σχεδιασμός αριθμών πάνω από την πρώτη γραμμή
+        ctx.fillStyle = "black";
         ctx.font = "12px Arial";
-        ctx.fillText(i, xPosition - 10, margin - 5); // Τοποθέτηση αριθμών
+        ctx.fillText(i, xPosition - 10, margin - 10); // Τοποθέτηση αριθμών
     }
+
+    // Σχεδιασμός της πρώτης οριζόντιας γραμμής
+    ctx.strokeStyle = "gray"; // Εντονότερο γκρι για την πρώτη γραμμή
+    ctx.lineWidth = 1.5; // Πιο παχιά γραμμή
+    ctx.beginPath();
+    ctx.moveTo(margin, margin); // Από την αρχή του grid
+    ctx.lineTo(canvas.width - margin, margin); // Μέχρι το τέλος του grid
+    ctx.stroke();
 
     // Σχεδιασμός οριζόντιων γραμμών του grid
     const numHorizontalLines = seekSequence.length;
@@ -135,6 +143,8 @@ function drawCScan(seekSequence, cylinderRange) {
         ctx.beginPath();
         ctx.moveTo(margin, yPosition); // Από την αρχή του grid
         ctx.lineTo(canvas.width - margin, yPosition); // Μέχρι το τέλος του grid
+        ctx.strokeStyle = i === 0 ? "gray" : "rgba(200, 200, 200, 0.3)"; // Εντονότερη η πρώτη γραμμή
+        ctx.lineWidth = i === 0 ? 1.5 : 1; // Πιο παχιά η πρώτη γραμμή
         ctx.stroke();
     }
 
@@ -161,6 +171,7 @@ function drawCScan(seekSequence, cylinderRange) {
         }
     }
 }
+
 
 
 

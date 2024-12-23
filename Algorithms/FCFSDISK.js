@@ -204,27 +204,36 @@ for (let mark = startScale; mark <= endScale; mark += 20) {
 // Σχεδιάστε αριθμούς ανά 20 μονάδες στην πρώτη γραμμή του grid
 for (let mark = startScale; mark <= endScale; mark += 20) {
     const xPosition = padding + (mark - startScale) * trackWidth;
-    ctx.fillText(mark, xPosition - 10, padding - 10);
+
+    // Εμφάνιση αριθμών μόνο πάνω από την πρώτη γραμμή
+    ctx.fillStyle = "black"; // Χρώμα για τους αριθμούς
+    ctx.font = "12px Arial";
+    ctx.fillText(mark, xPosition - 10, padding - 10); // Τοποθέτηση αριθμών
 }
 
-    // Σχεδιάστε οριζόντιες γραμμές του grid
-    const numHorizontalLines = seekSequence.length;
-    const verticalSpacing = trackHeight / (numHorizontalLines - 1); // Απόσταση ανάμεσα στις γραμμές
-    for (let i = 0; i < numHorizontalLines; i++) {
-        const yPosition = padding + i * verticalSpacing;
-        ctx.beginPath();
-        ctx.moveTo(padding, yPosition);
-        ctx.lineTo(canvas.width - padding, yPosition);
+// Σχεδιάστε οριζόντιες γραμμές του grid
+const numHorizontalLines = seekSequence.length;
+const verticalSpacing = trackHeight / (numHorizontalLines - 1); // Απόσταση ανάμεσα στις γραμμές
 
-        // Χρώμα της πρώτης οριζόντιας γραμμής (εντονότερο γκρι)
-        if (i === 0) {
-            ctx.strokeStyle = "gray"; // Εντονότερο γκρι για την πρώτη γραμμή
-        } else {
-            ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Απαλό γκρι για τις υπόλοιπες
-        }
+for (let i = 0; i < numHorizontalLines; i++) {
+    const yPosition = padding + i * verticalSpacing;
 
-        ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(padding, yPosition);
+    ctx.lineTo(canvas.width - padding, yPosition);
+
+    // Εφαρμογή χρώματος για την πρώτη και τις υπόλοιπες γραμμές
+    if (i === 0) {
+        ctx.strokeStyle = "gray"; // Εντονότερο γκρι για την πρώτη γραμμή
+        ctx.lineWidth = 1.5; // Εντονότερο πάχος γραμμής για την πρώτη γραμμή
+    } else {
+        ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Απαλό γκρι για τις υπόλοιπες
+        ctx.lineWidth = 1; // Κανονικό πάχος για τις υπόλοιπες γραμμές
     }
+
+    ctx.stroke();
+}
+
 
     // Σχεδιασμός της σειράς κινήσεων ως βέλη
     ctx.lineWidth = 2;

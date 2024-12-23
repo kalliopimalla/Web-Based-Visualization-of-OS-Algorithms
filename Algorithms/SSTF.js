@@ -173,106 +173,79 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
 
-    // Καθαρίστε την προηγούμενη οπτικοποίηση
+    // Καθαρισμός καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-     
 
-    // Προσαρμογή ύψους καμβά με βάση το μήκος της ακολουθίας
+    // Δυναμική προσαρμογή ύψους καμβά
     adjustCanvasHeight(seekSequence.length);
 
-    // Υπολογισμός τιμών για την κλίμακα και τις συντεταγμένες
-    const startScale = 0; // Η κλίμακα ξεκινά πάντα από το 0
-    const endScale = cylinderRange; // Μέγιστη τιμή από το εύρος κυλίνδρων
-
-    const lineLength = canvas.width - 40; // Μήκος της οριζόντιας γραμμής
-    const trackHeight = canvas.height - 40; // Ύψος του καμβά
-    const scaleStep = 20; // Βήμα της κλίμακας
-    const numMarks = Math.floor((endScale - startScale) / scaleStep) + 1; // Αριθμός σημείων στην κλίμακα
-
-    // Σχεδιασμός Grid (Κάθετες και Οριζόντιες γραμμές)
-    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Απαλό γκρι για το grid
-    ctx.lineWidth = 1;
+    const margin = 20; // Περιθώριο
+    const lineLength = canvas.width - 2 * margin; // Μήκος γραμμής
+    const trackHeight = canvas.height - 2 * margin; // Ύψος grid
+    const scaleStep = 20; // Βήμα κλίμακας
+    const numMarks = Math.floor(cylinderRange / scaleStep) + 1; // Αριθμός ενδείξεων
 
     // Σχεδιασμός κάθετων γραμμών του grid
-    for (let i = 0; i < numMarks; i++) {
-        const xPosition = 20 + (i / (numMarks - 1)) * lineLength;
-        ctx.beginPath();
-        ctx.moveTo(xPosition, 0);
-        ctx.lineTo(xPosition, canvas.height);
-        ctx.stroke();
-    }
-
-    // Σχεδιασμός οριζόντιων γραμμών του grid
-    const numHorizontalLines = seekSequence.length; // Ένας αριθμός γραμμών για κάθε αίτημα
-    for (let i = 0; i < numHorizontalLines; i++) {
-        const yPosition = 20 + (i / (numHorizontalLines - 1)) * trackHeight;
-        ctx.beginPath();
-        ctx.moveTo(0, yPosition);
-        ctx.lineTo(canvas.width, yPosition);
-        ctx.stroke();
-    }
-
-    // Σχεδιασμός ευθείας γκρι γραμμής για την κλίμακα
-    ctx.strokeStyle = "gray";
+    ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
-    const blackLineY = 20;
+
+    for (let i = 0; i < numMarks; i++) {
+        const xPosition = margin + (i * scaleStep * lineLength) / cylinderRange;
+        ctx.beginPath();
+        ctx.moveTo(xPosition, margin);
+        ctx.lineTo(xPosition, canvas.height - margin);
+        ctx.stroke();
+
+        // Προσθήκη αριθμών στην κορυφή
+        ctx.fillStyle = "black";
+        ctx.font = "12px Arial";
+        ctx.fillText(i * scaleStep, xPosition - 10, margin - 10);
+    }
+
+    // Σχεδιασμός πρώτης οριζόντιας γραμμής (πιο έντονη)
+    ctx.strokeStyle = "gray";
+    ctx.lineWidth = 2; // Πιο παχιά γραμμή
     ctx.beginPath();
-    ctx.moveTo(20, blackLineY);
-    ctx.lineTo(canvas.width - 20, blackLineY);
+    ctx.moveTo(margin, margin); // Ξεκινά από το αριστερό άκρο
+    ctx.lineTo(canvas.width - margin, margin); // Μέχρι το δεξί άκρο
     ctx.stroke();
 
-    // Σχεδιασμός αριθμών πάνω στην κλίμακα
-    ctx.fillStyle = "green";
-    ctx.font = "12px Arial";
-
-    for (let i = 0; i < numMarks; i++) {
-        const mark = startScale + i * scaleStep; // Τρέχουσα τιμή κλίμακας
-        const xPosition = 20 + (i / (numMarks - 1)) * lineLength; // Κατανομή τιμών ομοιόμορφα
-
-        ctx.fillText(mark, xPosition - 10, blackLineY - 10); // Σχεδίαση αριθμών
+    // Σχεδιασμός υπόλοιπων οριζόντιων γραμμών
+    const numHorizontalLines = seekSequence.length;
+    for (let i = 1; i < numHorizontalLines; i++) {
+        const yPosition = margin + (i * trackHeight) / (numHorizontalLines - 1);
         ctx.beginPath();
-        ctx.moveTo(xPosition, blackLineY);
-        ctx.lineTo(xPosition, blackLineY + 10); // Μικρή κάθετη γραμμή για το σημάδι της κλίμακας
+        ctx.moveTo(margin, yPosition);
+        ctx.lineTo(canvas.width - margin, yPosition);
+        ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
+        ctx.lineWidth = 1;
         ctx.stroke();
     }
 
-    // Σχεδιασμός της σειράς κινήσεων ως βέλη
-    const margin = 20;
-    const startY = margin;
-    const trackWidth = lineLength / (endScale - startScale);
-
-    ctx.lineWidth = 2;
+    // Σχεδιασμός σειράς εξυπηρέτησης
     ctx.strokeStyle = "green";
-    ctx.fillStyle = "green";
+    ctx.lineWidth = 2;
 
     for (let i = 0; i < seekSequence.length - 1; i++) {
-        const x1 = 20 + (seekSequence[i] - startScale) * trackWidth;
-        const y1 = startY + (i * (trackHeight / (seekSequence.length - 1)));
-        const x2 = 20 + (seekSequence[i + 1] - startScale) * trackWidth;
-        const y2 = startY + ((i + 1) * (trackHeight / (seekSequence.length - 1)));
+        const x1 = margin + (seekSequence[i] * lineLength) / cylinderRange;
+        const y1 = margin + (i * trackHeight) / (seekSequence.length - 1);
+        const x2 = margin + (seekSequence[i + 1] * lineLength) / cylinderRange;
+        const y2 = margin + ((i + 1) * trackHeight) / (seekSequence.length - 1);
 
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
-        const angle = Math.atan2(y2 - y1, x2 - x1);
-        const arrowLength = 10;
-        ctx.beginPath();
-        ctx.moveTo(x2, y2);
-        ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
-        ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
-        ctx.closePath();
-        ctx.fill();
-
-        // Εμφάνιση αριθμών στα βέλη, αν το επιτρέπει η ρύθμιση
+        // Σχεδιασμός αριθμών στις γραμμές
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
             ctx.font = "12px Arial";
-            ctx.fillText(seekSequence[i + 1], x2, y2 - 10);
+            ctx.fillText(seekSequence[i + 1], x2 - 10, y2 - 10);
         }
     }
 }
+
 
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος

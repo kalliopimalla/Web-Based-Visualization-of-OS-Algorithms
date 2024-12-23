@@ -191,6 +191,16 @@ function visualizeSeekSequence(seekSequence) {
         ctx.beginPath();
         ctx.moveTo(padding, y);
         ctx.lineTo(canvas.width - padding, y);
+
+        // Ειδικό styling για την πρώτη οριζόντια γραμμή
+        if (i === 0) {
+            ctx.strokeStyle = "gray"; // Εντονότερο γκρι για την πρώτη γραμμή
+            ctx.lineWidth = 1.5; // Πιο παχιά γραμμή
+        } else {
+            ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Απαλό γκρι για τις υπόλοιπες γραμμές
+            ctx.lineWidth = 1; // Κανονικό πάχος γραμμής
+        }
+
         ctx.stroke();
     }
 
@@ -225,6 +235,7 @@ function visualizeSeekSequence(seekSequence) {
         y1 = y2;
     }
 }
+
 
 
 
