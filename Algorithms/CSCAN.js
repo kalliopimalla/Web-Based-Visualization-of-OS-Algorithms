@@ -1,24 +1,23 @@
-let disk_size = 199; // Μέγεθος δίσκου
 let seekSequence = []; // Ακολουθία αναζήτησης
 
 function executeCSCAN() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
-    // Ανάκτηση και έλεγχος δεδομένων εισόδου
     const tracksInputElement = document.getElementById("process-queue");
     const headPositionElement = document.getElementById("head-position");
     const directionElement = document.getElementById("direction");
+    const cylinderRangeInput = document.getElementById("cylinder-number");
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
-    if (!tracksInputElement || !headPositionElement || !directionElement) {
-        console.error("Κάποια από τα απαραίτητα στοιχεία DOM λείπουν.");
+    // Επικύρωση εισόδων
+    if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
+        displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
         return;
     }
-
     const tracksInput = tracksInputElement.value.trim();
     const headPosition = parseInt(headPositionElement.value, 10);
-    const direction = directionElement.value.trim().toLowerCase();
+    const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
 
-    // Έλεγχος εγκυρότητας εισόδων
     if (!tracksInput || isNaN(headPosition) || headPosition < 0 || !direction || (direction !== "left" && direction !== "right")) {
         if (!tracksInput) displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
         if (isNaN(headPosition) || headPosition < 0) displayError(headPositionElement, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
@@ -33,17 +32,27 @@ function executeCSCAN() {
         return;
     }
 
+    // Έλεγχος μήκους ακολουθίας
+    if (tracks.length > 100) {
+        displayError(tracksInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+        return;
+    }
+
     if (!tracks.includes(0)) tracks.push(0); // Προσθήκη 0 αν δεν υπάρχει
+    if (!tracks.includes(cylinderRange - 1)) tracks.push(cylinderRange - 1); // Προσθήκη μέγιστου κυλίνδρου αν δεν υπάρχει
+
     tracks.sort((a, b) => a - b);
 
     const left = tracks.filter(track => track < headPosition);
     const right = tracks.filter(track => track >= headPosition);
 
+    let seekSequence = []; // Αρχικοποίηση ακολουθίας
+
     // Δημιουργία ακολουθίας αναζήτησης
     if (direction === "right") {
-        seekSequence = [headPosition, ...right, disk_size, 0, ...left];
+        seekSequence = [headPosition, ...right, cylinderRange - 1, 0, ...left];
     } else {
-        seekSequence = [headPosition, ...left.reverse(), 0, disk_size, ...right.reverse()];
+        seekSequence = [headPosition, ...left.reverse(), 0, cylinderRange - 1, ...right];
     }
 
     // Υπολογισμός του συνολικού κόστους αναζήτησης
@@ -56,34 +65,29 @@ function executeCSCAN() {
 
     // Ενημέρωση DOM με τα αποτελέσματα
     const seekCountDisplay = document.getElementById("seek-count-display");
-    if (seekCountDisplay) {
-        seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${seekCount}`;
-    }
+    seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${seekCount}`;
 
     const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
-    if (seekSequenceBoxes) {
-        seekSequenceBoxes.innerHTML = "";
-        seekSequence.forEach((position, index) => {
-            const box = document.createElement("div");
-            box.className = "sequence-box";
-            box.textContent = position;
-            seekSequenceBoxes.appendChild(box);
-            if (index < seekSequence.length - 1) {
-                const arrow = document.createElement("span");
-                arrow.className = "arrow";
-                arrow.textContent = "→";
-                seekSequenceBoxes.appendChild(arrow);
-            }
-        });
-    }
+    seekSequenceBoxes.innerHTML = "";
+    seekSequence.forEach((position, index) => {
+        const box = document.createElement("div");
+        box.className = "sequence-box";
+        box.textContent = position;
+        seekSequenceBoxes.appendChild(box);
+        if (index < seekSequence.length - 1) {
+            const arrow = document.createElement("span");
+            arrow.className = "arrow";
+            arrow.textContent = "→";
+            seekSequenceBoxes.appendChild(arrow);
+        }
+    });
 
-    drawCSCAN(seekSequence); // Σχεδίαση της ακολουθίας
-    const resetButton = document.getElementById("resetButton");
-    if (resetButton) {
-        resetButton.style.display = "inline-block";
-    }
+    drawCScan(seekSequence, cylinderRange);
+    document.getElementById("resetButton").style.display = "inline-block";
     hideFooter();
 }
+
+
 
 
 let showNumbersOnArrows = true; // Μεταβλητή για εναλλαγή εμφάνισης αριθμών
@@ -93,101 +97,67 @@ function toggleShowNumbersOnArrows() {
     executeCSCAN(); // Επανασχεδίαση για να γίνει εναλλαγή στην εμφάνιση αριθμών
 }
 
-function drawCSCAN(sequence) {
+function drawCScan(seekSequence, cylinderRange) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
 
     // Καθαρισμός του καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    adjustCanvasHeight(seekSequence.length);
 
-    // Υπολογισμός τιμών για την κλίμακα
-    const maxInput = Math.max(...sequence);
-    const disk_size = Math.max(199, maxInput + 20); // Επεκτείνουμε την κλίμακα αν χρειαστεί
-    const scaleStep = 20; // Βήμα κλίμακας
-    const numMarks = Math.ceil(disk_size / scaleStep) + 1;
+    const margin = 20;
+    const lineLength = canvas.width - 2 * margin;
+    const trackHeight = canvas.height - 2 * margin;
 
-    const margin = 20; // Περιθώριο από τις άκρες του καμβά
-    const lineLength = canvas.width - 2 * margin; // Μήκος της κλίμακας
-    const trackHeight = canvas.height - 2 * margin; // Ύψος του grid
-    const trackWidth = lineLength / disk_size; // Πλάτος κάθε κομματιού
-    const startX = margin; // Αρχή του grid στον οριζόντιο άξονα
-    const startY = margin; // Αρχή του grid στον κάθετο άξονα
+    const trackWidth = lineLength / cylinderRange;
 
     // Σχεδιασμός κάθετων γραμμών του grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
 
-    for (let i = 0; i < numMarks; i++) {
-        const xPosition = startX + (i * scaleStep / disk_size) * lineLength;
+    for (let i = 0; i <= cylinderRange; i += 20) {
+        const xPosition = margin + (i / cylinderRange) * lineLength; // Υπολογισμός θέσης κάθε γραμμής
         ctx.beginPath();
-        ctx.moveTo(xPosition, startY); // Ξεκινά από την πρώτη οριζόντια γραμμή
-        ctx.lineTo(xPosition, startY + trackHeight); // Μέχρι το τέλος του grid
+        ctx.moveTo(xPosition, margin); // Από την κορυφή του grid
+        ctx.lineTo(xPosition, canvas.height - margin); // Μέχρι το τέλος του grid
         ctx.stroke();
+
+        // Σχεδιασμός αριθμών πάνω από τις κάθετες γραμμές
+        ctx.fillStyle = "green";
+        ctx.font = "12px Arial";
+        ctx.fillText(i, xPosition - 10, margin - 5); // Τοποθέτηση αριθμών
     }
 
     // Σχεδιασμός οριζόντιων γραμμών του grid
-    const numHorizontalLines = sequence.length;
+    const numHorizontalLines = seekSequence.length;
     for (let i = 0; i < numHorizontalLines; i++) {
-        const yPosition = startY + (i / (numHorizontalLines - 1)) * trackHeight;
+        const yPosition = margin + (i / (numHorizontalLines - 1)) * trackHeight;
         ctx.beginPath();
-        ctx.moveTo(startX, yPosition);
-        ctx.lineTo(startX + lineLength, yPosition);
+        ctx.moveTo(margin, yPosition); // Από την αρχή του grid
+        ctx.lineTo(canvas.width - margin, yPosition); // Μέχρι το τέλος του grid
         ctx.stroke();
     }
 
-    // Σχεδιασμός της πάνω γραμμής με την κλίμακα (στην πρώτη οριζόντια γραμμή)
-    ctx.strokeStyle = "gray";
-    ctx.lineWidth = 1;
-    const scaleY = startY; // Ύψος της πάνω γραμμής
-    ctx.beginPath();
-    ctx.moveTo(startX, scaleY);
-    ctx.lineTo(startX + lineLength, scaleY);
-    ctx.stroke();
-
-    // Σχεδιασμός αριθμών της κλίμακας
-    ctx.fillStyle = "green";
-    ctx.font = "12px Arial";
-
-    for (let i = 0; i < numMarks; i++) {
-        const mark = i * scaleStep;
-        const xPosition = startX + (i * scaleStep / disk_size) * lineLength;
-
-        ctx.fillText(mark, xPosition - 10, scaleY - 5); // Τοποθέτηση αριθμών
-        ctx.beginPath();
-        ctx.moveTo(xPosition, scaleY);
-        ctx.lineTo(xPosition, scaleY + 10); // Μικρή κάθετη γραμμή για την κλίμακα
-        ctx.stroke();
-    }
-
-    // Σχεδιασμός της διαδρομής C-SCAN
+    // Σχεδιασμός της σειράς κινήσεων (διαδρομής C-SCAN)
     ctx.lineWidth = 2;
     ctx.strokeStyle = "green";
-    ctx.fillStyle = "green";
 
-    for (let i = 0; i < sequence.length - 1; i++) {
-        const x1 = startX + (sequence[i] / disk_size) * lineLength;
-        const y1 = startY + (i * (trackHeight / (sequence.length - 1)));
-        const x2 = startX + (sequence[i + 1] / disk_size) * lineLength;
-        const y2 = startY + ((i + 1) * (trackHeight / (sequence.length - 1)));
+    for (let i = 0; i < seekSequence.length - 1; i++) {
+        const x1 = margin + (seekSequence[i] / cylinderRange) * lineLength;
+        const y1 = margin + (i / (seekSequence.length - 1)) * trackHeight;
+        const x2 = margin + (seekSequence[i + 1] / cylinderRange) * lineLength;
+        const y2 = margin + ((i + 1) / (seekSequence.length - 1)) * trackHeight;
 
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
-        const angle = Math.atan2(y2 - y1, x2 - x1);
-        const arrowLength = 10;
-        ctx.beginPath();
-        ctx.moveTo(x2, y2);
-        ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
-        ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
-        ctx.closePath();
-        ctx.fill();
-
+        // Σχεδίαση αριθμών στις γραμμές
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
             ctx.font = "12px Arial";
-            ctx.fillText(sequence[i + 1], x2 - 5, y2 - 10);
+            ctx.fillText(seekSequence[i + 1], x2 - 5, y2 - 10);
         }
     }
 }
@@ -245,8 +215,9 @@ function resetCanvasAndInputs() {
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
     document.getElementById("resetButton").style.display = "none";
+    document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
       // Καθαρισμός του πεδίου για το μήκος ακολουθίας
-      document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+      document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
 
       // Εμφάνιση του footer
       showFooter();
@@ -275,6 +246,16 @@ function generateRandomSequence(length, max = 200) {
 
 
 
+function adjustCanvasHeight(sequenceLength) {
+    const canvas = document.getElementById("seekCanvas");
+
+    // Ορισμός δυναμικού ύψους με βάση το μήκος της ακολουθίας
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Προσθήκη επιπλέον ύψους για κάθε στοιχείο μετά το 30
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+}
 
 
   
