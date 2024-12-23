@@ -379,4 +379,3 @@ document.addEventListener("DOMContentLoaded", () => {
     seekSequence.style.width = `${newWidth}px`; // Ενημέρωση του πλάτους
     seekSequence.style.overflowX = "auto"; // Ενεργοποίηση οριζόντιας κύλισης
 }
-
