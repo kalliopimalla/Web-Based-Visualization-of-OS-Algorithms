@@ -1,4 +1,4 @@
-let disk_size = 200;
+
 let showNumbersOnArrows = true; // Εναλλαγή εμφάνισης αριθμών
 
 /**
@@ -23,7 +23,6 @@ function executeCLOOK() {
         return;
     }
 
-    // Έλεγχος έγκυρων δεδομένων
     if (!tracksInput || isNaN(headPosition)) {
         if (!tracksInput) {
             displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
@@ -34,10 +33,9 @@ function executeCLOOK() {
         return;
     }
 
-    // Μετατροπή των αιτημάτων σε πίνακα αριθμών
+    // Μετατροπή αιτημάτων σε πίνακα αριθμών
     const tracks = tracksInput.split(",").map(item => Number(item.trim())).filter(num => !isNaN(num));
 
-    // Έλεγχος αν υπάρχουν έγκυροι αριθμοί
     if (tracks.length === 0 || tracks.length > 100) {
         if (tracks.length === 0) {
             displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
@@ -47,6 +45,9 @@ function executeCLOOK() {
         }
         return;
     }
+
+    // Ρύθμιση δυναμικού ύψους καμβά
+    adjustCanvasHeight(tracks.length);
      
  // Έλεγχος αν η κεφαλή είναι μη αρνητικός αριθμός
  if (headPosition < 0) {
@@ -86,6 +87,18 @@ function executeCLOOK() {
     document.getElementById("resetButton").style.display = "inline-block";
     hideFooter(); // Απόκρυψη του footer
 }
+
+function adjustCanvasHeight(sequenceLength) {
+    const canvas = document.getElementById("seekCanvas");
+
+    // Δυναμική προσαρμογή ύψους
+    if (sequenceLength > 30) {
+        canvas.height = 600 + (sequenceLength - 30) * 20; // Προσθήκη επιπλέον ύψους για κάθε στοιχείο
+    } else {
+        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+    }
+}
+
 
 /**
  * Δημιουργεί κουτιά για τη σειρά εξυπηρέτησης και τα βέλη μεταξύ τους.
@@ -136,11 +149,15 @@ function animateSeekCount(seekCount) {
 function visualizeSeekSequence(seekSequence) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
+
+    // Προσαρμογή ύψους καμβά
+    adjustCanvasHeight(seekSequence.length);
+
+    // Καθαρισμός καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const padding = 30;
+    const padding = 30; // Περιθώριο από τις άκρες
     const lineLength = canvas.width - padding * 2;
-    const trackWidth = lineLength / disk_size;
     const trackHeight = canvas.height - padding * 2;
 
     const minInput = Math.min(...seekSequence);
@@ -148,18 +165,24 @@ function visualizeSeekSequence(seekSequence) {
     const startScale = Math.floor(minInput / 20) * 20;
     const endScale = Math.ceil(maxInput / 20) * 20;
 
-    // Σχεδιασμός grid
+    // Σχεδιασμός κάθετων γραμμών του grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
 
     for (let mark = startScale; mark <= endScale; mark += 20) {
-        const x = padding + (mark - startScale) * trackWidth;
+        const x = padding + (mark - startScale) * (lineLength / (endScale - startScale));
         ctx.beginPath();
-        ctx.moveTo(x, padding);
-        ctx.lineTo(x, canvas.height - padding);
+        ctx.moveTo(x, padding); // Ξεκινά από την κορυφή
+        ctx.lineTo(x, canvas.height - padding); // Μέχρι το κάτω μέρος
         ctx.stroke();
+
+        // Σχεδιασμός αριθμών κλίμακας πάνω από την πρώτη γραμμή
+        ctx.fillStyle = "black";
+        ctx.font = "12px Arial";
+        ctx.fillText(mark, x - 10, padding - 10); // Οι αριθμοί πάνω από την πρώτη γραμμή
     }
 
+    // Σχεδιασμός οριζόντιων γραμμών του grid
     const numHorizontalLines = seekSequence.length;
     const horizontalStep = trackHeight / (numHorizontalLines - 1);
 
@@ -171,33 +194,17 @@ function visualizeSeekSequence(seekSequence) {
         ctx.stroke();
     }
 
-    // Σχεδιασμός της κλίμακας
-    ctx.strokeStyle = "gray";
-    ctx.lineWidth = 1;
-    const scaleY = padding;
-    ctx.beginPath();
-    ctx.moveTo(padding, scaleY);
-    ctx.lineTo(canvas.width - padding, scaleY);
-    ctx.stroke();
-
-    ctx.fillStyle = "black";
-    ctx.font = "12px Arial";
-    for (let mark = startScale; mark <= endScale; mark += 20) {
-        const x = padding + (mark - startScale) * trackWidth;
-        ctx.fillText(mark, x - 10, scaleY - 10);
-    }
-
     // Σχεδιασμός βελών για τη σειρά εξυπηρέτησης
     ctx.strokeStyle = "green";
     ctx.fillStyle = "green";
     ctx.lineWidth = 2;
 
-    let x1 = padding + (seekSequence[0] - startScale) * trackWidth;
-    let y1 = scaleY; // Ξεκινά από τη γραμμή της κλίμακας
+    let x1 = padding + (seekSequence[0] - startScale) * (lineLength / (endScale - startScale));
+    let y1 = padding;
 
     for (let i = 1; i < seekSequence.length; i++) {
-        const x2 = padding + (seekSequence[i] - startScale) * trackWidth;
-        const y2 = scaleY + i * horizontalStep;
+        const x2 = padding + (seekSequence[i] - startScale) * (lineLength / (endScale - startScale));
+        const y2 = padding + i * horizontalStep;
 
         // Σχεδιασμός γραμμών
         ctx.beginPath();
@@ -205,7 +212,7 @@ function visualizeSeekSequence(seekSequence) {
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
-        // Σχεδιασμός κεφαλών στα βέλη
+        // Σχεδίαση κεφαλών στα βέλη
         drawArrow(ctx, x1, y1, x2, y2);
 
         if (showNumbersOnArrows) {
@@ -218,6 +225,8 @@ function visualizeSeekSequence(seekSequence) {
         y1 = y2;
     }
 }
+
+
 
 
 
