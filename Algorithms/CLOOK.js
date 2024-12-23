@@ -14,6 +14,14 @@ function executeCLOOK() {
     const headPosition = parseInt(headPositionElement.value, 10);
     const directionElement = document.getElementById("direction");
     const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
+    const cylinderRangeInput = document.getElementById("cylinder-number");
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+
+    // Επικύρωση εισόδων
+    if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
+        displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
+        return;
+    }
 
     // Έλεγχος έγκυρων δεδομένων
     if (!tracksInput || isNaN(headPosition)) {
@@ -255,6 +263,7 @@ function resetCanvasAndInputs() {
     document.getElementById("head-position").value = "";
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
+    document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
 
     document.getElementById("resetButton").style.display = "none";
      // Καθαρισμός του πεδίου για το μήκος ακολουθίας
