@@ -104,23 +104,33 @@
     </section>
 
     <!-- Algorithm Steps -->
-    <section class="algorithm-steps">
-      <div class="container">
-        <h2>Βήματα</h2>
-        <ol>
-          <ul>
-            <label><strong>ΒΗΜΑ 1 :</strong></label>
-            <li>Εισάγετε την ακολουθία σελιδών(ακολουθία σελιδών χωρισμένη με κόμμα). Υπάρχει η δυνατότητα για δημιουργία τυχαίας ακολουθίας βάζοντας το μήκος κι το εύρος των αριθμών της ακολουθίας που επιθυμώ να παραχθεί. </li>
+
+    <div class="container" style="font-family: Arial, sans-serif; line-height: 1.8; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #fafafa;">
+      <h2 style="color: #333; text-align: center; margin-bottom: 20px;">Οδηγίες για την οπτικοποίηση του αλγορίθμου</h2>
     
-            <label><strong>ΒΗΜΑ 2 :</strong></label>
-            <li>Εισάγετε τον αριθμό των πλασίων σελιδών.</li>
-            
-            <label><strong>ΒΗΜΑ 3 :</strong></label>
-           <li>Πατήστε το κουμπί Απευθείας εκτέλεση και θα λάβετε τα αποτελέσματα του αλγορίθμου ολοκληρωμένα ή πατήστε Εκτέλεση βήμα προς βήμα επανειλημμένα για να δείτε σταδιακά την λύση .</li>
-            </ul>
-        </ol>
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 1:</strong>
+        <p style="margin: 5px 0;">Εισάγετε την ακολουθία σελιδών (ακολουθία αριθμών χωρισμένη με κόμμα). Μπορείτε να δημιουργήσετε <strong>τυχαία ακολουθία</strong>, ορίζοντας το μήκος  (μέγιστο 100) και το εύρος των αριθμών της (μέγιστο 100) ακολουθίας που επιθυμείτε.</p>
       </div>
-    </section>
+    
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 2:</strong>
+        <p style="margin: 5px 0;">Καταχωρίστε τον αριθμό των <strong>πλαισίων σελιδών</strong> (μέγιστο 25).</p>
+      </div>
+    
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 3:</strong>
+        <p style="margin: 5px 0;">Πατήστε το κουμπί <strong>«Απευθείας εκτέλεση»</strong> για να δείτε τα αποτελέσματα του αλγορίθμου ή το κουμπί <strong>«Εκτέλεση βήμα προς βήμα»</strong> για να δείτε τη λύση σταδιακά.</p>
+      </div>
+    
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 4:</strong>
+        <p style="margin: 5px 0;">Πατήστε το κουμπί <strong>«Επαναφορά»</strong> για να διαγράψετε τα δεδομένα και να ξεκινήσετε από την αρχή. 
+           Όλα τα πεδία εισαγωγής και τα αποτελέσματα θα μηδενιστούν.</p>
+      </div>
+    </div>
+    
+
 
     <!-- Algorithm Implementation -->
     <section class="algorithm-implementation">
@@ -138,7 +148,7 @@
     
     
     
-              <p><strong>Μήκος ακολουθία :</strong></p>
+              <p><strong>Μήκος ακολουθίας :</strong></p>
               <div class="popup">
               <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 150px;">
               <span class="popuptext">Μέγιστο μήκος ακολουθίας το 100.</span>
@@ -162,7 +172,7 @@
             </div>
             <br>
             <br>
-            
+
             <button onclick="runOPTIMAL()">Απευθείας εκτέλεση</button>
             <button onclick="nextStep()">Εκτέλεση βήμα προς βήμα</button>
           </div>
