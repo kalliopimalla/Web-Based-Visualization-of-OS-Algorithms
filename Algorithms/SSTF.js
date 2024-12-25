@@ -32,9 +32,9 @@ function runSSTF() {
     }
  clearErrorMessages();
  
-/**Σφαλμα για το αν η θεση της κεφαλης ειναι αρνητικος  */    
-if (isNaN(headPosition) || headPosition < 0) {
-    displayError(headPositionElement, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
+  // Επικύρωση της θέσης της κεφαλής
+  if (isNaN(headPosition) || headPosition < 0 || headPosition > cylinderRange) {
+    displayError(headPositionInput, `Η θέση της κεφαλής πρέπει να είναι μεταξύ 0 και ${cylinderRange}.`);
     return;
 }
 clearErrorMessages()
@@ -253,6 +253,12 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     // Λήψη του αριθμού κυλίνδρων
     const cylinderRangeInput = document.getElementById("cylinder-number");
     const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+
+    // Έλεγχος αν το πεδίο εύρους κυλίνδρων έχει συμπληρωθεί
+    if (isNaN(cylinderRange) || cylinderRange <= 0) {
+        displayError(cylinderRangeInput, "Παρακαλώ συμπληρώστε το εύρος κυλίνδρων και προσπαθήστε ξανά.");
+        return;
+    };
 
   
 

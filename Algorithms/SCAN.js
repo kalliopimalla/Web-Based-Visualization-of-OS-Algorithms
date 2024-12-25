@@ -22,16 +22,12 @@ function executeSCAN() {
 
    
    
-      // Επικύρωση του αριθμού κυλίνδρων
-      if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
-        displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
-        return;
-    }
- clearErrorMessages();
  
-/**Σφαλμα για το αν η θεση της κεφαλης ειναι αρνητικος  */    
-if (isNaN(headPosition) || headPosition < 0) {
-    displayError(headPositionElement, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
+
+ 
+  // Επικύρωση της θέσης της κεφαλής
+  if (isNaN(headPosition) || headPosition < 0 || headPosition > cylinderRange) {
+    displayError(headPositionInput, `Η θέση της κεφαλής πρέπει να είναι μεταξύ 0 και ${cylinderRange}.`);
     return;
 }
 clearErrorMessages()
@@ -441,14 +437,15 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
 document.getElementById("generateSequenceButton").addEventListener("click", function () {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
-    // Ανάκτηση του αριθμού κυλίνδρων
-    const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+  // Λήψη του αριθμού κυλίνδρων
+  const cylinderRangeInput = document.getElementById("cylinder-number");
+  const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
-    if (isNaN(cylinderRange) || cylinderRange <= 0) {
-        displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων!");
-        return;
-    }
+  // Έλεγχος αν το πεδίο εύρους κυλίνδρων έχει συμπληρωθεί
+  if (isNaN(cylinderRange) || cylinderRange <= 0) {
+      displayError(cylinderRangeInput, "Παρακαλώ συμπληρώστε το εύρος κυλίνδρων και προσπαθήστε ξανά.");
+      return;
+  }
 
     // Ανάκτηση του μήκους της ακολουθίας
     const sequenceLengthInputElement = document.getElementById("sequence-length");
@@ -508,11 +505,29 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     const sequenceLengthInput = sequenceLengthInputElement.value.trim();
     const sequenceLength = parseInt(sequenceLengthInput, 10);
 
-    // Έλεγχος αν το μήκος είναι αριθμός και θετικό
-    if (isNaN(sequenceLength) || sequenceLength <= 0) {
-        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (θετικός ακέραιος)!");
+    // Λήψη του εύρους κυλίνδρων
+    const cylinderRangeInputElement = document.getElementById("cylinder-number");
+    const cylinderRangeInput = cylinderRangeInputElement.value.trim();
+    const cylinderRange = parseInt(cylinderRangeInput, 10);
+
+    // Επικύρωση του εύρους κυλίνδρων
+    if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
+        displayError(cylinderRangeInputElement, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
         return;
     }
+
+    // Επικύρωση μήκους ακολουθίας
+    if (isNaN(sequenceLength) || sequenceLength <= 0 || sequenceLength > 100) {
+        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (1-100).");
+        return;
+    }
+
+    // Δημιουργία τυχαίας ακολουθίας
+    const randomSequence = generateRandomSequence(sequenceLength, cylinderRange);
+
+    // Ενημέρωση του πεδίου εισόδου με την τυχαία ακολουθία
+    const processQueueInputElement = document.getElementById("process-queue");
+    processQueueInputElement.value = randomSequence.join(",");
 
     // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
     const canvas = document.getElementById("seekCanvas");
@@ -526,6 +541,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     const canvasContainer = document.querySelector(".canvas-container");
     canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
 });
+
 
 // Συνάρτηση για εμφάνιση μηνύματος σφάλματος
 function displayError(inputElement, errorMessage) {

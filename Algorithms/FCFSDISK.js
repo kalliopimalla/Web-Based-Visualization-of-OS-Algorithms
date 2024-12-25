@@ -20,8 +20,8 @@ function runFCFS() {
     }
  clearErrorMessages();
     // Επικύρωση της θέσης της κεφαλής
-    if (isNaN(headPosition) || headPosition < 0) {
-        displayError(headPositionInput, "Η θέση της κεφαλής πρέπει να είναι θετικός αριθμός ή μηδέν.");
+    if (isNaN(headPosition) || headPosition < 0 || headPosition > cylinderRange) {
+        displayError(headPositionInput, `Η θέση της κεφαλής πρέπει να είναι μεταξύ 0 και ${cylinderRange}.`);
         return;
     }
     clearErrorMessages();
@@ -273,14 +273,18 @@ for (let i = 0; i < numHorizontalLines; i++) {
 
 
 
-document.getElementById("generateSequenceButton").addEventListener("click", function() {
+document.getElementById("generateSequenceButton").addEventListener("click", function () {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
     // Λήψη του αριθμού κυλίνδρων
     const cylinderRangeInput = document.getElementById("cylinder-number");
     const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
-  
+    // Έλεγχος αν το πεδίο εύρους κυλίνδρων έχει συμπληρωθεί
+    if (isNaN(cylinderRange) || cylinderRange <= 0) {
+        displayError(cylinderRangeInput, "Παρακαλώ συμπληρώστε το εύρος κυλίνδρων και προσπαθήστε ξανά.");
+        return;
+    }
 
     // Λήψη του μήκους της ακολουθίας
     const sequenceLengthInput = document.getElementById("sequence-length");
@@ -298,6 +302,12 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     // Ενημέρωση του πεδίου εισόδου με την τυχαία ακολουθία
     document.getElementById("process-queue").value = randomSequence.join(",");
 });
+
+
+
+
+
+
 
 function generateRandomSequence(length, max) {
     let sequence = [];

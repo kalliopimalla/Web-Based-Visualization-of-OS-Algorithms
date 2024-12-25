@@ -16,30 +16,46 @@ function executeLOOK() {
     const cylinderRangeInput = document.getElementById("cylinder-number");
     const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
-    // Επικύρωση εισόδων
+    // Επικύρωση του εύρους κυλίνδρων
     if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
         displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
         return;
     }
 
-    if (!tracksInput || isNaN(headPosition) || headPosition < 0 || !direction || (direction !== "left" && direction !== "right")) {
-        if (!tracksInput) displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
-        if (isNaN(headPosition) || headPosition < 0) displayError(headPositionElement, "Παρακαλώ εισάγετε έγκυρη θέση κεφαλής!");
-        if (!direction || (direction !== "left" && direction !== "right")) displayError(directionElement, "Παρακαλώ επιλέξτε κατεύθυνση (left ή right)!");
+    // Επικύρωση της θέσης της κεφαλής
+    if (isNaN(headPosition) || headPosition < 0 || headPosition > cylinderRange) {
+        displayError(
+            headPositionElement,
+            `Η θέση της κεφαλής πρέπει να είναι μεταξύ 0 και ${cylinderRange}.`
+        );
+        return;
+    }
+
+    // Επικύρωση του μήκους της ακολουθίας
+    if (!tracksInput) {
+        displayError(tracksInputElement, "Παρακαλώ εισάγετε έγκυρη ακολουθία αριθμών!");
         return;
     }
 
     // Μετατροπή αιτημάτων σε πίνακα αριθμών
-    const tracks = tracksInput.split(",").map(item => Number(item.trim())).filter(num => !isNaN(num));
+    const tracks = tracksInput
+        .split(",")
+        .map((item) => Number(item.trim()))
+        .filter((num) => !isNaN(num));
 
     // Έλεγχος μήκους ακολουθίας
     if (tracks.length === 0 || tracks.length > 100) {
         if (tracks.length === 0) {
             displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
-        }
-        if (tracks.length > 100) {
+        } else {
             displayError(tracksInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
         }
+        return;
+    }
+
+    // Επικύρωση της κατεύθυνσης
+    if (!direction || (direction !== "left" && direction !== "right")) {
+        displayError(directionElement, "Παρακαλώ επιλέξτε κατεύθυνση (left ή right)!");
         return;
     }
 
@@ -50,6 +66,7 @@ function executeLOOK() {
     document.getElementById("resetButton").style.display = "inline-block";
     hideFooter(); // Απόκρυψη του footer
 }
+
 
 function adjustCanvasHeight(sequenceLength) {
     const canvas = document.getElementById("seekCanvas");
@@ -344,15 +361,20 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     const sequenceLength = parseInt(sequenceLengthInput.value.trim(), 10);
     const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
+    
+  
+      // Έλεγχος αν το πεδίο εύρους κυλίνδρων έχει συμπληρωθεί
+      if (isNaN(cylinderRange) || cylinderRange <= 0) {
+          displayError(cylinderRangeInput, "Παρακαλώ συμπληρώστε το εύρος κυλίνδρων και προσπαθήστε ξανά.");
+          return;
+      }
+
     if (isNaN(sequenceLength) || sequenceLength <= 0 || sequenceLength > 100) {
         displayError(sequenceLengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος (1-100).");
         return;
     }
 
-    if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
-        displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
-        return;
-    }
+ 
 
     try {
         const randomSequence = generateRandomSequence(sequenceLength, cylinderRange);
