@@ -129,24 +129,43 @@
     <h2>Υλοποίηση</h2>
     <div class="content">
       <div class="container">
-        <!-- Κουτί Εισαγωγής -->
+
         <div class="input-steps">
-          <p>Η ακολουθία σελιδών:</p>
+      
+          <p><strong>Η ακολουθία σελιδών :</strong></p>
           <div class="popup">
-            <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)">
-            <p>Μήκος ακολουθία:</p>
-            <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 150px;">
-            <p>Μέγιστος αριθμός σελίδας:</p>
-            <input type="number" id="maxPageNumber" placeholder="π.χ. 5" min="1" style="width: 200px;">
-  
-            <button onclick="generateSequence()">Δημιουργία Τυχαίας Ακολουθίας</button>
+            <input type="text" id="pages" placeholder="(π.χ. 176,79,34,...)" style="width: 570px;">
             <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
           </div>
-          <p>Αριθμός πλαισίων:</p>
+  
+  
+  
+            <p><strong>Μήκος ακολουθία :</strong></p>
+            <div class="popup">
+            <input type="number" id="sequenceLength" placeholder="π.χ. 10" min="1" style="width: 150px;">
+            <span class="popuptext">Μέγιστο μήκος ακολουθίας το 100.</span>
+          </div>
+  
+            <p><strong>Εύρος σελιδών :</strong></p>
+            <div class="popup">
+            <input type="number" id="maxPageNumber" placeholder="π.χ. 5" min="1" style="width: 200px;">
+            <span class="popuptext">Μέγιστος αριθμός σελίδας το 100.</span>
+          </div>
+  
+            <button onclick="generateSequence()">Δημιουργία Τυχαίας Ακολουθίας</button>
+        
+  
+  
+  
+          <p><strong>Αριθμός πλαισίων :</strong></p>
           <div class="popup">
             <input type="number" id="frame-number" placeholder="π.χ. 4" style="width: 150px; ">
-            <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων.</span>
+            <span class="popuptext">Δώστε έναν έγκυρο αριθμό πλαισίων μέχρι 25.</span>
           </div>
+          <br>
+          <br>
+
+          
           <button onclick="runLRU()">Απευθείας εκτέλεση</button>
           <button onclick="nextStep()">Εκτέλεση βήμα προς βήμα</button>
         </div>
