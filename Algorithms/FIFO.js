@@ -33,24 +33,23 @@ function isValidInput(pageInput, maxFrames) {
 
     const pageArray = pageInput.split(',').map(num => num.trim());
     for (let page of pageArray) {
-        if (isNaN(page) || page === "") {
+        if (isNaN(page) || page === "" || page < 1 || page > 100) {
             const pageInputElement = document.getElementById("pages");
-            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο έγκυρους αριθμούς διαχωρισμένους με κόμμα.");
+            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο αριθμούς από 1 έως 100, διαχωρισμένους με κόμμα.");
             return false;
         }
     }
 
+    // Έλεγχος αν η ακολουθία περιέχει περισσότερους από 100 αριθμούς
+    if (pageArray.length > 100) {
+        const pageInputElement = document.getElementById("pages");
+        displayError(pageInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
+        return false;
+    }
 
-// Έλεγχος αν η ακολουθία περιέχει περισσότερους από 100 αριθμούς
-if (pageArray.length > 100) {
-    const pageInputElement = document.getElementById("pages");
-    displayError(pageInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
-    return false;
-}
-
-    if (isNaN(maxFrames) || maxFrames <= 0) {
+    if (isNaN(maxFrames) || maxFrames <= 0 || maxFrames > 25) {
         const frameInputElement = document.getElementById("frame-number");
-        displayError(frameInputElement, "Παρακαλώ εισάγετε έναν έγκυρο αριθμό πλαισίων.");
+        displayError(frameInputElement, "Παρακαλώ εισάγετε έναν αριθμό πλαισίων από 1 έως 25.");
         return false;
     }
 

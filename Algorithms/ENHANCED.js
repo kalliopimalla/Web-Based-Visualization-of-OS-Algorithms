@@ -36,37 +36,31 @@ function initializeSimulation() {
 function isValidInput(pageInput, maxFrames) {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
-    const pageInputElement = document.getElementById("pages");
-    const frameNumberElement = document.getElementById("frame-number");
-
-    // Έλεγχος για την ακολουθία σελίδων
-    if (!pageInput || !maxFrames) {
-        displayError(pageInputElement, "Η είσοδος πρέπει να περιλαμβάνει την ακολουθία σελίδων και τον αριθμό πλαισίων μνήμης.");
-        displayError(frameNumberElement, "Η είσοδος πρέπει να περιλαμβάνει την ακολουθία σελίδων και τον αριθμό πλαισίων μνήμης.");
-        return false;
-    }
-
-    // Έλεγχος για τη μορφή της ακολουθίας σελίδων
     const pageArray = pageInput.split(',').map(num => num.trim());
-    if (pageArray.some(page => isNaN(page) || page === "")) {
-        displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο έγκυρους αριθμούς διαχωρισμένους με κόμμα.");
-        return false;
+    for (let page of pageArray) {
+        if (isNaN(page) || page === "" || page < 1 || page > 100) {
+            const pageInputElement = document.getElementById("pages");
+            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο αριθμούς από 1 έως 100, διαχωρισμένους με κόμμα.");
+            return false;
+        }
     }
 
-    // Έλεγχος μήκους ακολουθίας
+    // Έλεγχος αν η ακολουθία περιέχει περισσότερους από 100 αριθμούς
     if (pageArray.length > 100) {
-        displayError(pageInputElement, "Το μέγιστο επιτρεπτό μήκος της ακολουθίας σελίδων είναι 100 αριθμοί.");
+        const pageInputElement = document.getElementById("pages");
+        displayError(pageInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
         return false;
     }
 
-    // Έλεγχος για τον αριθμό πλαισίων μνήμης
-    if (isNaN(maxFrames) || maxFrames <= 0) {
-        displayError(frameNumberElement, "Ο αριθμός των πλαισίων μνήμης θα πρέπει να είναι θετικός αριθμός.");
+    if (isNaN(maxFrames) || maxFrames <= 0 || maxFrames > 25) {
+        const frameInputElement = document.getElementById("frame-number");
+        displayError(frameInputElement, "Παρακαλώ εισάγετε έναν αριθμό πλαισίων από 1 έως 25.");
         return false;
     }
 
     return true;
 }
+
 
 function createTable() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος

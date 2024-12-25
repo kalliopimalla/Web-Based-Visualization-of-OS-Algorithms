@@ -32,28 +32,30 @@ function isValidInput(pageInput, maxFrames) {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
     const pageArray = pageInput.split(',').map(num => num.trim());
-    const pageInputElement = document.getElementById("pages");
-
     for (let page of pageArray) {
-        if (isNaN(page) || page === "") {
-            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο έγκυρους αριθμούς διαχωρισμένους με κόμμα.");
+        if (isNaN(page) || page === "" || page < 1 || page > 100) {
+            const pageInputElement = document.getElementById("pages");
+            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο αριθμούς από 1 έως 100, διαχωρισμένους με κόμμα.");
             return false;
         }
     }
 
+    // Έλεγχος αν η ακολουθία περιέχει περισσότερους από 100 αριθμούς
     if (pageArray.length > 100) {
-        displayError(pageInputElement, "Η ακολουθία σελίδων δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς.");
+        const pageInputElement = document.getElementById("pages");
+        displayError(pageInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
         return false;
     }
 
-    const frameInputElement = document.getElementById("frame-number");
-    if (isNaN(maxFrames) || maxFrames <= 0) {
-        displayError(frameInputElement, "Παρακαλώ εισάγετε έναν έγκυρο αριθμό πλαισίων.");
+    if (isNaN(maxFrames) || maxFrames <= 0 || maxFrames > 25) {
+        const frameInputElement = document.getElementById("frame-number");
+        displayError(frameInputElement, "Παρακαλώ εισάγετε έναν αριθμό πλαισίων από 1 έως 25.");
         return false;
     }
 
     return true;
 }
+
 
 function createTable() {
     const seekSequence = document.getElementById("seek-sequence");
