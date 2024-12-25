@@ -106,22 +106,55 @@
     </section>
 
     <!-- Algorithm Steps -->
-    <section class="algorithm-steps">
-      <div class="container">
-        <h2>Βήματα</h2>
-        <ol>
-            <ul>
-              <label><strong>ΒΗΜΑ 1 :</strong></label>
-                <li>Εισάγετε την σειρά των αιτήσεων που θέλετε να οπτικοποιήσετε με τον αλγόριθμο. Προσέξτε να είναι σωστά μορφοποιημένη. Υπάρχει η δυνατότητα για δημιουργία τυχαίας ακολουθίας βάζοντας το μήκος των αριθμών της ακολουθίας που επιθυμώ να παραχθεί.</li>
-                <label><strong>ΒΗΜΑ 2 :</strong></label>
-                <li>Εισάγετε τη τρέχουσα θέση της κεφαλής και την αρχική κατεύθυνση.</li>
-                
-                <label><strong>ΒΗΜΑ 3 :</strong></label>
-                <li>Πατήστε το κουμπί Εκτέλεση και θα λάβετε τα αποτελέσματα.</li>
-              </ul>
-        </ol>
+    <div class="container" style="font-family: Arial, sans-serif; line-height: 1.8; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #fafafa;">
+      <h2 style="color: #333; text-align: center; margin-bottom: 20px;">Οδηγίες για την οπτικοποίηση του αλγορίθμου</h2>
+    
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 1:</strong>
+        <p style="margin: 5px 0;">Εισάγετε το επιθυμητό <strong>εύρος κυλίνδρων</strong> που θα χρησιμοποιηθεί για την οπτικοποίηση.</p>
       </div>
-    </section>
+    
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 2:</strong>
+        <p style="margin: 5px 0;">
+          Καταχωρίστε τη <strong>σειρά αιτήσεων</strong> που θέλετε να δείτε. Αν εισάγετε τη σειρά χειροκίνητα, 
+          βεβαιωθείτε ότι τα αιτήματα ανήκουν στο εύρος κυλίνδρων που δώσατε. 
+          Εναλλακτικά, μπορείτε να δημιουργήσετε <strong>τυχαία ακολουθία</strong> ορίζοντας το μήκος της, η οποία θα παραχθεί αυτόματα σωστά.
+        </p>
+      </div>
+      
+    
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 3:</strong>
+        <p style="margin: 5px 0;">Πληκτρολογήστε την <strong>τρέχουσα θέση της κεφαλής</strong>.</p>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 4:</strong>
+        <p style="margin: 5px 0;">
+          Επιλέξτε την <strong>κατεύθυνση</strong> της κίνησης της κεφαλής. Μπορείτε να επιλέξετε ανάμεσα σε:
+          <ul style="list-style-type: circle; margin-left: 20px;">
+            <li><strong>Προς τα δεξιά :</strong> Η κεφαλή θα κινηθεί προς μεγαλύτερους αριθμούς κυλίνδρων.</li>
+            <li><strong>Προς τα αριστερά :</strong> Η κεφαλή θα κινηθεί προς μικρότερους αριθμούς κυλίνδρων.</li>
+          </ul>
+        </p>
+      </div>
+      
+    
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 5:</strong>
+        <p style="margin: 5px 0;">Πατήστε το κουμπί <strong>«Εκτέλεση»</strong> για να δείτε τα αποτελέσματα. 
+          Χρησιμοποιήστε το κουμπί «Εμφάνιση/Απόκρυψη θέσεων κεφαλής για να δείτε το διάγραμμα με τον τρόπο που προτιμάτε.
+        </p>
+      </div>
+
+      <div style="margin-bottom: 15px;">
+        <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 6:</strong>
+        <p style="margin: 5px 0;">Πατήστε το κουμπί <strong>«Επαναφορά»</strong> για να διαγράψετε τα δεδομένα και να ξεκινήσετε από την αρχή. 
+          Αυτό θα καθαρίσει όλα τα πεδία και τις επιλογές που έχετε εισάγει.
+        </p>
+      </div>
+    </div>
 
     <!-- Algorithm Implementation -->
     <section class="algorithm-implementation">
@@ -165,8 +198,8 @@
                     <p>Αρχική κατεύθυνση :</p>
                     <div class="popup">
                       <select id="direction">
-                        <option value="left">Left</option>
-                        <option value="right">Right</option>
+                        <option value="left">Προς τα αριστερά</option>
+                        <option value="right">Προς τα δεξιά </option>
                       </select>
                       <span class="popuptext">Επιλέξτε την αρχική κατεύθυνση (Αριστερά ή Δεξιά).</span>
                     </div>
