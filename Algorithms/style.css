@@ -824,3 +824,29 @@ table th, table td {
 table th {
   background-color: #f4f4f4; /* Προαιρετικό για διαφορετικό χρώμα κεφαλίδας */
 }
+
+
+/* Στυλ για το dropdown */
+select {
+  width: 600px;
+  height: 35px;
+  font-size: 16px;
+  background-color: #f0f0f0; /* Χρώμα φόντου */
+  color: #333; /* Χρώμα κειμένου */
+  border: 1px solid #ccc; /* Περίγραμμα */
+  border-radius: 5px; /* Στρογγυλεμένες γωνίες */
+  padding: 5px 10px;
+  outline: none;
+}
+
+/* Στυλ για τις επιλογές */
+select option {
+  background-color: #f0f0f0; /* Αρχικό χρώμα φόντου */
+  color: #333; /* Χρώμα κειμένου */
+}
+
+/* Στυλ για hover στις επιλογές */
+select option:hover {
+  background-color: #d6d6d6; /* Χρώμα φόντου στο hover */
+  color: #000; /* Χρώμα κειμένου στο hover */
+}

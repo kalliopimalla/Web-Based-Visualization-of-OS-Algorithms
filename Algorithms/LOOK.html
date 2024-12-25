@@ -164,13 +164,13 @@
    
           <div class="input-steps">
            
-            <p>Εύρος κυλίνδρων:</p>
+            <p><strong>Εύρος κυλίνδρων:</strong></p>
             <div class="popup">
                 <input type="number" id="cylinder-number" placeholder="π.χ. 200" style="width: 150px;" max="1000">
                 <span class="popuptext">Δέχεται θετικό αριθμό (μέγιστο: 1000) που υποδηλώνει το εύρος των κυλίνδρων.</span>
             </div>
 
-            <p>Η σειρά των αιτήσεων:</p>
+            <p><strong>Η σειρά των αιτήσεων:</strong></p>
             <div class="popup">
                 <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)" style="width: 600px;">
                 <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
@@ -178,19 +178,19 @@
       
               <div class="popup">
                 <div class="input-container"> 
-                  <label for="sequence-length">Μήκος ακολουθίας:</label>
+                  <label for="sequence-length"><strong>Μήκος ακολουθίας:</strong></label>
                   <input type="number" id="sequence-length" placeholder="π.χ. 10" min="1" style="width: 100px;">
                   <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
               </div>
                 <span class="popuptext">Μέγιστο μήκος ακολουθιας το 100</span>
             </div>
 
-            <p>Η θέση της κεφαλής :</p>
+            <p><strong>Η θέση της κεφαλής :</strong></p>
             <div class="popup">
               <input type="number" id="head-position" placeholder="π.χ. 50">
               <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
             </div>
-            <p>Αρχική κατεύθυνση :</p>
+            <p><strong>Αρχική κατεύθυνση:</strong></p>
             <div class="popup">
               <select id="direction">
                 <option value="left">Προς τα αριστερά</option>
@@ -198,6 +198,8 @@
               </select>
               <span class="popuptext">Επιλέξτε την αρχική κατεύθυνση (Αριστερά ή Δεξιά).</span>
             </div>
+            <br>
+            <br>
             <button onclick="executeLOOK()">Εκτέλεση</button>
             <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
             <button id="resetButton" style="display: none;">Επαναφορά</button>

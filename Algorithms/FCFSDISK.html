@@ -147,90 +147,94 @@
     
     
         <!-- Algorithm Implementation -->
-        <section class="algorithm-implementation">
+    <section class="algorithm-implementation">
      
-          <h2>Υλοποίηση</h2>
-         
-          <div class="content">
-     
-  
-  
-                  <div class="input-steps">
-  
-                    <p>Εύρος κυλίνδρων:</p>
+        <h2>Υλοποίηση</h2>
+       
+        <div class="content">
+   
+
+
+                <div class="input-steps">
+
+                  <p><strong>Εύρος κυλίνδρων:</strong></p>
+
+                  <div class="popup">
+                      <input type="number" id="cylinder-number" placeholder="π.χ. 200" style="width: 100px;" max="1000">
+                      <span class="popuptext">Δέχεται θετικό αριθμό (μέγιστο: 1000) που υποδηλώνει το εύρος των κυλίνδρων.</span>
+                  </div>
+                  
+
+                    <p><strong>Η σειρά των αιτήσεων:</strong></p>
                     <div class="popup">
-                        <input type="number" id="cylinder-number" placeholder="π.χ. 200" style="width: 150px;" max="1000">
-                        <span class="popuptext">Δέχεται θετικό αριθμό (μέγιστο: 1000) που υποδηλώνει το εύρος των κυλίνδρων.</span>
+                        <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)" style="width: 600px;">
+                        <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
+                      </div>
+
+                      <div class="popup">
+                        <div class="input-container"> 
+                          <label for="sequence-length"><strong>Μήκος ακολουθίας:</strong></label>
+                          <input type="number" id="sequence-length" placeholder="π.χ. 10" min="1" style="width: 100px;">
+                          
+                  
+                          <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
+                      </div>
+                        <span class="popuptext">Μέγιστο μήκος ακολουθιας το 100</span>
                     </div>
                     
-  
-                      <p>Η σειρά των αιτήσεων:</p>
-                      <div class="popup">
-                          <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)" style="width: 600px;">
-                          <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
-                        </div>
-  
-                        <div class="popup">
-                          <div class="input-container"> 
-                            <label for="sequence-length">Μήκος ακολουθίας:</label>
-                            <input type="number" id="sequence-length" placeholder="π.χ. 10" min="1" style="width: 100px;">
-                            <button id="generateSequenceButton">Δημιουργία Τυχαίας Ακολουθίας</button>
-                        </div>
-                          <span class="popuptext">Μέγιστο μήκος ακολουθιας το 100</span>
-                      </div>
-                      
-  
-  
-  
-  
-  
-                      <p>Η θέση της κεφαλής :</p>
-                      <div class="popup">
-                          <input type="number" id="head-position" placeholder="π.χ. 50" style="width: 150px; ">
-                          <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
-                      </div>
-                   
-       
-      
-                      <button onclick="runFCFS()">Εκτέλεση</button>
-                      <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη θέσεων κεφαλής</button>
-                      <button id="resetButton" style="display: none;">Επαναφορά</button>
-      
-                      <!-- Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού -->
-                      <div id="seek-count-display" class="seek-count-display"></div>
-      
-                      <!-- Δημιουργία κουτιών με βελάκια για τη σειρά εξυπηρέτησης -->
-                      <div id="seek-sequence" class="seek-sequence">
-                          <h3>Σειρά Εξυπηρέτησης:</h3>
-                          <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
-                      </div>
-                  </div>
-                
+
+
+
+
+
+                    <p><strong>Η θέση της κεφαλής :</strong></p>
+                    <div class="popup">
+                        <input type="number" id="head-position" placeholder="π.χ. 50" style="width: 150px; ">
+                        <span class="popuptext">Δέχεται έγκυρο αριθμό για τη θέση της κεφαλής.</span>
+                    </div>
+                 
+      <br>
+      <br>
+    
+                    <button onclick="runFCFS()">Εκτέλεση</button>
+                    <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη θέσεων κεφαλής</button>
+                    <button id="resetButton" style="display: none;">Επαναφορά</button>
+    
+                    <!-- Απεικόνιση του συνολικού αριθμού κινήσεων με σταδιακή αύξηση του αριθμού -->
+                    <div id="seek-count-display" class="seek-count-display"></div>
+    
+                    <!-- Δημιουργία κουτιών με βελάκια για τη σειρά εξυπηρέτησης -->
+                    <div id="seek-sequence" class="seek-sequence">
+                        <h3>Σειρά Εξυπηρέτησης:</h3>
+                        <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
+                    </div>
+                </div>
+              
+    </div>
+    <div class="canvas-container">
+        <canvas id="seekCanvas" width="1200" height="600"></canvas>
+    </div>
+    
+           
+           
+        
+        <br>
+
+
+
+
+
+
+
       </div>
-      <div class="canvas-container">
-          <canvas id="seekCanvas" width="1200" height="600"></canvas>
-      </div>
-      
-             
-             
-          
-          <br>
-  
-  
-  
-  
-  
-  
-  
-        </div>
-      </section>
-    </main>
-  
-    <!-- Footer -->
-    <footer>
-      <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
-    </footer>
-  
-    <script src="FCFSDISK.js"></script>
-  </body>
-  </html>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2024 AlgoVista. Kalliopi Malla</p>
+  </footer>
+
+  <script src="FCFSDISK.js"></script>
+</body>
+</html>
