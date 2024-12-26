@@ -172,6 +172,34 @@ function drawGanttChart(schedule) {
 }
 
 
+function startStepByStep() {
+    const btInput = document.getElementById('burst-time').value;
+    const atInput = document.getElementById('arrival-time').value;
+    const prInput = document.getElementById('priority').value;
+
+    // Αρχικοποίηση μεταβλητών
+    stepBurstTime = btInput.split(',').map(Number);
+    stepArrivalTime = atInput.split(',').map(Number);
+    stepPriority = prInput.split(',').map(Number);
+    stepProcesses = Array.from({ length: stepBurstTime.length }, (_, i) => i + 1);
+    stepRemainingTime = [...stepBurstTime];
+    stepCompleted = new Array(stepBurstTime.length).fill(false);
+    stepWaitingTime = new Array(stepBurstTime.length).fill(0);
+    stepTurnAroundTime = new Array(stepBurstTime.length).fill(0);
+    stepCurrentTime = 0;
+    stepSchedule = [];
+
+    document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
+
+    // Δημιουργία κουμπιού Επόμενου Βήματος
+    const nextButton = document.createElement('button');
+    nextButton.textContent = 'Επόμενο Βήμα';
+    nextButton.id = 'nextStepButton';
+    nextButton.onclick = stepByStepExecution;
+    document.getElementById('stepHistory').appendChild(nextButton);
+
+    stepByStepExecution(); // Έναρξη πρώτου βήματος
+}
 
 
 
@@ -186,88 +214,7 @@ let stepTurnAroundTime = [];
 let stepCompleted = [];
 let stepSchedule = [];
 
-function stepByStepExecution() {
-    const n = stepProcesses.length;
 
-    const stepHistoryContainer = document.getElementById('stepHistory');
-    let htmlBuffer = ''; // Συλλογή HTML σε buffer
-
-    const availableProcesses = stepProcesses
-        .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 ? i : -1))
-        .filter((i) => i !== -1);
-
-    if (availableProcesses.length === 0) {
-        stepCurrentTime++;
-        htmlBuffer += `
-            <div class="step-box">
-                <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
-                <div>Καμία διεργασία διαθέσιμη. Αναμονή...</div>
-            </div>
-        `;
-        stepHistoryContainer.innerHTML += htmlBuffer; // Ενημέρωση HTML
-        return;
-    }
-
-    const highestPriorityIndex = availableProcesses.reduce((highest, i) =>
-        stepPriority[i] < stepPriority[highest] ? i : highest, availableProcesses[0]);
-
-    if (
-        stepSchedule.length === 0 ||
-        stepSchedule[stepSchedule.length - 1].process !== stepProcesses[highestPriorityIndex]
-    ) {
-        stepSchedule.push({
-            process: stepProcesses[highestPriorityIndex],
-            startTime: stepCurrentTime,
-            endTime: stepCurrentTime + 1,
-        });
-    } else {
-        stepSchedule[stepSchedule.length - 1].endTime++;
-    }
-
-    stepRemainingTime[highestPriorityIndex]--;
-    stepCurrentTime++;
-
-    if (stepRemainingTime[highestPriorityIndex] === 0) {
-        stepCompleted[highestPriorityIndex] = true;
-        stepTurnAroundTime[highestPriorityIndex] =
-            stepCurrentTime - stepArrivalTime[highestPriorityIndex];
-        stepWaitingTime[highestPriorityIndex] =
-            stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
-    }
-
-    const activeProcess = `<span class="queue-process active">P${stepProcesses[highestPriorityIndex]}</span>`;
-    const waitingQueue = availableProcesses
-        .filter((i) => i !== highestPriorityIndex)
-        .map((i) => `<span class="queue-process">P${stepProcesses[i]}</span>`)
-        .join(' -> ') || 'Καμία';
-
-    htmlBuffer += `
-        <div class="step-box">
-            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime - 1}</div>
-            <div>Εκτελείται: ${activeProcess}</div>
-            <div>Αναμονή: ${waitingQueue}</div>
-        </div>
-    `;
-
-    // Ενημέρωση HTML
-    stepHistoryContainer.innerHTML += htmlBuffer;
-
-    if (stepCompleted.every((completed) => completed)) {
-        const avgWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
-        const endBox = `
-            <div class="step-box">
-                <div class="step-time">Τέλος Εκτέλεσης</div>
-                <div>Όλες οι διεργασίες ολοκληρώθηκαν!</div>
-            </div>
-            <p><strong>Μέσος Χρόνος Αναμονής :</strong> ${avgWaitingTime.toFixed(2)}</p>
-        `;
-        stepHistoryContainer.innerHTML += endBox;
-
-        drawGanttChart(stepSchedule);
-        document.getElementById('nextStepButton').remove();
-        document.getElementById('resetButton').style.display = 'inline-block';
-    }
-}
 
 function stepByStepExecution() {
     const n = stepProcesses.length;
@@ -385,6 +332,8 @@ function stepByStepExecution() {
         document.getElementById("resetButton").style.display = "inline-block";
     }
 }
+
+
 
 
 function createThreeColumnTable() {
