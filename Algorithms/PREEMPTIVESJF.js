@@ -120,14 +120,15 @@ function drawGanttChart(schedule) {
     const totalDuration = schedule[schedule.length - 1].endTime;
 
     // Ρυθμίσεις καμβά
-    const canvasWidth = 800; // Πλάτος καμβά
+    const canvasWidth = Math.max(800, totalDuration * 10); // Δυναμικό πλάτος καμβά
     const scaleFactor = canvasWidth / totalDuration; // Κλίμακα χρόνου
-    canvas.width = canvasWidth +150;
+    canvas.width = canvasWidth;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentX = 0; // Αρχικό X για τις μπάρες
     const barHeight = 40; // Ύψος μπάρας
     const labelFontSize = 12; // Σταθερό μέγεθος γραμματοσειράς
+    const minBarWidth = 50; // Ελάχιστο πλάτος μπάρας για να χωράει την ετικέτα
 
     // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
     const processColors = {};
@@ -136,7 +137,12 @@ function drawGanttChart(schedule) {
     for (let i = 0; i < schedule.length; i++) {
         const { process, startTime, endTime } = schedule[i];
         const duration = endTime - startTime;
-        const barWidth = duration * scaleFactor;
+        let barWidth = duration * scaleFactor;
+
+        // Διασφάλιση ότι η μπάρα είναι αρκετά μεγάλη για την ετικέτα
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width;
+        barWidth = Math.max(barWidth, labelWidth + 20, minBarWidth);
 
         // Ανάθεση ή ανάκτηση χρώματος για τη διεργασία
         if (!processColors[process]) {
@@ -148,7 +154,6 @@ function drawGanttChart(schedule) {
         ctx.fillRect(currentX, 50, barWidth, barHeight);
 
         // Ετικέτα διεργασίας μέσα στη μπάρα
-        const label = `P${process}`;
         ctx.fillStyle = '#000';
         ctx.font = `${labelFontSize}px Arial`;
         ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75);
