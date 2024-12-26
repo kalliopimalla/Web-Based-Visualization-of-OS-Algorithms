@@ -108,24 +108,25 @@ drawGanttChart(schedule);
     document.getElementById("resetButton").style.display = "inline-block";
 }
 
+
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Υπολογισμός συνολικής διάρκειας
+    // Υπολογισμός συνολικού χρόνου
     const totalBurstTime = schedule[schedule.length - 1].endTime;
 
-    // Ρυθμίσεις καμβά
-    const baseWidth = 800; // Πλάτος καμβά
-    const scaleFactor = baseWidth / totalBurstTime; // Κλίμακα χρόνου
-    const minBarWidth = 50; // Ελάχιστο πλάτος μπάρας
-    canvas.width = baseWidth + 300;
-    canvas.height = 150; // Αύξηση ύψους για επιπλέον ετικέτες
+    // Δυναμικός καθορισμός πλάτους καμβά
+    const scaleFactor = 10; // Pixels ανά μονάδα χρόνου
+    const canvasWidth = Math.max(800, totalBurstTime * scaleFactor);
+    canvas.width = canvasWidth; // Ορισμός πλάτους καμβά
+    canvas.height = 150; // Σταθερό ύψος καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     let currentX = 0; // Αρχική θέση X για τις μπάρες
     const barHeight = 40; // Ύψος μπάρας
     const labelFontSize = 12; // Μέγεθος γραμματοσειράς για ετικέτες
+    const minBarWidth = 50; // Ελάχιστο πλάτος για κάθε μπάρα
 
     // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
     const processColors = {};
@@ -136,7 +137,7 @@ function drawGanttChart(schedule) {
         const duration = endTime - startTime;
         let barWidth = duration * scaleFactor;
 
-        // Εξασφάλιση ελάχιστου πλάτους για κάθε μπάρα
+        // Εξασφάλιση ότι κάθε μπάρα έχει ελάχιστο πλάτος
         barWidth = Math.max(barWidth, minBarWidth);
 
         // Ανάθεση ή ανάκτηση χρώματος για κάθε διεργασία
@@ -185,36 +186,87 @@ let stepTurnAroundTime = [];
 let stepCompleted = [];
 let stepSchedule = [];
 
-function startStepByStep() {
-    // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
-    const btInput = document.getElementById('burst-time').value;
-    const atInput = document.getElementById('arrival-time').value;
-    const prInput = document.getElementById('priority').value; // Προτεραιότητα
-    
+function stepByStepExecution() {
+    const n = stepProcesses.length;
 
-    stepBurstTime = btInput.split(',').map(Number);
-    stepArrivalTime = atInput.split(',').map(Number);
-    stepPriority = prInput.split(',').map(Number);
-    const n = stepBurstTime.length;
+    const stepHistoryContainer = document.getElementById('stepHistory');
+    let htmlBuffer = ''; // Συλλογή HTML σε buffer
 
-    stepProcesses = Array.from({ length: n }, (_, i) => i + 1);
-    stepRemainingTime = [...stepBurstTime];
-    stepWaitingTime = new Array(n).fill(0);
-    stepTurnAroundTime = new Array(n).fill(0);
-    stepCompleted = new Array(n).fill(false);
+    const availableProcesses = stepProcesses
+        .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 ? i : -1))
+        .filter((i) => i !== -1);
 
+    if (availableProcesses.length === 0) {
+        stepCurrentTime++;
+        htmlBuffer += `
+            <div class="step-box">
+                <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
+                <div>Καμία διεργασία διαθέσιμη. Αναμονή...</div>
+            </div>
+        `;
+        stepHistoryContainer.innerHTML += htmlBuffer; // Ενημέρωση HTML
+        return;
+    }
 
-    stepCurrentTime = 0;
-    document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
-    document.getElementById('seek-count').innerHTML = ''; // Καθαρισμός πίνακα
+    const highestPriorityIndex = availableProcesses.reduce((highest, i) =>
+        stepPriority[i] < stepPriority[highest] ? i : highest, availableProcesses[0]);
 
-    const nextButton = document.createElement('button');
-    nextButton.textContent = 'Επόμενο';
-    nextButton.id = 'nextStepButton';
-    nextButton.onclick = stepByStepExecution;
-    document.getElementById('stepHistory').appendChild(nextButton);
+    if (
+        stepSchedule.length === 0 ||
+        stepSchedule[stepSchedule.length - 1].process !== stepProcesses[highestPriorityIndex]
+    ) {
+        stepSchedule.push({
+            process: stepProcesses[highestPriorityIndex],
+            startTime: stepCurrentTime,
+            endTime: stepCurrentTime + 1,
+        });
+    } else {
+        stepSchedule[stepSchedule.length - 1].endTime++;
+    }
 
-    stepByStepExecution(); // Ξεκινάμε από το πρώτο βήμα
+    stepRemainingTime[highestPriorityIndex]--;
+    stepCurrentTime++;
+
+    if (stepRemainingTime[highestPriorityIndex] === 0) {
+        stepCompleted[highestPriorityIndex] = true;
+        stepTurnAroundTime[highestPriorityIndex] =
+            stepCurrentTime - stepArrivalTime[highestPriorityIndex];
+        stepWaitingTime[highestPriorityIndex] =
+            stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
+    }
+
+    const activeProcess = `<span class="queue-process active">P${stepProcesses[highestPriorityIndex]}</span>`;
+    const waitingQueue = availableProcesses
+        .filter((i) => i !== highestPriorityIndex)
+        .map((i) => `<span class="queue-process">P${stepProcesses[i]}</span>`)
+        .join(' -> ') || 'Καμία';
+
+    htmlBuffer += `
+        <div class="step-box">
+            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime - 1}</div>
+            <div>Εκτελείται: ${activeProcess}</div>
+            <div>Αναμονή: ${waitingQueue}</div>
+        </div>
+    `;
+
+    // Ενημέρωση HTML
+    stepHistoryContainer.innerHTML += htmlBuffer;
+
+    if (stepCompleted.every((completed) => completed)) {
+        const avgWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
+        const endBox = `
+            <div class="step-box">
+                <div class="step-time">Τέλος Εκτέλεσης</div>
+                <div>Όλες οι διεργασίες ολοκληρώθηκαν!</div>
+            </div>
+            <p><strong>Μέσος Χρόνος Αναμονής :</strong> ${avgWaitingTime.toFixed(2)}</p>
+        `;
+        stepHistoryContainer.innerHTML += endBox;
+
+        drawGanttChart(stepSchedule);
+        document.getElementById('nextStepButton').remove();
+        document.getElementById('resetButton').style.display = 'inline-block';
+    }
 }
 
 function stepByStepExecution() {
