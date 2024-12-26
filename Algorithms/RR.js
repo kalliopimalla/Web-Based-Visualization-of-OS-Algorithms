@@ -67,17 +67,15 @@ function runRoundRobinCPU() {
         currentTime += executionTime;
         remainingBurstTime[currentProcess] -= executionTime;
         if (
-            schedule.length === 0 || 
+            schedule.length === 0 ||
             schedule[schedule.length - 1].process !== processes[currentProcess]
         ) {
-            // Αν είναι νέα διεργασία, προσθήκη στο schedule
             schedule.push({
                 process: processes[currentProcess],
                 startTime: currentTime - executionTime,
                 endTime: currentTime,
             });
         } else {
-            // Αν συνεχίζεται η ίδια διεργασία, ενημέρωση της ώρας λήξης
             schedule[schedule.length - 1].endTime = currentTime;
         }
         
@@ -132,7 +130,10 @@ function drawGanttChart(schedule) {
     const barHeight = 40; // Ύψος κάθε μπάρας
     const minBarWidth = 50; // Ελάχιστο πλάτος για τη μπάρα (ώστε να χωράει η ετικέτα)
     const scaleFactor = containerWidth / totalBurstTime; // Κλίμακα χρόνου σε pixels
-    const totalWidth = Math.max(totalBurstTime * Math.max(scaleFactor, minBarWidth / totalBurstTime), minBarWidth * schedule.length)+100; // Υπολογισμός απαιτούμενου πλάτους
+    const totalWidth = Math.max(
+        totalBurstTime * Math.max(scaleFactor, minBarWidth / totalBurstTime),
+        minBarWidth * schedule.length
+    ) + 100; // Υπολογισμός απαιτούμενου πλάτους
 
     // Ρύθμιση του πλάτους και του ύψους του καμβά
     canvas.width = totalWidth;
@@ -154,7 +155,7 @@ function drawGanttChart(schedule) {
 
     schedule.forEach(({ process, startTime, endTime }, index) => {
         const duration = endTime - startTime;
-        const barWidth = Math.max(duration * scaleFactor, minBarWidth); // Χρήση ελάχιστου πλάτους
+        const barWidth = Math.max(duration * scaleFactor, minBarWidth);
 
         // Ανάκτηση χρώματος για τη διεργασία
         ctx.fillStyle = processColors[process];
@@ -171,17 +172,20 @@ function drawGanttChart(schedule) {
             ctx.fillText(label, currentX + barWidth / 2 - labelWidth / 2, 75); // Τοποθέτηση στο κέντρο της μπάρας
         }
 
-        // Ετικέτα για την αρχή κάθε διεργασίας
-        ctx.fillText(startTime, currentX, 45); // Ετικέτα πάνω από την μπάρα
+        // Ετικέτες χρόνου (start time, end time)
+        ctx.fillStyle = '#000';
+        ctx.fillText(startTime, currentX, 45); // Αρχή της μπάρας
 
-        // Ετικέτα για τη λήξη της τελευταίας διεργασίας
+        // Έλεγχος αν είναι η τελευταία εγγραφή στο schedule
         if (index === schedule.length - 1) {
-            ctx.fillText(endTime, currentX + barWidth, 45); // Ετικέτα δεξιά από την τελευταία μπάρα
+            ctx.fillText(endTime, currentX + barWidth, 45); // Τέλος της τελευταίας μπάρας
         }
 
-        currentX += barWidth; // Ενημέρωση της θέσης X
+        currentX += barWidth; // Μετατόπιση για την επόμενη διεργασία
     });
 }
+
+
 
 
 
