@@ -11,12 +11,18 @@ let faultCount = 0;
 let hitCount = 0;
 
 function initializeSimulation() {
+    
     const pageInput = document.getElementById("pages").value.trim();
     maxFrames = parseInt(document.getElementById("frame-number").value);
 
     if (!isValidInput(pageInput, maxFrames)) {
         return;
     }
+
+    // Επαναφορά όλων των μετρητών
+    faultCount = 0;
+    hitCount = 0;
+
 
     pages = pageInput.split(',').map(Number);
     frames = Array(maxFrames).fill(null);
