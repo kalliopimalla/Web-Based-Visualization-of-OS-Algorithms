@@ -141,10 +141,19 @@ function drawGanttChart(schedule) {
         barWidth = Math.max(barWidth, minBarWidth);
 
         // Ανάθεση ή ανάκτηση χρώματος για κάθε διεργασία
-        if (!processColors[process]) {
-            processColors[process] = `hsl(${Object.keys(processColors).length * colorStep}, 70%, 70%)`;
+         // Διαφορετικό χρώμα για κάθε διεργασία
+         function getRandomColor() {
+            const hue = Math.floor(Math.random() * 360); // Απόχρωση
+            const saturation = Math.floor(Math.random() * 40) + 60; // Κορεσμός 60-100%
+            const lightness = Math.floor(Math.random() * 40) + 40; // Φωτεινότητα 40-80%
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
         }
-        ctx.fillStyle = processColors[process];
+        
+        ctx.fillStyle = getRandomColor();
+        
+        ctx.strokeStyle = '#000'; // Μαύρο περίγραμμα
+        ctx.lineWidth = 2;
+        ctx.strokeRect(currentX, 50, barWidth, 40);
 
         // Σχεδίαση μπάρας διεργασίας
         ctx.fillRect(currentX, 50, barWidth, barHeight);

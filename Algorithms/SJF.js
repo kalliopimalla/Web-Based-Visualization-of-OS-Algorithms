@@ -324,7 +324,19 @@ function drawGanttChart(processes, burstTime, arrivalTime, completionOrder) {
         barWidth = Math.max(barWidth, minBarWidth);
 
         // Σχεδίαση μπάρας
-        ctx.fillStyle = `hsl(${index * colorStep}, 70%, 70%)`; // Διαφορετικό χρώμα για κάθε μπάρα
+           // Διαφορετικό χρώμα για κάθε διεργασία
+           function getRandomColor() {
+            const hue = Math.floor(Math.random() * 360); // Απόχρωση
+            const saturation = Math.floor(Math.random() * 40) + 60; // Κορεσμός 60-100%
+            const lightness = Math.floor(Math.random() * 40) + 40; // Φωτεινότητα 40-80%
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+        
+        ctx.fillStyle = getRandomColor();
+        
+        ctx.strokeStyle = '#000'; // Μαύρο περίγραμμα
+        ctx.lineWidth = 2;
+        ctx.strokeRect(currentX, 50, barWidth, 40);
         ctx.fillRect(currentX, 50, barWidth, 40);
 
         // Ετικέτα διεργασίας μέσα στη μπάρα

@@ -98,7 +98,9 @@ function drawPartialGanttChart(processes, bt, at) {
     canvas.width = adjustedBarLengths.reduce((sum, length) => sum + length, 0) + 150;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const colorStep = 360 / processes.length; // Υπολογισμός βήματος χρώματος
+    const colorStep = 360 / processes.length;
+
+
 
     let currentX = 0;
 
@@ -109,8 +111,22 @@ function drawPartialGanttChart(processes, bt, at) {
         const barWidth = adjustedBarLengths[i];
 
         // Διαφορετικό χρώμα για κάθε διεργασία
-        ctx.fillStyle = `hsl(${i * colorStep}, 70%, 70%)`;
+        function getRandomColor() {
+            const hue = Math.floor(Math.random() * 360); // Απόχρωση
+            const saturation = Math.floor(Math.random() * 40) + 60; // Κορεσμός 60-100%
+            const lightness = Math.floor(Math.random() * 40) + 40; // Φωτεινότητα 40-80%
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+        }
+        
+        ctx.fillStyle = getRandomColor();
+        
+        ctx.strokeStyle = '#000'; // Μαύρο περίγραμμα
+        ctx.lineWidth = 2;
+        ctx.strokeRect(currentX, 50, barWidth, 40);
+
         ctx.fillRect(currentX, 50, barWidth, 40);
+    
+        
 
         // Ζωγραφική της ετικέτας διεργασίας
         ctx.font = '12px Arial';
