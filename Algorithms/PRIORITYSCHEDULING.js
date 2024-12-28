@@ -4,12 +4,14 @@ function runPriorityCPU() {
     const atInput = document.getElementById('arrival-time').value;
     const prInput = document.getElementById('priority').value;
     const priorityOrder = document.getElementById('priority-order').value; // Παίρνουμε την επιλογή από το dropdown
+    const agingFactor = 1; // Παράγοντας ωρίμανσης (προστίθεται στην προτεραιότητα σε κάθε μονάδα χρόνου)
+
     const schedule = []; // Πίνακας προγραμματισμού για το Gantt Chart
 
     // Διαχωρισμός δεδομένων σε πίνακες
     const burstTime = btInput.split(',').map(Number);
     const arrivalTime = atInput.split(',').map(Number);
-    const priority = prInput.split(',').map(Number);
+    let priority = prInput.split(',').map(Number); // Η προτεραιότητα είναι μεταβλητή λόγω ωρίμανσης
     const n = burstTime.length;
 
     const processes = Array.from({ length: n }, (_, i) => i + 1);
@@ -23,7 +25,7 @@ function runPriorityCPU() {
     let lastProcess = -1;
     let queueOutput = '';
 
-    // Εκτέλεση Priority Scheduling
+    // Εκτέλεση Priority Scheduling με ωρίμανση
     while (completed < n) {
         const availableProcesses = [];
         for (let i = 0; i < n; i++) {
@@ -35,6 +37,17 @@ function runPriorityCPU() {
         if (availableProcesses.length === 0) {
             currentTime++;
             continue;
+        }
+
+        // Εφαρμογή ωρίμανσης στις διεργασίες που είναι διαθέσιμες
+        for (let i = 0; i < n; i++) {
+            if (arrivalTime[i] <= currentTime && remainingBurstTime[i] > 0 && i !== lastProcess) {
+                if (priorityOrder === 'higher-first') {
+                    priority[i] -= agingFactor; // Μειώνεται η προτεραιότητα (μικρότεροι αριθμοί -> υψηλότερη προτεραιότητα)
+                } else if (priorityOrder === 'lower-first') {
+                    priority[i] += agingFactor; // Αυξάνεται η προτεραιότητα (μεγαλύτεροι αριθμοί -> υψηλότερη προτεραιότητα)
+                }
+            }
         }
 
         // Βρες τη διεργασία με την υψηλότερη προτεραιότητα ανάλογα με την επιλογή
@@ -112,6 +125,7 @@ function runPriorityCPU() {
 
     document.getElementById("resetButton").style.display = "inline-block";
 }
+
 
 
 function drawGanttChart(schedule) {
@@ -234,6 +248,7 @@ function stepByStepExecution() {
 
     // Παίρνουμε την επιλογή του χρήστη για τον τύπο προτεραιότητας
     const priorityOrder = document.getElementById('priority-order').value;
+    const agingFactor = 1; // Παράγοντας ωρίμανσης (αύξηση/μείωση της προτεραιότητας σε κάθε βήμα)
 
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
@@ -251,6 +266,17 @@ function stepByStepExecution() {
         `;
         document.getElementById('stepHistory').appendChild(stepBox);
         return;
+    }
+
+    // Εφαρμογή ωρίμανσης στις διεργασίες που είναι διαθέσιμες αλλά δεν εκτελούνται
+    for (let i = 0; i < n; i++) {
+        if (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 && i !== stepLastProcess) {
+            if (priorityOrder === 'higher-first') {
+                stepPriority[i] -= agingFactor; // Μικρότεροι αριθμοί -> υψηλότερη προτεραιότητα
+            } else if (priorityOrder === 'lower-first') {
+                stepPriority[i] += agingFactor; // Μεγαλύτεροι αριθμοί -> υψηλότερη προτεραιότητα
+            }
+        }
     }
 
     // Επιλέγουμε τη διεργασία με την υψηλότερη προτεραιότητα ανάλογα με την επιλογή
@@ -282,6 +308,7 @@ function stepByStepExecution() {
     // Εκτέλεση της διεργασίας για 1 μονάδα χρόνου
     stepRemainingTime[highestPriorityIndex]--;
     stepCurrentTime++;
+    stepLastProcess = highestPriorityIndex; // Ενημερώνουμε την τελευταία εκτελεσμένη διεργασία
 
     // Ενημέρωση της ολοκλήρωσης εάν η διεργασία τελείωσε
     if (stepRemainingTime[highestPriorityIndex] === 0) {
@@ -353,6 +380,7 @@ function stepByStepExecution() {
         document.getElementById("resetButton").style.display = "inline-block";
     }
 }
+
 
 
 
