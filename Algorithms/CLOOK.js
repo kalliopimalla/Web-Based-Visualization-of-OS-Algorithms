@@ -15,9 +15,16 @@ function executeCLOOK() {
     const directionElement = document.getElementById("direction");
     const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
     const sequenceLengthInputElement = document.getElementById("sequence-length");
     const sequenceLength = parseInt(sequenceLengthInputElement.value.trim(), 10);
+
+
+    // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
+    if (cylinderRange === 1000) {
+        cylinderRange = 999;
+    }
+    
 
     // Επικύρωση εισόδων
     if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
@@ -41,7 +48,7 @@ function executeCLOOK() {
         return;
     }
 
-    if (isNaN(sequenceLength) || sequenceLength <= 0 || sequenceLength > 100) {
+    if (sequenceLength <= 0 || sequenceLength > 100) {
         displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε μήκος ακολουθίας (1-100).");
         return;
     }

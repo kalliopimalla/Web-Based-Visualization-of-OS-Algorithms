@@ -7,7 +7,13 @@ function executeCSCAN() {
     const headPositionElement = document.getElementById("head-position");
     const directionElement = document.getElementById("direction");
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+
+ // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
+ if (cylinderRange === 1000) {
+    cylinderRange = 999;
+}
+
 
     // Επικύρωση εισόδων
     if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
@@ -61,12 +67,17 @@ function executeCSCAN() {
 
     let seekSequence = []; // Αρχικοποίηση ακολουθίας
 
-    // Δημιουργία ακολουθίας αναζήτησης
-    if (direction === "right") {
-        seekSequence = [headPosition, ...right, cylinderRange - 1, 0, ...left];
-    } else {
-        seekSequence = [headPosition, ...left.reverse(), 0, cylinderRange - 1, ...right];
-    }
+    
+  // Δημιουργία ακολουθίας αναζήτησης
+if (direction === "right") {
+    seekSequence = [headPosition, ...right, cylinderRange - 1, 0, ...left];
+} else {
+    seekSequence = [headPosition, ...left.reverse(), 0, cylinderRange - 1, ...right];
+}
+
+// Αφαίρεση τυχόν διπλών τιμών
+seekSequence = [...new Set(seekSequence)];
+
 
     // Υπολογισμός του συνολικού κόστους αναζήτησης
     let seekCount = 0;
@@ -78,7 +89,19 @@ function executeCSCAN() {
 
     // Ενημέρωση DOM με τα αποτελέσματα
     const seekCountDisplay = document.getElementById("seek-count-display");
-    seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${seekCount}`;
+    seekCountDisplay.innerHTML = ""; // Καθαρισμός παλαιού περιεχομένου
+    let currentCount = 0;
+    const incrementValue = Math.ceil(seekCount / 20); // Βήμα αύξησης
+    const interval = setInterval(() => {
+        if (currentCount + incrementValue >= seekCount) {
+            currentCount = seekCount;
+            seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+            clearInterval(interval); // Τερματισμός του interval
+        } else {
+            currentCount += incrementValue;
+            seekCountDisplay.innerText = `Συνολική μετακίνηση κεφαλής: ${currentCount}`;
+        }
+    }, 50); // Χρονικό διάστημα ενημέρωσης (50ms)
 
     const seekSequenceBoxes = document.getElementById("seek-sequence-boxes");
     seekSequenceBoxes.innerHTML = "";
@@ -109,6 +132,7 @@ function toggleShowNumbersOnArrows() {
     showNumbersOnArrows = !showNumbersOnArrows;
     executeCSCAN(); // Επανασχεδίαση για να γίνει εναλλαγή στην εμφάνιση αριθμών
 }
+
 
 function drawCScan(seekSequence, cylinderRange) {
     const canvas = document.getElementById("seekCanvas");
@@ -163,7 +187,6 @@ function drawCScan(seekSequence, cylinderRange) {
 
     // Σχεδιασμός της σειράς κινήσεων (διαδρομής C-SCAN)
     ctx.lineWidth = 2;
-    ctx.strokeStyle = "green";
 
     for (let i = 0; i < seekSequence.length - 1; i++) {
         const x1 = margin + (seekSequence[i] / cylinderRange) * lineLength;
@@ -171,10 +194,8 @@ function drawCScan(seekSequence, cylinderRange) {
         const x2 = margin + (seekSequence[i + 1] / cylinderRange) * lineLength;
         const y2 = margin + ((i + 1) / (seekSequence.length - 1)) * trackHeight;
 
-        ctx.beginPath();
-        ctx.moveTo(x1, y1);
-        ctx.lineTo(x2, y2);
-        ctx.stroke();
+        // Χρήση της συνάρτησης drawArrow
+        drawArrow(ctx, x1, y1, x2, y2);
 
         // Σχεδίαση αριθμών στις γραμμές
         if (showNumbersOnArrows) {
@@ -184,6 +205,8 @@ function drawCScan(seekSequence, cylinderRange) {
         }
     }
 }
+
+
 
 
 

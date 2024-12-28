@@ -18,7 +18,12 @@ function executeSCAN() {
     const headPosition = parseInt(headPositionInput.value);
     const headPositionElement = document.getElementById("head-position");
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+
+ // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
+ if (cylinderRange === 1000) {
+    cylinderRange = 999;
+}
 
    
    

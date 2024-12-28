@@ -9,16 +9,22 @@ function runFCFS() {
     const headPositionInput = document.getElementById("head-position");
     const headPosition = parseInt(headPositionInput.value, 10);
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
-   
-   
+
+
       // Επικύρωση του αριθμού κυλίνδρων
       if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
         displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
         return;
     }
  clearErrorMessages();
+ 
+ // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
+if (cylinderRange === 1000) {
+    cylinderRange = 999;
+}
+
     // Επικύρωση της θέσης της κεφαλής
     if (isNaN(headPosition) || headPosition < 0 || headPosition > cylinderRange) {
         displayError(headPositionInput, `Η θέση της κεφαλής πρέπει να είναι μεταξύ 0 και ${cylinderRange}.`);
@@ -194,6 +200,7 @@ ctx.strokeStyle = "rgba(200, 200, 200, 0.3)"; // Απαλό γκρι
 
 // Σχεδιάστε κάθετες γραμμές του grid
 for (let mark = startScale; mark <= endScale; mark += 20) {
+    
     const xPosition = padding + (mark - startScale) * trackWidth;
     ctx.beginPath();
     ctx.moveTo(xPosition, padding);
@@ -203,6 +210,7 @@ for (let mark = startScale; mark <= endScale; mark += 20) {
 
 // Σχεδιάστε αριθμούς ανά 20 μονάδες στην πρώτη γραμμή του grid
 for (let mark = startScale; mark <= endScale; mark += 20) {
+  
     const xPosition = padding + (mark - startScale) * trackWidth;
 
     // Εμφάνιση αριθμών μόνο πάνω από την πρώτη γραμμή

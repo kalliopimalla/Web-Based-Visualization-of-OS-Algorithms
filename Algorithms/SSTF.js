@@ -21,9 +21,13 @@ function runSSTF() {
     const headPosition = parseInt(headPositionInput.value);
     const headPositionElement = document.getElementById("head-position");
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
-   
+    // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
+if (cylinderRange === 1000) {
+    cylinderRange = 999;
+}
+
    
       // Επικύρωση του αριθμού κυλίνδρων
       if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
@@ -237,6 +241,17 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
+        // Σχεδίαση κεφαλών στα βέλη
+        const angle = Math.atan2(y2 - y1, x2 - x1);
+        const arrowLength = 10;
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - arrowLength * Math.cos(angle - Math.PI / 6), y2 - arrowLength * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(x2 - arrowLength * Math.cos(angle + Math.PI / 6), y2 - arrowLength * Math.sin(angle + Math.PI / 6));
+        ctx.closePath();
+        ctx.fillStyle = "green";
+        ctx.fill();
+
         // Σχεδιασμός αριθμών στις γραμμές
         if (showNumbersOnArrows) {
             ctx.fillStyle = "green";
@@ -245,6 +260,7 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
         }
     }
 }
+
 
 
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
