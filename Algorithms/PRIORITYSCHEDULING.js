@@ -106,75 +106,6 @@ function runPriorityCPU() {
     drawGanttChart(schedule);
 }
 
-function drawGanttChart(schedule) {
-    const canvas = document.getElementById('seekCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const scaleFactor = 50; // Pixels ανά μονάδα χρόνου
-    const canvasWidth = schedule[schedule.length - 1].endTime * scaleFactor;
-    canvas.width = canvasWidth;
-    canvas.height = 100;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    let currentX = 0;
-
-    schedule.forEach(({ process, startTime, endTime }) => {
-        const duration = endTime - startTime;
-        const barWidth = duration * scaleFactor;
-
-        // Σχεδίαση μπάρες Gantt
-        ctx.fillStyle = `hsl(${(process * 100) % 360}, 70%, 70%)`;
-        ctx.fillRect(currentX, 20, barWidth, 40);
-
-        // Ετικέτα διεργασίας
-        ctx.fillStyle = '#000';
-        ctx.font = '14px Arial';
-        ctx.fillText(`P${process}`, currentX + barWidth / 2 - 10, 45);
-
-        // Χρονικές στιγμές
-        ctx.fillText(`${startTime}`, currentX, 70);
-        currentX += barWidth;
-    });
-
-    // Τελική χρονική στιγμή
-    ctx.fillText(`${schedule[schedule.length - 1].endTime}`, currentX, 70);
-}
-
-
-function drawGanttChart(schedule) {
-    const canvas = document.getElementById('seekCanvas');
-    const ctx = canvas.getContext('2d');
-
-    const scaleFactor = 50; // Pixels ανά μονάδα χρόνου
-    const canvasWidth = schedule[schedule.length - 1].endTime * scaleFactor;
-    canvas.width = canvasWidth;
-    canvas.height = 100;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    let currentX = 0;
-
-    schedule.forEach(({ process, startTime, endTime }) => {
-        const duration = endTime - startTime;
-        const barWidth = duration * scaleFactor;
-
-        // Σχεδίαση μπάρες Gantt
-        ctx.fillStyle = `hsl(${(process * 100) % 360}, 70%, 70%)`;
-        ctx.fillRect(currentX, 20, barWidth, 40);
-
-        // Ετικέτα διεργασίας
-        ctx.fillStyle = '#000';
-        ctx.font = '14px Arial';
-        ctx.fillText(`P${process}`, currentX + barWidth / 2 - 10, 45);
-
-        // Χρονικές στιγμές
-        ctx.fillText(`${startTime}`, currentX, 70);
-        currentX += barWidth;
-    });
-
-    // Τελική χρονική στιγμή
-    ctx.fillText(`${schedule[schedule.length - 1].endTime}`, currentX, 70);
-}
-
 
 
 function drawGanttChart(schedule) {
@@ -249,6 +180,21 @@ function drawGanttChart(schedule) {
 }
 
 
+
+
+let stepCurrentTime = 0;
+let stepProcesses = [];
+let stepBurstTime = [];
+let stepArrivalTime = [];
+let stepPriority = [];
+let stepRemainingTime = [];
+let stepSchedule = [];
+let stepCompleted = 0;
+let stepWaitingTime = [];
+let stepTurnAroundTime = [];
+let stepCompletedProcesses = [];
+let stepLastProcess = -1;
+
 function startStepByStep() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
@@ -258,46 +204,34 @@ function startStepByStep() {
     stepBurstTime = btInput.split(',').map(Number);
     stepArrivalTime = atInput.split(',').map(Number);
     stepPriority = prInput.split(',').map(Number);
-    stepProcesses = Array.from({ length: stepBurstTime.length }, (_, i) => i + 1);
+    stepProcesses = Array.from({ length: stepBurstTime.length }, (_, i) => i);
     stepRemainingTime = [...stepBurstTime];
-    stepCompleted = new Array(stepBurstTime.length).fill(false);
+    stepCompletedProcesses = new Array(stepBurstTime.length).fill(false);
     stepWaitingTime = new Array(stepBurstTime.length).fill(0);
     stepTurnAroundTime = new Array(stepBurstTime.length).fill(0);
     stepCurrentTime = 0;
+    stepCompleted = 0;
     stepSchedule = [];
+    stepLastProcess = -1;
 
-    document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
-
-    // Δημιουργία κουμπιού Επόμενου Βήματος
+    // Καθαρισμός ιστορικού και εμφάνιση κουμπιού "Επόμενο Βήμα"
+    document.getElementById('stepHistory').innerHTML = '';
+    document.getElementById('seek-count').innerHTML = '';
     const nextButton = document.createElement('button');
     nextButton.textContent = 'Επόμενο Βήμα';
     nextButton.id = 'nextStepButton';
     nextButton.onclick = stepByStepExecution;
     document.getElementById('stepHistory').appendChild(nextButton);
 
-    stepByStepExecution(); // Έναρξη πρώτου βήματος
+    // Δημιουργία αρχικού πίνακα
+    createResultTable();
+
+    // Έναρξη πρώτου βήματος
+    stepByStepExecution();
 }
-
-
-
-let stepCurrentTime = 0;
-let stepProcesses = [];
-let stepBurstTime = [];
-let stepArrivalTime = [];
-let stepPriority = []; // Προτεραιότητες διεργασιών
-let stepRemainingTime = [];
-let stepWaitingTime = [];
-let stepTurnAroundTime = [];
-let stepCompleted = [];
-let stepSchedule = [];
-
 
 function stepByStepExecution() {
     const n = stepProcesses.length;
-
-    // Παίρνουμε την επιλογή του χρήστη για τον τύπο προτεραιότητας
-    const priorityOrder = document.getElementById('priority-order').value;
-    const agingFactor = 1; // Παράγοντας ωρίμανσης (αύξηση/μείωση της προτεραιότητας σε κάθε βήμα)
 
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
@@ -305,110 +239,56 @@ function stepByStepExecution() {
         .filter((i) => i !== -1);
 
     if (availableProcesses.length === 0) {
-        // Αν δεν υπάρχουν διαθέσιμες διεργασίες, προχωράμε στον επόμενο χρόνο
         stepCurrentTime++;
-        const stepBox = document.createElement('div');
-        stepBox.classList.add('step-box');
-        stepBox.innerHTML = `
-            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
-            <div>Καμία διεργασία διαθέσιμη. Αναμονή...</div>
-        `;
-        document.getElementById('stepHistory').appendChild(stepBox);
         return;
     }
 
-    // Εφαρμογή ωρίμανσης στις διεργασίες που είναι διαθέσιμες αλλά δεν εκτελούνται
-    for (let i = 0; i < n; i++) {
-        if (stepArrivalTime[i] <= stepCurrentTime && stepRemainingTime[i] > 0 && i !== stepLastProcess) {
-            if (priorityOrder === 'higher-first') {
-                stepPriority[i] -= agingFactor; // Μικρότεροι αριθμοί -> υψηλότερη προτεραιότητα
-            } else if (priorityOrder === 'lower-first') {
-                stepPriority[i] += agingFactor; // Μεγαλύτεροι αριθμοί -> υψηλότερη προτεραιότητα
-            }
-        }
-    }
-
-    // Επιλέγουμε τη διεργασία με την υψηλότερη προτεραιότητα ανάλογα με την επιλογή
+    // Βρες τη διεργασία με την υψηλότερη προτεραιότητα
     const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
-        if (priorityOrder === 'higher-first') {
-            // Μικρότεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
-            return stepPriority[i] < stepPriority[highest] ? i : highest;
-        } else if (priorityOrder === 'lower-first') {
-            // Μεγαλύτεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
-            return stepPriority[i] > stepPriority[highest] ? i : highest;
+        if (stepPriority[i] < stepPriority[highest]) {
+            return i;
+        } else if (stepPriority[i] === stepPriority[highest]) {
+            return stepArrivalTime[i] < stepArrivalTime[highest] ? i : highest;
         }
+        return highest;
     }, availableProcesses[0]);
 
-    if (
-        stepSchedule.length === 0 ||
-        stepSchedule[stepSchedule.length - 1].process !== stepProcesses[highestPriorityIndex]
-    ) {
-        // Αν είναι νέα διεργασία, προσθήκη στο schedule
-        stepSchedule.push({
-            process: stepProcesses[highestPriorityIndex],
-            startTime: stepCurrentTime - 1,
-            endTime: stepCurrentTime,
-        });
-    } else {
-        // Ενημέρωση της λήξης αν είναι η ίδια διεργασία
-        stepSchedule[stepSchedule.length - 1].endTime = stepCurrentTime;
-    }
-
-    // Εκτέλεση της διεργασίας για 1 μονάδα χρόνου
-    stepRemainingTime[highestPriorityIndex]--;
-    stepCurrentTime++;
-    stepLastProcess = highestPriorityIndex; // Ενημερώνουμε την τελευταία εκτελεσμένη διεργασία
-
-    // Ενημέρωση της ολοκλήρωσης εάν η διεργασία τελείωσε
-    if (stepRemainingTime[highestPriorityIndex] === 0) {
-        stepCompleted[highestPriorityIndex] = true;
-        stepTurnAroundTime[highestPriorityIndex] =
-            stepCurrentTime - stepArrivalTime[highestPriorityIndex];
-        stepWaitingTime[highestPriorityIndex] =
-            stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
-    }
-
-    // Δημιουργία του ενεργού κουτιού διεργασίας
-    const activeProcess = `<span class="queue-process active">P${stepProcesses[highestPriorityIndex]}</span>`;
+    // Ενημέρωση διεργασίας και καταγραφή κατάστασης ουράς
+    const activeProcess = `<span class="queue-process active">P${highestPriorityIndex}</span>`;
     const waitingQueue = availableProcesses
         .filter((i) => i !== highestPriorityIndex)
-        .map((i) => `<span class="queue-process">P${stepProcesses[i]}</span>`)
+        .map((i) => `<span class="queue-process">P${i}</span>`)
         .join(' -> ') || 'Καμία';
 
     const stepBox = document.createElement('div');
     stepBox.classList.add('step-box');
     stepBox.innerHTML = `
-        <div class="step-time">Χρονική στιγμή: ${stepCurrentTime - 1}</div>
+        <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
         <div>Εκτελείται: ${activeProcess}</div>
         <div>Αναμονή: ${waitingQueue}</div>
     `;
     document.getElementById('stepHistory').appendChild(stepBox);
 
-    // Ενημέρωση του πίνακα
-    const tableContainer = document.getElementById('seek-count');
-    if (!document.querySelector('#priority-scheduling-table')) {
-        let output = "<table id='priority-scheduling-table' border='1' style='border-collapse: collapse; width: 100%;'>";
-        output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
-        tableContainer.innerHTML = output + "</table>";
+    stepRemainingTime[highestPriorityIndex]--;
+    stepCurrentTime++;
+
+    if (stepRemainingTime[highestPriorityIndex] === 0) {
+        stepCompletedProcesses[highestPriorityIndex] = true;
+        stepTurnAroundTime[highestPriorityIndex] =
+            stepCurrentTime - stepArrivalTime[highestPriorityIndex];
+        stepWaitingTime[highestPriorityIndex] =
+            stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
+        stepCompleted++;
+        stepSchedule.push({
+            process: highestPriorityIndex,
+            startTime: stepCurrentTime - 1,
+            endTime: stepCurrentTime,
+        });
+        updateResultTable(highestPriorityIndex);
     }
 
-    // Αν ολοκληρώθηκε η διεργασία, ενημερώστε την αντίστοιχη γραμμή
-    if (stepCompleted[highestPriorityIndex]) {
-        const table = document.querySelector('#priority-scheduling-table');
-        const newRow = table.insertRow(-1);
-        newRow.innerHTML = `
-            <td>P${stepProcesses[highestPriorityIndex]}</td>
-            <td>${stepBurstTime[highestPriorityIndex]}</td>
-            <td>${stepArrivalTime[highestPriorityIndex]}</td>
-            <td>${stepPriority[highestPriorityIndex]}</td>
-            <td>${stepWaitingTime[highestPriorityIndex]}</td>
-            <td>${stepTurnAroundTime[highestPriorityIndex]}</td>
-        `;
-    }
-
-    // Ελέγξτε αν όλες οι διεργασίες έχουν ολοκληρωθεί
-    if (stepCompleted.every((completed) => completed)) {
-        // Προσθήκη κουτιού για το τέλος της εκτέλεσης
+    // Αν ολοκληρώθηκαν όλες οι διεργασίες
+    if (stepCompleted === n) {
         const endBox = document.createElement('div');
         endBox.classList.add('step-box');
         endBox.innerHTML = `
@@ -417,19 +297,45 @@ function stepByStepExecution() {
         `;
         document.getElementById('stepHistory').appendChild(endBox);
 
-        // Υπολογισμός μέσου χρόνου αναμονής
-        const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
-        const avgWaitingTimeBox = `<p><strong>Μέσος Χρόνος Αναμονής : </strong>${averageWaitingTime.toFixed(2)}</p>`;
-        document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
+        const avgWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
+        const avgBox = document.createElement('p');
+        avgBox.innerHTML = `<strong>Μέσος Χρόνος Αναμονής :</strong> ${avgWaitingTime.toFixed(2)}`;
+        document.getElementById('seek-count').appendChild(avgBox);
 
-        // Κλήση του Gantt Chart
         drawGanttChart(stepSchedule);
 
+        // Απόκρυψη κουμπιού "Επόμενο Βήμα"
         document.getElementById('nextStepButton').remove();
-        document.getElementById("resetButton").style.display = "inline-block";
     }
 }
 
+function createResultTable() {
+    const n = stepProcesses.length;
+
+    let output = "<table border='1' style='border-collapse: collapse; width: 100%;' id='resultTable'>";
+    output += "<tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
+    for (let i = 0; i < n; i++) {
+        output += `<tr id="row-${i}">
+            <td>P${i}</td>
+            <td>${stepBurstTime[i]}</td>
+            <td>${stepArrivalTime[i]}</td>
+            <td>${stepPriority[i]}</td>
+            <td>-</td>
+            <td>-</td>
+        </tr>`;
+    }
+    output += "</table>";
+    document.getElementById('seek-count').innerHTML = output;
+}
+
+function updateResultTable(processIndex) {
+    const row = document.getElementById(`row-${processIndex}`);
+    const waitingTimeCell = row.children[4];
+    const turnAroundTimeCell = row.children[5];
+
+    waitingTimeCell.textContent = stepWaitingTime[processIndex];
+    turnAroundTimeCell.textContent = stepTurnAroundTime[processIndex];
+}
 
 
 
