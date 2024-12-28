@@ -1,32 +1,28 @@
 function runPriorityCPU() {
-    // Είσοδοι
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
     const prInput = document.getElementById('priority').value;
-    const priorityOrder = document.getElementById('priority-order').value; // Παίρνουμε την επιλογή από το dropdown
-    const agingFactor = 1; // Παράγοντας ωρίμανσης (προστίθεται στην προτεραιότητα σε κάθε μονάδα χρόνου)
+    const priorityOrder = 'higher-first'; // Μικρότεροι αριθμοί -> Υψηλότερη προτεραιότητα
 
-    const schedule = []; // Πίνακας προγραμματισμού για το Gantt Chart
-
-    // Διαχωρισμός δεδομένων σε πίνακες
     const burstTime = btInput.split(',').map(Number);
     const arrivalTime = atInput.split(',').map(Number);
-    let priority = prInput.split(',').map(Number); // Η προτεραιότητα είναι μεταβλητή λόγω ωρίμανσης
+    const priority = prInput.split(',').map(Number);
     const n = burstTime.length;
 
-    const processes = Array.from({ length: n }, (_, i) => i + 1);
+    const processes = Array.from({ length: n }, (_, i) => i);
     const remainingBurstTime = [...burstTime];
     const wt = new Array(n).fill(0); // Χρόνος αναμονής
     const tat = new Array(n).fill(0); // Χρόνος επιστροφής
     const completionTime = new Array(n).fill(0); // Χρόνος ολοκλήρωσης
 
+    const schedule = [];
     let currentTime = 0;
     let completed = 0;
-    let lastProcess = -1;
+    let lastProcess = -1; // Για την παρακολούθηση αλλαγής διεργασίας
     let queueOutput = '';
 
-    // Εκτέλεση Priority Scheduling με ωρίμανση
     while (completed < n) {
+        // Βρες όλες τις διαθέσιμες διεργασίες
         const availableProcesses = [];
         for (let i = 0; i < n; i++) {
             if (arrivalTime[i] <= currentTime && remainingBurstTime[i] > 0) {
@@ -39,34 +35,22 @@ function runPriorityCPU() {
             continue;
         }
 
-        // Εφαρμογή ωρίμανσης στις διεργασίες που είναι διαθέσιμες
-        for (let i = 0; i < n; i++) {
-            if (arrivalTime[i] <= currentTime && remainingBurstTime[i] > 0 && i !== lastProcess) {
-                if (priorityOrder === 'higher-first') {
-                    priority[i] -= agingFactor; // Μειώνεται η προτεραιότητα (μικρότεροι αριθμοί -> υψηλότερη προτεραιότητα)
-                } else if (priorityOrder === 'lower-first') {
-                    priority[i] += agingFactor; // Αυξάνεται η προτεραιότητα (μεγαλύτεροι αριθμοί -> υψηλότερη προτεραιότητα)
-                }
-            }
-        }
-
-        // Βρες τη διεργασία με την υψηλότερη προτεραιότητα ανάλογα με την επιλογή
+        // Βρες τη διεργασία με την υψηλότερη προτεραιότητα
         const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
-            if (priorityOrder === 'higher-first') {
-                // Μικρότεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
-                return priority[i] < priority[highest] ? i : highest;
-            } else if (priorityOrder === 'lower-first') {
-                // Μεγαλύτεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
-                return priority[i] > priority[highest] ? i : highest;
+            if (priority[i] < priority[highest]) {
+                return i;
+            } else if (priority[i] === priority[highest]) {
+                return arrivalTime[i] < arrivalTime[highest] ? i : highest;
             }
+            return highest;
         }, availableProcesses[0]);
 
-        // Ενημέρωση διεργασίας
+        // Αν η διεργασία που εκτελείται αλλάξει, καταγράφουμε την ουρά
         if (lastProcess !== highestPriorityIndex) {
-            const activeProcess = `<span class="queue-process active">P${processes[highestPriorityIndex]}</span>`;
+            const activeProcess = `<span class="queue-process active">P${highestPriorityIndex}</span>`;
             const waitingQueue = availableProcesses
                 .filter((i) => i !== highestPriorityIndex)
-                .map((i) => `<span class="queue-process">P${processes[i]}</span>`)
+                .map((i) => `<span class="queue-process">P${i}</span>`)
                 .join(' -> ') || 'Καμία';
 
             queueOutput += `
@@ -76,28 +60,27 @@ function runPriorityCPU() {
                     <div>Αναμονή: ${waitingQueue}</div>
                 </div>
             `;
-            lastProcess = highestPriorityIndex;
+
+            lastProcess = highestPriorityIndex; // Ενημέρωση της τελευταίας διεργασίας
+        }
+
+        // Ενημέρωση χρόνου έναρξης και λήξης
+        if (
+            schedule.length === 0 ||
+            schedule[schedule.length - 1].process !== highestPriorityIndex
+        ) {
+            schedule.push({
+                process: highestPriorityIndex,
+                startTime: currentTime,
+            });
         }
 
         remainingBurstTime[highestPriorityIndex]--;
         currentTime++;
-        if (
-            schedule.length === 0 ||
-            schedule[schedule.length - 1].process !== processes[highestPriorityIndex]
-        ) {
-            // Αν είναι νέα διεργασία, προσθήκη στο schedule
-            schedule.push({
-                process: processes[highestPriorityIndex],
-                startTime: currentTime - 1,
-                endTime: currentTime,
-            });
-        } else {
-            // Ενημέρωση της λήξης αν είναι η ίδια διεργασία
-            schedule[schedule.length - 1].endTime = currentTime;
-        }
 
         if (remainingBurstTime[highestPriorityIndex] === 0) {
             completed++;
+            schedule[schedule.length - 1].endTime = currentTime;
             completionTime[highestPriorityIndex] = currentTime;
             tat[highestPriorityIndex] = completionTime[highestPriorityIndex] - arrivalTime[highestPriorityIndex];
             wt[highestPriorityIndex] = tat[highestPriorityIndex] - burstTime[highestPriorityIndex];
@@ -110,7 +93,7 @@ function runPriorityCPU() {
     // Δημιουργία πίνακα αποτελεσμάτων
     let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
     for (let i = 0; i < n; i++) {
-        output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${priority[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
+        output += `<tr><td>P${i}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${priority[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
 
@@ -120,10 +103,76 @@ function runPriorityCPU() {
         <p><strong>Μέσος Χρόνος Αναμονής :</strong> ${averageWaitingTime.toFixed(2)}</p>
         ${queueOutput}
     `;
-    // Δημιουργία του Gantt Chart
     drawGanttChart(schedule);
+}
 
-    document.getElementById("resetButton").style.display = "inline-block";
+function drawGanttChart(schedule) {
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const scaleFactor = 50; // Pixels ανά μονάδα χρόνου
+    const canvasWidth = schedule[schedule.length - 1].endTime * scaleFactor;
+    canvas.width = canvasWidth;
+    canvas.height = 100;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let currentX = 0;
+
+    schedule.forEach(({ process, startTime, endTime }) => {
+        const duration = endTime - startTime;
+        const barWidth = duration * scaleFactor;
+
+        // Σχεδίαση μπάρες Gantt
+        ctx.fillStyle = `hsl(${(process * 100) % 360}, 70%, 70%)`;
+        ctx.fillRect(currentX, 20, barWidth, 40);
+
+        // Ετικέτα διεργασίας
+        ctx.fillStyle = '#000';
+        ctx.font = '14px Arial';
+        ctx.fillText(`P${process}`, currentX + barWidth / 2 - 10, 45);
+
+        // Χρονικές στιγμές
+        ctx.fillText(`${startTime}`, currentX, 70);
+        currentX += barWidth;
+    });
+
+    // Τελική χρονική στιγμή
+    ctx.fillText(`${schedule[schedule.length - 1].endTime}`, currentX, 70);
+}
+
+
+function drawGanttChart(schedule) {
+    const canvas = document.getElementById('seekCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const scaleFactor = 50; // Pixels ανά μονάδα χρόνου
+    const canvasWidth = schedule[schedule.length - 1].endTime * scaleFactor;
+    canvas.width = canvasWidth;
+    canvas.height = 100;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let currentX = 0;
+
+    schedule.forEach(({ process, startTime, endTime }) => {
+        const duration = endTime - startTime;
+        const barWidth = duration * scaleFactor;
+
+        // Σχεδίαση μπάρες Gantt
+        ctx.fillStyle = `hsl(${(process * 100) % 360}, 70%, 70%)`;
+        ctx.fillRect(currentX, 20, barWidth, 40);
+
+        // Ετικέτα διεργασίας
+        ctx.fillStyle = '#000';
+        ctx.font = '14px Arial';
+        ctx.fillText(`P${process}`, currentX + barWidth / 2 - 10, 45);
+
+        // Χρονικές στιγμές
+        ctx.fillText(`${startTime}`, currentX, 70);
+        currentX += barWidth;
+    });
+
+    // Τελική χρονική στιγμή
+    ctx.fillText(`${schedule[schedule.length - 1].endTime}`, currentX, 70);
 }
 
 
