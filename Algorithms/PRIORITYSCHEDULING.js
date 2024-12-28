@@ -3,15 +3,14 @@ function runPriorityCPU() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
     const prInput = document.getElementById('priority').value;
+    const priorityOrder = document.getElementById('priority-order').value; // Παίρνουμε την επιλογή από το dropdown
     const schedule = []; // Πίνακας προγραμματισμού για το Gantt Chart
 
-  
     // Διαχωρισμός δεδομένων σε πίνακες
     const burstTime = btInput.split(',').map(Number);
     const arrivalTime = atInput.split(',').map(Number);
     const priority = prInput.split(',').map(Number);
     const n = burstTime.length;
-
 
     const processes = Array.from({ length: n }, (_, i) => i + 1);
     const remainingBurstTime = [...burstTime];
@@ -38,9 +37,16 @@ function runPriorityCPU() {
             continue;
         }
 
-        // Βρες τη διεργασία με την υψηλότερη προτεραιότητα (χαμηλότερη τιμή)
-        const highestPriorityIndex = availableProcesses.reduce((highest, i) =>
-            priority[i] < priority[highest] ? i : highest, availableProcesses[0]);
+        // Βρες τη διεργασία με την υψηλότερη προτεραιότητα ανάλογα με την επιλογή
+        const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
+            if (priorityOrder === 'higher-first') {
+                // Μικρότεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
+                return priority[i] < priority[highest] ? i : highest;
+            } else if (priorityOrder === 'lower-first') {
+                // Μεγαλύτεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
+                return priority[i] > priority[highest] ? i : highest;
+            }
+        }, availableProcesses[0]);
 
         // Ενημέρωση διεργασίας
         if (lastProcess !== highestPriorityIndex) {
@@ -76,7 +82,6 @@ function runPriorityCPU() {
             // Ενημέρωση της λήξης αν είναι η ίδια διεργασία
             schedule[schedule.length - 1].endTime = currentTime;
         }
-        
 
         if (remainingBurstTime[highestPriorityIndex] === 0) {
             completed++;
@@ -95,7 +100,7 @@ function runPriorityCPU() {
         output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${priority[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
-    
+
     // Εμφάνιση αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById('stepHistory').innerHTML = `
@@ -103,7 +108,7 @@ function runPriorityCPU() {
         ${queueOutput}
     `;
     // Δημιουργία του Gantt Chart
-drawGanttChart(schedule);
+    drawGanttChart(schedule);
 
     document.getElementById("resetButton").style.display = "inline-block";
 }
@@ -224,9 +229,11 @@ let stepCompleted = [];
 let stepSchedule = [];
 
 
-
 function stepByStepExecution() {
     const n = stepProcesses.length;
+
+    // Παίρνουμε την επιλογή του χρήστη για τον τύπο προτεραιότητας
+    const priorityOrder = document.getElementById('priority-order').value;
 
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
@@ -246,10 +253,17 @@ function stepByStepExecution() {
         return;
     }
 
-    // Επιλέγουμε τη διεργασία με την υψηλότερη προτεραιότητα (χαμηλότερη τιμή προτεραιότητας)
-    const highestPriorityIndex = availableProcesses.reduce((highest, i) =>
-        stepPriority[i] < stepPriority[highest] ? i : highest, availableProcesses[0]);
-    
+    // Επιλέγουμε τη διεργασία με την υψηλότερη προτεραιότητα ανάλογα με την επιλογή
+    const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
+        if (priorityOrder === 'higher-first') {
+            // Μικρότεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
+            return stepPriority[i] < stepPriority[highest] ? i : highest;
+        } else if (priorityOrder === 'lower-first') {
+            // Μεγαλύτεροι αριθμοί -> Μεγαλύτερη προτεραιότητα
+            return stepPriority[i] > stepPriority[highest] ? i : highest;
+        }
+    }, availableProcesses[0]);
+
     if (
         stepSchedule.length === 0 ||
         stepSchedule[stepSchedule.length - 1].process !== stepProcesses[highestPriorityIndex]
@@ -264,7 +278,7 @@ function stepByStepExecution() {
         // Ενημέρωση της λήξης αν είναι η ίδια διεργασία
         stepSchedule[stepSchedule.length - 1].endTime = stepCurrentTime;
     }
-    
+
     // Εκτέλεση της διεργασίας για 1 μονάδα χρόνου
     stepRemainingTime[highestPriorityIndex]--;
     stepCurrentTime++;
@@ -331,12 +345,10 @@ function stepByStepExecution() {
         const averageWaitingTime = stepWaitingTime.reduce((sum, time) => sum + time, 0) / n;
         const avgWaitingTimeBox = `<p><strong>Μέσος Χρόνος Αναμονής : </strong>${averageWaitingTime.toFixed(2)}</p>`;
         document.getElementById('stepHistory').insertAdjacentHTML('afterbegin', avgWaitingTimeBox);
-        
-        
+
         // Κλήση του Gantt Chart
         drawGanttChart(stepSchedule);
 
-      
         document.getElementById('nextStepButton').remove();
         document.getElementById("resetButton").style.display = "inline-block";
     }
@@ -465,25 +477,38 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας αριθμών από 1 έως length
-function generateRandomPrioritySequence(length) {
+function generateRandomPrioritySequence(length, order = 'higher-first') {
     // Δημιουργία σειράς [1, 2, ..., length]
     let sequence = Array.from({ length }, (_, i) => i + 1);
+
     // Ανακάτεμα της σειράς (Fisher-Yates Shuffle)
     for (let i = sequence.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [sequence[i], sequence[j]] = [sequence[j], sequence[i]];
     }
+
+    // Ταξινόμηση ανάλογα με την επιλογή
+    if (order === 'higher-first') {
+        sequence.sort((a, b) => a - b); // Μικρότεροι αριθμοί πρώτα
+    } else if (order === 'lower-first') {
+        sequence.sort((a, b) => b - a); // Μεγαλύτεροι αριθμοί πρώτα
+    }
+
     return sequence;
 }
 
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton2").addEventListener("click", function () {
     const burstInput = document.getElementById("burst-time").value; // Παίρνουμε το μήκος από το burst-time
-   
     const processCount = burstInput.split(",").length; // Υπολογισμός αριθμού διεργασιών
-    const randomSequence = generateRandomPrioritySequence(processCount); // Δημιουργία τυχαίας σειράς
+
+    const order = document.getElementById("priority-order").value; // Παίρνουμε την επιλογή από το dropdown
+    const randomSequence = generateRandomPrioritySequence(processCount, order); // Δημιουργία τυχαίας σειράς
+
     document.getElementById("priority").value = randomSequence.join(","); // Ενημέρωση του πεδίου εισόδου για προτεραιότητες
 });
+
+
 
 
 function resetPrioritySJF() {

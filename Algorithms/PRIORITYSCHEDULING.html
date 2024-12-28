@@ -195,9 +195,17 @@
                     <input type="text" id="priority" placeholder="π.χ., 1,3,2,4">
                     <button id="generateSequenceButton2">Δημιουργία Τυχαίας Ακολουθίας</button>
                 </div>
+                <div>
+                    <label for="priority-order"><strong>Τύπος Προτεραιότητας:</strong></label>
+                    <select id="priority-order">
+                        <option value="higher-first">Μικρότεροι αριθμοί -> Μεγαλύτερη προτεραιότητα</option>
+                        <option value="lower-first">Μεγαλύτεροι αριθμοί -> Μικρότερη προτεραιότητα</option>
+                    </select>
+                </div>
                 <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά.</span>
-              </div>
-                
+            </div>
+            
+            
               <br>
                 <br>
                 <button onclick="createThreeColumnTable()">Δημιουργία Πίνακα</button>
