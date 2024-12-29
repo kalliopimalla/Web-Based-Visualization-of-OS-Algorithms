@@ -11,7 +11,6 @@ let faultCount = 0;
 let hitCount = 0;
 
 function initializeSimulation() {
-    
     const pageInput = document.getElementById("pages").value.trim();
     maxFrames = parseInt(document.getElementById("frame-number").value);
 
@@ -22,7 +21,6 @@ function initializeSimulation() {
     // Επαναφορά όλων των μετρητών
     faultCount = 0;
     hitCount = 0;
-
 
     pages = pageInput.split(',').map(Number);
     frames = Array(maxFrames).fill(null);
@@ -46,7 +44,6 @@ function isValidInput(pageInput, maxFrames) {
         }
     }
 
-    // Έλεγχος αν η ακολουθία περιέχει περισσότερους από 100 αριθμούς
     if (pageArray.length > 100) {
         const pageInputElement = document.getElementById("pages");
         displayError(pageInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
@@ -60,44 +57,6 @@ function isValidInput(pageInput, maxFrames) {
     }
 
     return true;
-}
-
-
-function createTable() {
-    const seekSequence = document.getElementById("seek-sequence");
-    seekSequence.innerHTML = ''; // Clear the table
-    table = document.createElement("table");
-    table.classList.add("visual-table");
-
-    const headerRow = document.createElement("tr");
-    const emptyHeader = document.createElement("th");
-    headerRow.appendChild(emptyHeader);
-
-    for (let i = 0; i < pages.length; i++) {
-        const th = document.createElement("th");
-        th.innerText = `T${i + 1}`;
-        headerRow.appendChild(th);
-    }
-    table.appendChild(headerRow);
-
-    for (let i = 0; i < maxFrames; i++) {
-        const frameRow = document.createElement("tr");
-        const frameHeader = document.createElement("th");
-        frameHeader.innerText = `Πλαίσιο ${i + 1}`;
-        frameRow.appendChild(frameHeader);
-
-        for (let j = 0; j < pages.length; j++) {
-            const td = document.createElement("td");
-            td.setAttribute("data-frame", i);
-            td.setAttribute("data-step", j);
-            frameRow.appendChild(td);
-        }
-        table.appendChild(frameRow);
-    }
-
-    seekSequence.appendChild(table);
-
-    adjustCanvasWidth(pages.length);
 }
 
 function nextStep() {
@@ -118,56 +77,52 @@ function nextStep() {
         return;
     }
 
-    const page = pages[step];
+    const page = pages[step]; // Τρέχουσα σελίδα
     let hit = false;
 
+    // Ελέγχουμε αν υπάρχει ήδη η σελίδα
     const frameIndex = frames.indexOf(page);
     if (frameIndex !== -1) {
         hit = true;
-        secondChance[frameIndex] = true;
+        secondChance[frameIndex] = true; // Ενημέρωση bit αναφοράς
+        console.log(`Hit: Page ${page} found in frame ${frameIndex}`);
         hitCount++;
     } else {
         faultCount++;
+        console.log(`Fault: Page ${page} not found. Searching for replacement...`);
+        
         while (true) {
+            console.log(
+                `Checking frame ${pointer}: Page ${frames[pointer]} with reference bit = ${secondChance[pointer]}`
+            );
+
             if (!secondChance[pointer]) {
-                frames[pointer] = page;
-                secondChance[pointer] = true;
-                pointer = (pointer + 1) % maxFrames;
+                console.log(`Replacing page ${frames[pointer]} with page ${page} in frame ${pointer}`);
+                frames[pointer] = page; // Αντικατάσταση σελίδας
+                secondChance[pointer] = true; // Θέτουμε το reference bit σε 1
+                pointer = (pointer + 1) % maxFrames; // Κυκλική κίνηση δείκτη
                 break;
             } else {
+                console.log(`Skipping frame ${pointer}: Reference bit = 1. Setting to 0.`);
                 secondChance[pointer] = false;
-                pointer = (pointer + 1) % maxFrames;
+                pointer = (pointer + 1) % maxFrames; // Κυκλική κίνηση δείκτη
             }
         }
     }
 
-    updateTable(step, page, hit);
+    updateTable(step, page, hit); // Ενημέρωση πίνακα
     step++;
 }
 
-function updateTable(step, currentPage, hit) {
-    const pageTable = Array.from(table.getElementsByTagName("td"));
-    pageTable.forEach(cell => {
-        if (cell.getAttribute("data-step") == step) {
-            const frameIndex = cell.getAttribute("data-frame");
-            cell.innerText = frames[frameIndex] ?? '';
-            cell.style.backgroundColor =
-                frames[frameIndex] === currentPage ? (hit ? '#d4edda' : '#f8d7da') : '';
-        }
-    });
-
-    resultText.innerHTML = `
-        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
-        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
-    `;
-}
-
 function runCLOCK() {
-    initializeSimulation();
+    initializeSimulation(); // Αρχικοποίηση της προσομοίωσης
+
     while (step < pages.length) {
         nextStep();
     }
 }
+
+
 
 function generateSequence() {
     clearErrorMessages();
@@ -214,6 +169,20 @@ resetButton.addEventListener('click', () => {
 function enableResetButton() {
     resetButton.style.display = 'block';
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
