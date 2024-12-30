@@ -101,7 +101,6 @@ class ClockPageReplacement {
   }
 }
 
-// Παράδειγμα χρήσης
 function runCLOCK() {
   const sequenceInput = document.getElementById('pages').value; // Λήψη της ακολουθίας σελίδων
   const frameInput = parseInt(document.getElementById('frame-number').value, 10); // Λήψη του αριθμού πλαισίων
@@ -109,33 +108,105 @@ function runCLOCK() {
   const clockAlgorithm = new ClockPageReplacement(frameInput); // Δημιουργία αντικειμένου για τον αλγόριθμο Clock
   const { results, faultCount, hitCount } = clockAlgorithm.run(sequenceInput, frameInput); // Εκτέλεση του αλγορίθμου
 
-  const table = document.querySelector('.visual-table');
-  table.innerHTML = '<tr><th>Σελίδα</th><th>Αποτέλεσμα</th><th>Πλαίσια</th><th>Bits Αναφοράς</th><th>Δείκτης</th></tr>';
+  // Δημιουργία πλήρως συμπληρωμένου πίνακα frames
+  const sequenceLength = sequenceInput.split(',').length;
+  createClockTable(sequenceLength, frameInput);
+  results.forEach((step, index) => {
+    const frameCells = document.querySelectorAll(`.visual-table td[data-step='${index}']`);
+    step.memory.forEach((frame, frameIndex) => {
+      const cell = frameCells[frameIndex];
+      if (cell) {
+        cell.innerText = frame !== null ? frame : "-";
+        cell.style.backgroundColor = step.result === "fault" && step.memory[frameIndex] === step.page
+          ? "#f8d7da" // Κόκκινο για fault
+          : step.result === "hit" && step.memory[frameIndex] === step.page
+          ? "#d4edda" // Πράσινο για hit
+          : "";
+      }
+    });
+  });
+
+  // Ενημέρωση του τελικού πίνακα
+  const finalTable = document.querySelector(".final-table");
+  finalTable.innerHTML = `
+    <tr>
+      <th>Σελίδα</th>
+      <th>Αποτέλεσμα</th>
+      <th>Πλαίσια</th>
+      <th>Bits Αναφοράς</th>
+      <th>Δείκτης</th>
+    </tr>
+  `;
 
   results.forEach((step) => {
-    const row = document.createElement('tr');
-    const memoryState = step.memory.map((frame) => (frame === null ? '-' : frame)).join(', ');
-    const referenceState = step.referenceBits.map((bit) => (bit ? '1' : '0')).join(', ');
+    const row = document.createElement("tr");
+    const memoryState = step.memory.map((frame) => (frame === null ? "-" : frame)).join(", ");
+    const referenceState = step.referenceBits.map((bit) => (bit ? "1" : "0")).join(", ");
 
     row.innerHTML = `
       <td>${step.page}</td>
-      <td style="color: ${step.result === 'hit' ? 'green' : 'red'}">${step.result}</td>
+      <td style="color: ${step.result === "hit" ? "green" : "red"}">${step.result}</td>
       <td>${memoryState}</td>
       <td>${referenceState}</td>
       <td>${step.pointer}</td>
     `;
 
-    table.appendChild(row); // Προσθήκη της γραμμής στον πίνακα
+    finalTable.appendChild(row);
   });
 
+  // Ενημέρωση αποτελεσμάτων
   const resultText = document.getElementById('resultText');
   resultText.innerHTML = `
         <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
         <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
     `;
 
-  document.getElementById('resetButton').style.display = 'block'; // Εμφάνιση του κουμπιού επαναφοράς
+  document.getElementById("resetButton").style.display = "block"; // Εμφάνιση του κουμπιού επαναφοράς
+
+  // Ενημέρωση αρχικού βήματος στον πίνακα
+  clockResults = results;
+  clockStep = 0;
 }
+
+function runClockStepByStep() {
+  if (clockStep === 0 && clockResults.length > 0) {
+    updateClockStep(); // Ενημέρωση για το πρώτο βήμα
+    return;
+  }
+
+  if (clockStep >= clockResults.length) {
+    // Εμφάνιση τελικών αποτελεσμάτων
+    document.getElementById("resultText").innerHTML = `
+      <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${clockResults.filter(r => r.result === "fault").length}</span><br>
+      <span class="hits">Συνολικός αριθμός hits: ${clockResults.filter(r => r.result === "hit").length}</span>
+    `;
+    return;
+  }
+
+  updateClockStep();
+  clockStep++;
+}
+
+
+function runClockStepByStep() {
+  if (clockStep === 0 && clockResults.length > 0) {
+    updateClockStep(); // Ενημέρωση για το πρώτο βήμα
+    return;
+  }
+
+  if (clockStep >= clockResults.length) {
+    // Εμφάνιση τελικών αποτελεσμάτων
+    document.getElementById("resultText").innerHTML = `
+      <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${clockResults.filter(r => r.result === "fault").length}</span><br>
+      <span class="hits">Συνολικός αριθμός hits: ${clockResults.filter(r => r.result === "hit").length}</span>
+    `;
+    return;
+  }
+
+  updateClockStep();
+  clockStep++;
+}
+
 
 const resetButton = document.getElementById('resetButton');
 
@@ -214,7 +285,7 @@ function updateClockStep() {
       const finalTableContainer = document.getElementById("final-table-container");
       if (finalTableContainer) {
         finalTableContainer.innerHTML = `
-            <h3>Τελικός Πίνακας Αποτελεσμάτων</h3>
+            <h3>Αναλυτικός Πίνακας Αποτελεσμάτων</h3>
             <table class="visual-table final-table">
                 <tr>
                     <th>Σελίδα</th>
