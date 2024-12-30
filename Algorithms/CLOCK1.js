@@ -139,6 +139,169 @@ function runCLOCK() {
 
 const resetButton = document.getElementById('resetButton');
 
+
+
+
+// Προσθήκη για την οπτικοποίηση του Clock αλγορίθμου
+let clockStep = 0;
+let clockResults = [];
+
+function initializeClockVisualization(sequenceInput, frameInput) {
+    const clockAlgorithm = new ClockPageReplacement(frameInput);
+    const { results, faultCount, hitCount } = clockAlgorithm.run(sequenceInput, frameInput);
+
+    clockResults = results;
+    clockStep = 0;
+
+    // Δημιουργία του πίνακα
+    createClockTable(sequenceInput.split(",").length, frameInput);
+
+    document.getElementById("resultText").innerHTML = ""; // Καθαρισμός προηγούμενων αποτελεσμάτων
+    document.getElementById("resetButton").style.display = "block";
+}
+
+function createClockTable(sequenceLength, frames) {
+    const seekSequence = document.getElementById("seek-sequence");
+    seekSequence.innerHTML = ""; // Καθαρισμός του πίνακα
+
+    const table = document.createElement("table");
+    table.classList.add("visual-table");
+
+    // Δημιουργία επικεφαλίδας
+    const headerRow = document.createElement("tr");
+    const emptyHeader = document.createElement("th"); // Κενό κελί για το όνομα των πλαισίων
+    emptyHeader.innerText = "Χρονική στιγμή";
+    headerRow.appendChild(emptyHeader);
+
+    for (let i = 0; i < sequenceLength; i++) {
+        const th = document.createElement("th");
+        th.innerText = `T${i + 1}`;
+        headerRow.appendChild(th);
+    }
+
+    table.appendChild(headerRow);
+
+    // Δημιουργία σειρών για τα πλαίσια
+    for (let i = 0; i < frames; i++) {
+        const frameRow = document.createElement("tr");
+        const frameHeader = document.createElement("th");
+        frameHeader.innerText = `Πλαίσιο ${i + 1}`;
+        frameRow.appendChild(frameHeader);
+
+        for (let j = 0; j < sequenceLength; j++) {
+            const td = document.createElement("td");
+            td.setAttribute("data-frame", i);
+            td.setAttribute("data-step", j);
+            frameRow.appendChild(td);
+        }
+
+        table.appendChild(frameRow);
+    }
+
+    seekSequence.appendChild(table);
+}
+
+
+function updateClockStep() {
+  if (clockStep >= clockResults.length) {
+      // Εμφάνιση τελικών αποτελεσμάτων
+      document.getElementById("resultText").innerHTML = `
+          <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${clockResults.filter(r => r.result === "fault").length}</span><br>
+          <span class="hits">Συνολικός αριθμός hits: ${clockResults.filter(r => r.result === "hit").length}</span>
+      `;
+
+      // Δημιουργία νέου πίνακα για την τελική κατάσταση
+      const finalTableContainer = document.getElementById("final-table-container");
+      if (finalTableContainer) {
+        finalTableContainer.innerHTML = `
+            <h3>Τελικός Πίνακας Αποτελεσμάτων</h3>
+            <table class="visual-table final-table">
+                <tr>
+                    <th>Σελίδα</th>
+                    <th>Αποτέλεσμα</th>
+                    <th>Πλαίσια</th>
+                    <th>Bits Αναφοράς</th>
+                    <th>Δείκτης</th>
+                </tr>
+            </table>
+        `;
+    } else {
+        const newContainer = document.createElement("div");
+        newContainer.id = "final-table-container";
+        newContainer.innerHTML = `
+         
+            <table class="visual-table final-table">
+                <tr>
+                    <th>Σελίδα</th>
+                    <th>Αποτέλεσμα</th>
+                    <th>Πλαίσια</th>
+                    <th>Bits Αναφοράς</th>
+                    <th>Δείκτης</th>
+                </tr>
+            </table>
+        `;
+        document.body.appendChild(newContainer);
+    }
+    
+
+      const finalTable = document.querySelector(".final-table");
+      clockResults.forEach((step) => {
+          const row = document.createElement("tr");
+          const memoryState = step.memory.map((frame) => (frame === null ? '-' : frame)).join(', ');
+          const referenceState = step.referenceBits.map((bit) => (bit ? '1' : '0')).join(', ');
+
+          row.innerHTML = `
+              <td>${step.page}</td>
+              <td style="color: ${step.result === 'hit' ? 'green' : 'red'}">${step.result}</td>
+              <td>${memoryState}</td>
+              <td>${referenceState}</td>
+              <td>${step.pointer}</td>
+          `;
+
+          finalTable.appendChild(row);
+      });
+
+      return;
+  }
+
+  const currentStep = clockResults[clockStep];
+  const pageTable = Array.from(document.querySelectorAll(".visual-table td"));
+
+  currentStep.memory.forEach((page, frameIndex) => {
+      const cell = pageTable.find(
+          td => td.getAttribute("data-frame") == frameIndex && td.getAttribute("data-step") == clockStep
+      );
+
+      if (cell) {
+          cell.innerText = page !== null ? page : "";
+          cell.style.backgroundColor =
+              page === currentStep.page && currentStep.result === "fault"
+                  ? "#f8d7da" // Κόκκινο για fault
+                  : page === currentStep.page && currentStep.result === "hit"
+                  ? "#d4edda" // Πράσινο για hit
+                  : "";
+      }
+  });
+
+  clockStep++;
+}
+
+
+function runClockStepByStep() {
+    const sequenceInput = document.getElementById("pages").value;
+    const frameInput = parseInt(document.getElementById("frame-number").value, 10);
+
+    if (clockStep === 0) {
+        initializeClockVisualization(sequenceInput, frameInput);
+    }
+
+    updateClockStep();
+}
+
+
+
+
+
 resetButton.addEventListener('click', () => {
     document.getElementById('pages').value = ''; // Επαναφορά εισαγόμενων δεδομένων
     document.getElementById('frame-number').value = ''; // Επαναφορά αριθμού πλαισίων
@@ -148,6 +311,12 @@ resetButton.addEventListener('click', () => {
     document.getElementById('sequenceLength').value = ''; 
     const resultText = document.getElementById('resultText');
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
+   // Επαναφορά πινάκων
+   document.querySelector('.visual-table').innerHTML = ''; // Καθαρισμός πίνακα σταδιακής εκτέλεσης
+   const finalTableContainer = document.getElementById('final-table-container');
+   if (finalTableContainer) {
+       finalTableContainer.querySelector('.final-table').innerHTML = ''; // Καθαρισμός τελικού πίνακα
+   }
 
     resetButton.style.display = 'none';
 });
@@ -166,12 +335,12 @@ function generateSequence() {
     const maxPageNumber = parseInt(maxPageInput.value.trim(), 10);
 
     if (isNaN(length) || length <= 0 || length > 100) {
-        displayError(lengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας.");
+        displayError(lengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας ( 1 - 100 ).");
         return;
     }
 
-    if (isNaN(maxPageNumber) || maxPageNumber <= 0 || maxPageNumber >100) {
-        displayError(maxPageInput, "Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας.");
+    if (isNaN(maxPageNumber) || maxPageNumber < 0 || maxPageNumber >100) {
+        displayError(maxPageInput, "Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας( 0 - 100 ).");
         return;
     }
 

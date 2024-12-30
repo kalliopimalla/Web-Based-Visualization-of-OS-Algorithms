@@ -850,3 +850,26 @@ select option:hover {
   background-color: #d6d6d6; /* Χρώμα φόντου στο hover */
   color: #000; /* Χρώμα κειμένου στο hover */
 }
+
+.sequence-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Απόσταση μεταξύ των πινάκων */
+}
+
+.visual-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.visual-table th,
+.visual-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+.final-table-container {
+  margin-top: 20px; /* Απόσταση από τον πίνακα σταδιακής εκτέλεσης */
+}
