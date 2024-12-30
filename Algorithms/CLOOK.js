@@ -15,15 +15,33 @@ function executeCLOOK() {
     const directionElement = document.getElementById("direction");
     const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10)-1;
     const sequenceLengthInputElement = document.getElementById("sequence-length");
     const sequenceLength = parseInt(sequenceLengthInputElement.value.trim(), 10);
 
 
-    // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
-    if (cylinderRange === 1000) {
-        cylinderRange = 999;
+
+// Μετατροπή της ακολουθίας σε πίνακα αριθμών
+const requestQueue = tracksInput.split(",").map(Number).filter(num => !isNaN(num));
+
+// Έλεγχος ότι υπάρχουν έγκυρα αιτήματα
+if (requestQueue.length === 0) {
+    displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
+    return;
+}
+
+// Έλεγχος ότι τα αιτήματα βρίσκονται εντός του εύρους κυλίνδρων
+for (const request of requestQueue) {
+    if (request < 0 || request > cylinderRange) {
+        displayError(tracksInputElement, 
+            `Όλα τα αιτήματα πρέπει να βρίσκονται εντός του εύρους κυλίνδρων 0 έως ${cylinderRange}.`);
+        return;
     }
+}
+
+// Καθαρισμός παλαιών μηνυμάτων σφάλματος αν όλα είναι εντάξει
+clearErrorMessages();
+
     
 
     // Επικύρωση εισόδων
@@ -108,7 +126,7 @@ function executeCLOOK() {
     createSeekSequenceBoxes(seekSequence);
 
     // Οπτικοποίηση της σειράς αναζήτησης
-    visualizeSeekSequence(seekSequence);
+    visualizeSeekSequence(seekSequence,cylinderRange);
 
     // Εμφάνιση κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
@@ -173,7 +191,7 @@ function animateSeekCount(seekCount) {
 /**
  * Οπτικοποιεί την ακολουθία αναζήτησης με grid, βέλη και ευθυγραμμισμένη κλίμακα.
  */
-function visualizeSeekSequence(seekSequence) {
+function visualizeSeekSequence(seekSequence,cylinderRange) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -195,19 +213,35 @@ function visualizeSeekSequence(seekSequence) {
     // Σχεδιασμός κάθετων γραμμών του grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
+// Σχεδιασμός γραμμών και αριθμών κλίμακας
+for (let mark = startScale; mark <= cylinderRange; mark += 20) {
+    const x = padding + (mark - startScale) * (lineLength / (cylinderRange - startScale));
+    ctx.beginPath();
+    ctx.moveTo(x, padding); // Ξεκινά από την κορυφή
+    ctx.lineTo(x, canvas.height - padding); // Μέχρι το κάτω μέρος
+    ctx.stroke();
 
-    for (let mark = startScale; mark <= endScale; mark += 20) {
-        const x = padding + (mark - startScale) * (lineLength / (endScale - startScale));
-        ctx.beginPath();
-        ctx.moveTo(x, padding); // Ξεκινά από την κορυφή
-        ctx.lineTo(x, canvas.height - padding); // Μέχρι το κάτω μέρος
-        ctx.stroke();
+    // Σχεδιασμός αριθμών κλίμακας πάνω από την πρώτη γραμμή
+    ctx.fillStyle = "green";
+    ctx.font = "12px Arial";
+    ctx.fillText(mark, x - 10, padding - 10); // Οι αριθμοί πάνω από την πρώτη γραμμή
+}
 
-        // Σχεδιασμός αριθμών κλίμακας πάνω από την πρώτη γραμμή
-        ctx.fillStyle = "black";
-        ctx.font = "12px Arial";
-        ctx.fillText(mark, x - 10, padding - 10); // Οι αριθμοί πάνω από την πρώτη γραμμή
-    }
+// Προσθήκη του cylinderRange αν δεν περιλαμβάνεται ήδη
+if (cylinderRange % 20 !== 0) {
+    const x = padding + (cylinderRange - startScale) * (lineLength / (cylinderRange - startScale));
+    ctx.beginPath();
+    ctx.moveTo(x, padding); // Ξεκινά από την κορυφή
+    ctx.lineTo(x, canvas.height - padding); // Μέχρι το κάτω μέρος
+    ctx.stroke();
+
+    // Σχεδιασμός του cylinderRange στην κλίμακα
+    ctx.fillStyle = "green";
+    ctx.font = "12px Arial";
+    ctx.fillText(cylinderRange, x - 10, padding - 10); // Οι αριθμοί πάνω από την πρώτη γραμμή
+}
+
+    
 
     // Σχεδιασμός οριζόντιων γραμμών του grid
     const numHorizontalLines = seekSequence.length;

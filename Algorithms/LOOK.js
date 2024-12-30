@@ -14,12 +14,31 @@ function executeLOOK() {
     const directionElement = document.getElementById("direction");
     const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10)-1;
 
-     // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
- if (cylinderRange === 1000) {
-    cylinderRange = 999;
+
+
+// Μετατροπή της ακολουθίας σε πίνακα αριθμών
+const requestQueue = tracksInput.split(",").map(Number).filter(num => !isNaN(num));
+
+// Έλεγχος ότι υπάρχουν έγκυρα αιτήματα
+if (requestQueue.length === 0) {
+    displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
+    return;
 }
+
+// Έλεγχος ότι τα αιτήματα βρίσκονται εντός του εύρους κυλίνδρων
+for (const request of requestQueue) {
+    if (request < 0 || request > cylinderRange) {
+        displayError(tracksInputElement, 
+            `Όλα τα αιτήματα πρέπει να βρίσκονται εντός του εύρους κυλίνδρων 0 έως ${cylinderRange}.`);
+        return;
+    }
+}
+
+// Καθαρισμός παλαιών μηνυμάτων σφάλματος αν όλα είναι εντάξει
+clearErrorMessages();
+
 
     // Επικύρωση του εύρους κυλίνδρων
     if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
@@ -234,22 +253,46 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
     }
 
     // Σχεδιασμός κλίμακας στην πρώτη οριζόντια γραμμή
-    ctx.strokeStyle = "gray";
-    ctx.lineWidth = 1;
-    const scaleY = padding;
+ctx.strokeStyle = "gray";
+ctx.lineWidth = 1;
+const scaleY = padding;
+
+// Σχεδίαση της γραμμής κλίμακας
+ctx.beginPath();
+ctx.moveTo(padding, scaleY);
+ctx.lineTo(canvas.width - padding, scaleY);
+ctx.stroke();
+
+// Σχεδιασμός σημείων κλίμακας
+ctx.fillStyle = "green";
+ctx.font = "12px Arial";
+
+const scaleX = (value) => padding + (value / cylinderRange) * lineLength; // Υπολογισμός θέσης κάθε τιμής
+
+// Σχεδίαση σημείων ανά scaleStep
+for (let i = 0; i <= cylinderRange; i += scaleStep) {
+    const xPosition = scaleX(i);
     ctx.beginPath();
-    ctx.moveTo(padding, scaleY);
-    ctx.lineTo(canvas.width - padding, scaleY);
+    ctx.moveTo(xPosition, scaleY - 5); // Μικρή γραμμή πάνω από την κύρια γραμμή
+    ctx.lineTo(xPosition, scaleY + 5); // Μικρή γραμμή κάτω από την κύρια γραμμή
     ctx.stroke();
 
-    ctx.fillStyle = "black";
-    ctx.font = "12px Arial";
+    // Σχεδίαση αριθμών πάνω από την κλίμακα
+    ctx.fillText(i, xPosition - 10, scaleY - 10);
+}
 
-    for (let i = 0; i < numMarks; i++) {
-        const mark = startScale + i * scaleStep;
-        const x = padding + (i / (numMarks - 1)) * lineLength;
-        ctx.fillText(mark, x - 10, scaleY - 10);
-    }
+// Προσθήκη του cylinderRange αν δεν είναι πολλαπλάσιο του scaleStep
+if (cylinderRange % scaleStep !== 0) {
+    const xPosition = scaleX(cylinderRange);
+    ctx.beginPath();
+    ctx.moveTo(xPosition, scaleY - 5);
+    ctx.lineTo(xPosition, scaleY + 5);
+    ctx.stroke();
+
+    ctx.fillText(cylinderRange, xPosition - 10, scaleY - 10);
+}
+
+
 
     // Σχεδιασμός βελών για τη σειρά εξυπηρέτησης
     ctx.strokeStyle = "green";
@@ -364,7 +407,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     const cylinderRangeInput = document.getElementById("cylinder-number");
 
     const sequenceLength = parseInt(sequenceLengthInput.value.trim(), 10);
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10)-1;
 
     
   

@@ -18,15 +18,34 @@ function executeSCAN() {
     const headPosition = parseInt(headPositionInput.value);
     const headPositionElement = document.getElementById("head-position");
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10)-1;
 
- // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
- if (cylinderRange === 1000) {
-    cylinderRange = 999;
+
+   
+
+
+
+// Μετατροπή της ακολουθίας σε πίνακα αριθμών
+const requestQueue = tracksInput.split(",").map(Number).filter(num => !isNaN(num));
+
+// Έλεγχος ότι υπάρχουν έγκυρα αιτήματα
+if (requestQueue.length === 0) {
+    displayError(tracksInputElement, "Παρακαλώ εισάγετε τουλάχιστον έναν έγκυρο αριθμό!");
+    return;
 }
 
-   
-   
+// Έλεγχος ότι τα αιτήματα βρίσκονται εντός του εύρους κυλίνδρων
+for (const request of requestQueue) {
+    if (request < 0 || request > cylinderRange) {
+        displayError(tracksInputElement, 
+            `Όλα τα αιτήματα πρέπει να βρίσκονται εντός του εύρους κυλίνδρων 0 έως ${cylinderRange}.`);
+        return;
+    }
+}
+
+// Καθαρισμός παλαιών μηνυμάτων σφάλματος αν όλα είναι εντάξει
+clearErrorMessages();
+
  
 
  
@@ -174,7 +193,34 @@ function drawScan(seekSequence, cylinderRange) {
     const startScale = 0;
     const endScale = cylinderRange;
     const scaleStep = 20;
-    const numMarks = Math.floor((endScale - startScale) / scaleStep) + 1;
+    const numMarks = Math.floor((endScale - startScale) / scaleStep) + 1; // Υπολογισμός σημείων κλίμακας
+    const lastMark = startScale + (numMarks - 1) * scaleStep;
+    
+    
+   // Σχεδιασμός αριθμών πάνω στην κλίμακα
+ctx.fillStyle = "green";
+ctx.font = "12px Arial";
+    for (let i = 0; i < numMarks; i++) {
+        const mark = startScale + i * scaleStep; // Υπολογισμός της τιμής κλίμακας
+        const xPosition = 20 + (mark / endScale) * lineLength; // Θέση στον καμβά
+    
+        ctx.fillText(mark, xPosition - 10, 10);
+        ctx.beginPath();
+        ctx.moveTo(xPosition, 20);
+        ctx.lineTo(xPosition, 30);
+        ctx.stroke();
+    }
+    
+    // Εξασφάλιση ότι το cylinderRange περιλαμβάνεται πάντα
+    if (lastMark < cylinderRange) {
+        const xPosition = 20 + (cylinderRange / endScale) * lineLength; // Υπολογισμός θέσης
+        ctx.fillText(cylinderRange, xPosition - 10, 10); // Σχεδίαση αριθμού
+        ctx.beginPath();
+        ctx.moveTo(xPosition, 20);
+        ctx.lineTo(xPosition, 30);
+        ctx.stroke();
+    }
+    
     const trackWidth = lineLength / (endScale - startScale);
 
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
@@ -206,19 +252,7 @@ function drawScan(seekSequence, cylinderRange) {
     ctx.lineTo(canvas.width - padding, padding);
     ctx.stroke();
 
-    ctx.fillStyle = "green";
-    ctx.font = "12px Arial";
 
-    for (let i = 0; i < numMarks; i++) {
-        const mark = startScale + i * scaleStep;
-        const xPosition = padding + (i / (numMarks - 1)) * lineLength;
-
-        ctx.fillText(mark, xPosition - 10, padding - 10);
-        ctx.beginPath();
-        ctx.moveTo(xPosition, padding);
-        ctx.lineTo(xPosition, padding + 10);
-        ctx.stroke();
-    }
 
     ctx.lineWidth = 2;
     ctx.strokeStyle = "green";
@@ -386,20 +420,6 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
     ctx.lineTo(canvas.width - 20, blackLineY);
     ctx.stroke();
 
-    // Σχεδιασμός αριθμών πάνω στην κλίμακα
-    ctx.fillStyle = "green";
-    ctx.font = "12px Arial";
-
-    for (let i = 0; i < numMarks; i++) {
-        const mark = startScale + i * scaleStep; // Τρέχουσα τιμή κλίμακας
-        const xPosition = 20 + (i / (numMarks - 1)) * lineLength; // Κατανομή τιμών ομοιόμορφα
-
-        ctx.fillText(mark, xPosition - 10, blackLineY - 10); // Σχεδίαση αριθμών
-        ctx.beginPath();
-        ctx.moveTo(xPosition, blackLineY);
-        ctx.lineTo(xPosition, blackLineY + 10); // Μικρή κάθετη γραμμή για το σημάδι της κλίμακας
-        ctx.stroke();
-    }
 
     // Σχεδιασμός της σειράς κινήσεων ως βέλη
     const margin = 20;
@@ -444,7 +464,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
   // Λήψη του αριθμού κυλίνδρων
   const cylinderRangeInput = document.getElementById("cylinder-number");
-  const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+  const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10)-1;
 
   // Έλεγχος αν το πεδίο εύρους κυλίνδρων έχει συμπληρωθεί
   if (isNaN(cylinderRange) || cylinderRange <= 0) {
@@ -485,11 +505,12 @@ function adjustCanvasHeight(sequenceLength) {
 
     // Ορισμός δυναμικού ύψους με βάση το μήκος της ακολουθίας
     if (sequenceLength > 30) {
-        canvas.height = 600 + (sequenceLength - 30) * 20; // Προσθήκη επιπλέον ύψους για κάθε στοιχείο μετά το 30
+        canvas.height = 600 + (sequenceLength - 30) * 20;
     } else {
-        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
+        canvas.height = 600;
     }
 }
+
 
   function adjustCanvasSpacing() {
     const canvas = document.getElementById("seekCanvas");

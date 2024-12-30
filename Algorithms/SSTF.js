@@ -21,14 +21,9 @@ function runSSTF() {
     const headPosition = parseInt(headPositionInput.value);
     const headPositionElement = document.getElementById("head-position");
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+   const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10) -1;
 
-    // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
-if (cylinderRange === 1000) {
-    cylinderRange = 999;
-}
-
-   
+        
       // Επικύρωση του αριθμού κυλίνδρων
       if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
         displayError(cylinderRangeInput, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
@@ -62,6 +57,18 @@ const requestQueue = inputQueue.split(",").map(item => {
     return num;
 });
 clearErrorMessages()
+
+
+// Έλεγχος ότι τα αιτήματα βρίσκονται εντός του εύρους κυλίνδρων
+for (const request of requestQueue) {
+    if (request < 0 || request > cylinderRange) {
+        displayError(document.getElementById("process-queue"), 
+            `Όλα τα αιτήματα πρέπει να βρίσκονται εντός του εύρους κυλίνδρων 0 έως ${cylinderRange}.`);
+        return;
+    }
+}
+clearErrorMessages();
+
 
 /**Σφάλμα για το αν η ακολουθια ειναι μεγαλυτερη απο 100 αριθμοι */
 if (requestQueue.length > 100) {
@@ -192,19 +199,33 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
     // Σχεδιασμός κάθετων γραμμών του grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
-
     for (let i = 0; i < numMarks; i++) {
         const xPosition = margin + (i * scaleStep * lineLength) / cylinderRange;
         ctx.beginPath();
         ctx.moveTo(xPosition, margin);
         ctx.lineTo(xPosition, canvas.height - margin);
         ctx.stroke();
-
+    
         // Προσθήκη αριθμών στην κορυφή
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "green";
         ctx.font = "12px Arial";
         ctx.fillText(i * scaleStep, xPosition - 10, margin - 10);
     }
+    
+    // Προσθήκη του cylinderRange στο τέλος αν δεν είναι ήδη στην κλίμακα
+    if (cylinderRange % scaleStep !== 0) {
+        const xPosition = margin + (lineLength);
+        ctx.beginPath();
+        ctx.moveTo(xPosition, margin);
+        ctx.lineTo(xPosition, canvas.height - margin);
+        ctx.stroke();
+    
+        // Προσθήκη αριθμού για το cylinderRange
+        ctx.fillStyle = "green";
+        ctx.font = "12px Arial";
+        ctx.fillText(cylinderRange, xPosition - 10, margin - 10);
+    }
+    
 
     // Σχεδιασμός πρώτης οριζόντιας γραμμής (πιο έντονη)
     ctx.strokeStyle = "gray";
@@ -268,7 +289,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
     // Λήψη του αριθμού κυλίνδρων
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10) -1;
 
     // Έλεγχος αν το πεδίο εύρους κυλίνδρων έχει συμπληρωθεί
     if (isNaN(cylinderRange) || cylinderRange <= 0) {

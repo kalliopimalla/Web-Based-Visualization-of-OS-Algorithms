@@ -9,7 +9,8 @@ function runFCFS() {
     const headPositionInput = document.getElementById("head-position");
     const headPosition = parseInt(headPositionInput.value, 10);
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10) - 1;
+
 
 
 
@@ -20,10 +21,7 @@ function runFCFS() {
     }
  clearErrorMessages();
  
- // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
-if (cylinderRange === 1000) {
-    cylinderRange = 999;
-}
+
 
     // Επικύρωση της θέσης της κεφαλής
     if (isNaN(headPosition) || headPosition < 0 || headPosition > cylinderRange) {
@@ -209,14 +207,22 @@ for (let mark = startScale; mark <= endScale; mark += 20) {
 }
 
 // Σχεδιάστε αριθμούς ανά 20 μονάδες στην πρώτη γραμμή του grid
-for (let mark = startScale; mark <= endScale; mark += 20) {
-  
+for (let mark = startScale; mark <= cylinderRange; mark += 20) {
     const xPosition = padding + (mark - startScale) * trackWidth;
 
     // Εμφάνιση αριθμών μόνο πάνω από την πρώτη γραμμή
-    ctx.fillStyle = "black"; // Χρώμα για τους αριθμούς
+    ctx.fillStyle = "green"; // Χρώμα για τους αριθμούς
     ctx.font = "12px Arial";
     ctx.fillText(mark, xPosition - 10, padding - 10); // Τοποθέτηση αριθμών
+}
+
+// Αν το cylinderRange δεν είναι πολλαπλάσιο του 20, σχεδιάστε το ξεχωριστά
+if (cylinderRange % 20 !== 0) {
+    const xPosition = padding + (cylinderRange - startScale) * trackWidth;
+
+    ctx.fillStyle = "green"; // Χρώμα για τους αριθμούς
+    ctx.font = "12px Arial";
+    ctx.fillText(cylinderRange, xPosition - 10, padding - 10); // Τοποθέτηση αριθμών
 }
 
 // Σχεδιάστε οριζόντιες γραμμές του grid
@@ -286,7 +292,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
     // Λήψη του αριθμού κυλίνδρων
     const cylinderRangeInput = document.getElementById("cylinder-number");
-    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
+    const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10)-1;
 
     // Έλεγχος αν το πεδίο εύρους κυλίνδρων έχει συμπληρωθεί
     if (isNaN(cylinderRange) || cylinderRange <= 0) {

@@ -9,10 +9,6 @@ function executeCSCAN() {
     const cylinderRangeInput = document.getElementById("cylinder-number");
     let cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10);
 
- // Αν το cylinderRange είναι 1000, το μειώνουμε σε 999
- if (cylinderRange === 1000) {
-    cylinderRange = 999;
-}
 
 
     // Επικύρωση εισόδων
@@ -137,6 +133,7 @@ function toggleShowNumbersOnArrows() {
 function drawCScan(seekSequence, cylinderRange) {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
+    cylinderRange--;
 
     // Καθαρισμός του καμβά
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -151,20 +148,33 @@ function drawCScan(seekSequence, cylinderRange) {
     // Σχεδιασμός κάθετων γραμμών του grid
     ctx.strokeStyle = "rgba(200, 200, 200, 0.3)";
     ctx.lineWidth = 1;
-
     for (let i = 0; i <= cylinderRange; i += 20) {
         const xPosition = margin + (i / cylinderRange) * lineLength; // Υπολογισμός θέσης κάθε γραμμής
         ctx.beginPath();
         ctx.moveTo(xPosition, margin); // Από την κορυφή του grid
         ctx.lineTo(xPosition, canvas.height - margin); // Μέχρι το τέλος του grid
         ctx.stroke();
-
+    
         // Σχεδιασμός αριθμών πάνω από την πρώτη γραμμή
-        ctx.fillStyle = "black";
+        ctx.fillStyle = "green";
         ctx.font = "12px Arial";
         ctx.fillText(i, xPosition - 10, margin - 10); // Τοποθέτηση αριθμών
     }
-
+    
+    // Προσθήκη του cylinderRange αν δεν περιλαμβάνεται ήδη
+    if (cylinderRange % 20 !== 0) {
+        const xPosition = margin + (cylinderRange / cylinderRange) * lineLength; // Θέση στο τέλος της κλίμακας
+        ctx.beginPath();
+        ctx.moveTo(xPosition, margin); // Από την κορυφή του grid
+        ctx.lineTo(xPosition, canvas.height - margin); // Μέχρι το τέλος του grid
+        ctx.stroke();
+    
+        // Σχεδιασμός του αριθμού του cylinderRange
+        ctx.fillStyle = "green";
+        ctx.font = "12px Arial";
+        ctx.fillText(cylinderRange, xPosition - 10, margin - 10); // Τοποθέτηση του αριθμού
+    }
+    
     // Σχεδιασμός της πρώτης οριζόντιας γραμμής
     ctx.strokeStyle = "gray"; // Εντονότερο γκρι για την πρώτη γραμμή
     ctx.lineWidth = 1.5; // Πιο παχιά γραμμή
