@@ -1,32 +1,3 @@
-// Υλοποίηση του αλγορίθμου αντικατάστασης σελίδων Clock
-
-function isValidInput(pageInput, maxFrames) {
-    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
-
-    const pageArray = pageInput.split(',').map(num => num.trim());
-    for (let page of pageArray) {
-        if (isNaN(page) || page === "" || page < 0 || page > 100) {
-            const pageInputElement = document.getElementById("pages");
-            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο αριθμούς από 1 έως 100, διαχωρισμένους με κόμμα.");
-            return false;
-        }
-    }
-
-    if (pageArray.length > 100) {
-        const pageInputElement = document.getElementById("pages");
-        displayError(pageInputElement, "Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!");
-        return false;
-    }
-
-    if (isNaN(maxFrames) || maxFrames <= 0 || maxFrames > 25) {
-        const frameInputElement = document.getElementById("frame-number");
-        displayError(frameInputElement, "Παρακαλώ εισάγετε έναν αριθμό πλαισίων από 1 έως 25.");
-        return false;
-    }
-
-    return true;
-}
- 
 class ClockPageReplacement {
   constructor(frames) {
     this.frames = frames; // Μέγιστος αριθμός πλαισίων
@@ -77,7 +48,34 @@ class ClockPageReplacement {
     return 'hit';
   }
 
-  run(sequence) {
+  run(sequence, frameInput) {
+    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
+
+    // Έλεγχος δεδομένων εισόδου
+    const pageArray = sequence.split(',').map((num) => num.trim());
+    for (let page of pageArray) {
+      if (isNaN(page) || page === '' || page < 0 || page > 100) {
+        const pageInputElement = document.getElementById('pages');
+        displayError(
+          pageInputElement,
+          'Η ακολουθία σελίδων πρέπει να περιέχει μόνο αριθμούς από 0 έως 100, διαχωρισμένους με κόμμα.'
+        );
+        return;
+      }
+    }
+
+    if (pageArray.length > 100) {
+      const pageInputElement = document.getElementById('pages');
+      displayError(pageInputElement, 'Η ακολουθία δεν μπορεί να περιέχει περισσότερους από 100 αριθμούς!');
+      return;
+    }
+
+    if (isNaN(frameInput) || frameInput <= 0 || frameInput > 25) {
+      const frameInputElement = document.getElementById('frame-number');
+      displayError(frameInputElement, 'Παρακαλώ εισάγετε έναν αριθμό πλαισίων από 1 έως 25.');
+      return;
+    }
+
     const results = [];
     let faultCount = 0;
     let hitCount = 0;
@@ -85,7 +83,7 @@ class ClockPageReplacement {
     this.referenceBits = Array(this.frames).fill(false); // Αρχικοποίηση των bits αναφοράς με false
     this.clockPointer = 0; // Επαναφορά του δείκτη ρολογιού
 
-    for (const page of sequence) {
+    for (const page of pageArray) {
       const result = this.accessPage(page); // Εκτέλεση για κάθε σελίδα στη σειρά
       if (result === 'fault') faultCount++;
       else hitCount++;
@@ -105,16 +103,11 @@ class ClockPageReplacement {
 
 // Παράδειγμα χρήσης
 function runCLOCK() {
-  const sequenceInput = document.getElementById('pages').value.split(',').map(Number); // Λήψη της ακολουθίας σελίδων
+  const sequenceInput = document.getElementById('pages').value; // Λήψη της ακολουθίας σελίδων
   const frameInput = parseInt(document.getElementById('frame-number').value, 10); // Λήψη του αριθμού πλαισίων
 
-  if (isNaN(frameInput) || frameInput <= 0) {
-    alert('Παρακαλώ εισάγετε έγκυρο αριθμό πλαισίων.');
-    return;
-  }
-
   const clockAlgorithm = new ClockPageReplacement(frameInput); // Δημιουργία αντικειμένου για τον αλγόριθμο Clock
-  const { results, faultCount, hitCount } = clockAlgorithm.run(sequenceInput); // Εκτέλεση του αλγορίθμου
+  const { results, faultCount, hitCount } = clockAlgorithm.run(sequenceInput, frameInput); // Εκτέλεση του αλγορίθμου
 
   const table = document.querySelector('.visual-table');
   table.innerHTML = '<tr><th>Σελίδα</th><th>Αποτέλεσμα</th><th>Πλαίσια</th><th>Bits Αναφοράς</th><th>Δείκτης</th></tr>';
@@ -144,8 +137,6 @@ function runCLOCK() {
   document.getElementById('resetButton').style.display = 'block'; // Εμφάνιση του κουμπιού επαναφοράς
 }
 
-
-
 const resetButton = document.getElementById('resetButton');
 
 resetButton.addEventListener('click', () => {
@@ -155,16 +146,11 @@ resetButton.addEventListener('click', () => {
     document.getElementById('resetButton').style.display = 'none'; // Απόκρυψη του κουμπιού επαναφοράς
     document.getElementById('maxPageNumber').value = ''; 
     document.getElementById('sequenceLength').value = ''; 
-    frames = [];
-    secondChance = [];
-    step = 0;
-    pointer = 0;
+    const resultText = document.getElementById('resultText');
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
-   
 
     resetButton.style.display = 'none';
 });
-
 
 function enableResetButton() {
     resetButton.style.display = 'block';
@@ -179,12 +165,12 @@ function generateSequence() {
     const length = parseInt(lengthInput.value.trim(), 10);
     const maxPageNumber = parseInt(maxPageInput.value.trim(), 10);
 
-    if (isNaN(length) || length <= 0) {
+    if (isNaN(length) || length <= 0 || length > 100) {
         displayError(lengthInput, "Παρακαλώ εισάγετε έγκυρο μήκος ακολουθίας.");
         return;
     }
 
-    if (isNaN(maxPageNumber) || maxPageNumber <= 0) {
+    if (isNaN(maxPageNumber) || maxPageNumber <= 0 || maxPageNumber >100) {
         displayError(maxPageInput, "Παρακαλώ εισάγετε έγκυρο μέγιστο αριθμό σελίδας.");
         return;
     }
@@ -203,24 +189,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const openSidebar = document.getElementById("open-sidebar");
     const closeSidebar = document.getElementById("close-sidebar");
     const sidebar = document.getElementById("sidebar");
-  
+
     openSidebar.addEventListener("click", (e) => {
       e.preventDefault();
       sidebar.classList.add("open"); // Προσθέτουμε την κλάση για να εμφανιστεί το sidebar
     });
-  
+
     closeSidebar.addEventListener("click", () => {
       sidebar.classList.remove("open"); // Αφαιρούμε την κλάση για να κρυφτεί το sidebar
     });
   });
-  
+
   document.querySelectorAll('.dropdown-submenu > div').forEach((menuTitle) => {
     menuTitle.addEventListener('click', () => {
       const parentLi = menuTitle.parentElement;
       parentLi.classList.toggle('open');
     });
   });
-  
+
   document.querySelectorAll('.submenu-content li a').forEach((link) => {
     link.addEventListener('click', (e) => {
       document
@@ -229,29 +215,28 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.classList.add('active');
     });
   });
-  
 
-  // Συνάρτηση για εμφάνιση μηνύματος σφάλματος
-function displayError(inputElement, errorMessage) {
+
+  function displayError(inputElement, errorMessage) {
     if (!inputElement) return;
 
-    // Κοκκίνισμα του πλαισίου
-    inputElement.style.borderColor = "red";
+    // Καθαρισμός υπάρχοντος μηνύματος σφάλματος
+    const existingError = inputElement.parentElement.querySelector('.error-message');
+    if (existingError) existingError.remove();
 
     // Δημιουργία στοιχείου για το μήνυμα σφάλματος
-    const errorBox = document.createElement("div");
-    errorBox.className = "error-message";
+    const errorBox = document.createElement('div');
+    errorBox.className = 'error-message';
     errorBox.textContent = errorMessage;
-    errorBox.style.color = "red";
-    errorBox.style.fontSize = "14px";
-    errorBox.style.marginTop = "5px";
+    errorBox.style.color = 'red';
+    errorBox.style.fontSize = '14px';
+    errorBox.style.marginTop = '5px';
 
-    // Προσθήκη του μηνύματος κάτω από το πεδίο εισόδου
+    // Προσθήκη μηνύματος σφάλματος στο DOM
     inputElement.parentElement.appendChild(errorBox);
-}
+  }
 
-// Συνάρτηση για εκκαθάριση μηνυμάτων σφάλματος
-function clearErrorMessages() {
-    document.querySelectorAll(".error-message").forEach(el => el.remove());
-    document.querySelectorAll("input").forEach(input => (input.style.borderColor = ""));
-}
+  function clearErrorMessages() {
+    document.querySelectorAll('.error-message').forEach((el) => el.remove());
+    document.querySelectorAll('input').forEach((input) => (input.style.borderColor = ''));
+  }
