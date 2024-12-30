@@ -34,9 +34,9 @@ function isValidInput(pageInput, maxFrames) {
 
     const pageArray = pageInput.split(',').map(num => num.trim());
     for (let page of pageArray) {
-        if (isNaN(page) || page === "" || page < 1 || page > 100) {
+        if (isNaN(page) || page === "" || page < 0 || page > 100) {
             const pageInputElement = document.getElementById("pages");
-            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο αριθμούς από 1 έως 100, διαχωρισμένους με κόμμα.");
+            displayError(pageInputElement, "Η ακολουθία σελίδων πρέπει να περιέχει μόνο αριθμούς από 0 έως 100, διαχωρισμένους με κόμμα.");
             return false;
         }
     }
