@@ -2,27 +2,27 @@ function runPriorityCPU() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
     const prInput = document.getElementById('priority').value;
-    const priorityOrder = 'higher-first'; // Μικρότεροι αριθμοί -> Υψηλότερη προτεραιότητα
+    const agingRate = parseInt(document.getElementById('aging-rate-input').value || 0);
+    const priorityOrder = document.getElementById('priority-order').value;
+    const executionType = document.getElementById('execution-type').value;
 
     const burstTime = btInput.split(',').map(Number);
     const arrivalTime = atInput.split(',').map(Number);
     const priority = prInput.split(',').map(Number);
     const n = burstTime.length;
 
-    const processes = Array.from({ length: n }, (_, i) => i);
     const remainingBurstTime = [...burstTime];
-    const wt = new Array(n).fill(0); // Χρόνος αναμονής
-    const tat = new Array(n).fill(0); // Χρόνος επιστροφής
-    const completionTime = new Array(n).fill(0); // Χρόνος ολοκλήρωσης
+    const wt = new Array(n).fill(0);
+    const tat = new Array(n).fill(0);
+    const completionTime = new Array(n).fill(0);
 
     const schedule = [];
     let currentTime = 0;
     let completed = 0;
-    let lastProcess = -1; // Για την παρακολούθηση αλλαγής διεργασίας
+    let lastProcess = -1;
     let queueOutput = '';
 
     while (completed < n) {
-        // Βρες όλες τις διαθέσιμες διεργασίες
         const availableProcesses = [];
         for (let i = 0; i < n; i++) {
             if (arrivalTime[i] <= currentTime && remainingBurstTime[i] > 0) {
@@ -35,69 +35,121 @@ function runPriorityCPU() {
             continue;
         }
 
-        // Βρες τη διεργασία με την υψηλότερη προτεραιότητα
+        if (agingRate > 0) {
+            availableProcesses.forEach((i) => {
+                if (i !== lastProcess) {
+                    priority[i] -= agingRate;
+                }
+            });
+        }
+
         const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
-            if (priority[i] < priority[highest]) {
-                return i;
-            } else if (priority[i] === priority[highest]) {
+            if (priorityOrder === 'higher-first') {
+                if (priority[i] < priority[highest]) {
+                    return i;
+                }
+            } else {
+                if (priority[i] > priority[highest]) {
+                    return i;
+                }
+            }
+            if (priority[i] === priority[highest]) {
                 return arrivalTime[i] < arrivalTime[highest] ? i : highest;
             }
             return highest;
         }, availableProcesses[0]);
 
-        // Αν η διεργασία που εκτελείται αλλάξει, καταγράφουμε την ουρά
-        if (lastProcess !== highestPriorityIndex) {
-            const activeProcess = `<span class="queue-process active">P${highestPriorityIndex}</span>`;
+        if (executionType === 'non-preemptive') {
+            if (lastProcess !== highestPriorityIndex) {
+                const activeProcess = `<span class="queue-process active">P${highestPriorityIndex}</span>`;
+                const waitingQueue = availableProcesses
+                    .filter((i) => i !== highestPriorityIndex)
+                    .map((i) => `<span class="queue-process">P${i}</span>`)
+                    .join(' -> ') || 'Καμία';
+
+                queueOutput += `
+                    <div class="step-box">
+                        <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
+                        <div>Εκτελείται: ${activeProcess}</div>
+                        <div>Αναμονή: ${waitingQueue}</div>
+                    </div>
+                `;
+
+                lastProcess = highestPriorityIndex;
+            }
+
+            schedule.push({
+                process: highestPriorityIndex,
+                startTime: currentTime,
+                endTime: currentTime + remainingBurstTime[highestPriorityIndex],
+            });
+
+            currentTime += remainingBurstTime[highestPriorityIndex];
+            completionTime[highestPriorityIndex] = currentTime;
+            tat[highestPriorityIndex] =
+                completionTime[highestPriorityIndex] - arrivalTime[highestPriorityIndex];
+            wt[highestPriorityIndex] =
+                tat[highestPriorityIndex] - burstTime[highestPriorityIndex];
+
+            remainingBurstTime[highestPriorityIndex] = 0;
+            completed++;
+        } else {
+            remainingBurstTime[highestPriorityIndex]--;
+            currentTime++;
+
             const waitingQueue = availableProcesses
-                .filter((i) => i !== highestPriorityIndex)
+                .filter((i) => i !== highestPriorityIndex && remainingBurstTime[i] > 0)
                 .map((i) => `<span class="queue-process">P${i}</span>`)
                 .join(' -> ') || 'Καμία';
 
             queueOutput += `
                 <div class="step-box">
-                    <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
-                    <div>Εκτελείται: ${activeProcess}</div>
+                    <div class="step-time">Χρονική στιγμή: ${currentTime - 1}</div>
+                    <div>Εκτελείται: <span class="queue-process active">P${highestPriorityIndex}</span></div>
                     <div>Αναμονή: ${waitingQueue}</div>
                 </div>
             `;
 
-            lastProcess = highestPriorityIndex; // Ενημέρωση της τελευταίας διεργασίας
-        }
+            if (remainingBurstTime[highestPriorityIndex] === 0) {
+                completed++;
+                completionTime[highestPriorityIndex] = currentTime;
 
-        // Ενημέρωση χρόνου έναρξης και λήξης
-        if (
-            schedule.length === 0 ||
-            schedule[schedule.length - 1].process !== highestPriorityIndex
-        ) {
-            schedule.push({
-                process: highestPriorityIndex,
-                startTime: currentTime,
-            });
-        }
+                tat[highestPriorityIndex] =
+                    completionTime[highestPriorityIndex] - arrivalTime[highestPriorityIndex];
+                wt[highestPriorityIndex] =
+                    tat[highestPriorityIndex] - burstTime[highestPriorityIndex];
 
-        remainingBurstTime[highestPriorityIndex]--;
-        currentTime++;
+                if (schedule.length > 0 && schedule[schedule.length - 1].process === highestPriorityIndex) {
+                    schedule[schedule.length - 1].endTime = currentTime;
+                }
+            } else {
+                if (
+                    schedule.length === 0 ||
+                    schedule[schedule.length - 1].process !== highestPriorityIndex
+                ) {
+                    schedule.push({
+                        process: highestPriorityIndex,
+                        startTime: currentTime - 1,
+                        endTime: null,
+                    });
+                }
+            }
 
-        if (remainingBurstTime[highestPriorityIndex] === 0) {
-            completed++;
-            schedule[schedule.length - 1].endTime = currentTime;
-            completionTime[highestPriorityIndex] = currentTime;
-            tat[highestPriorityIndex] = completionTime[highestPriorityIndex] - arrivalTime[highestPriorityIndex];
-            wt[highestPriorityIndex] = tat[highestPriorityIndex] - burstTime[highestPriorityIndex];
+            if (schedule.length > 0 && schedule[schedule.length - 1].process === highestPriorityIndex) {
+                schedule[schedule.length - 1].endTime = currentTime;
+            }
         }
     }
 
-    // Υπολογισμός μέσου χρόνου αναμονής
     const averageWaitingTime = wt.reduce((sum, time) => sum + time, 0) / n;
 
-    // Δημιουργία πίνακα αποτελεσμάτων
-    let output = "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
+    let output =
+        "<table border='1' style='border-collapse: collapse; width: 100%;'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Προτεραιότητα</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
     for (let i = 0; i < n; i++) {
         output += `<tr><td>P${i}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${priority[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
     }
     output += "</table>";
 
-    // Εμφάνιση αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById('stepHistory').innerHTML = `
         <p><strong>Μέσος Χρόνος Αναμονής :</strong> ${averageWaitingTime.toFixed(2)}</p>
