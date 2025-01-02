@@ -121,8 +121,26 @@ let stepArrivalTime = [];
 let stepWaitingTime = [];
 let stepTurnAroundTime = [];
 let stepCompleted = []; // Καταστάσεις ολοκλήρωσης διεργασιών
-
 function startStepByStep() {
+    // Καθαρισμός δεδομένων προηγούμενης εκτέλεσης
+    stepIndex = 0;
+    stepCurrentTime = 0;
+    stepProcesses = [];
+    stepBurstTime = [];
+    stepArrivalTime = [];
+    stepWaitingTime = [];
+    stepTurnAroundTime = [];
+    stepCompleted = [];
+    startDisplayed = false;
+    completionOrder = [];
+    originalBurstTime = [];
+    currentProcess = null;
+    remainingTime = 0;
+
+    // Καθαρισμός του ιστορικού και του Gantt Chart
+    document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
+    document.getElementById('seek-count').innerHTML = ''; // Καθαρισμός Gantt Chart κοντέινερ
+
     // Αρχικοποίηση δεδομένων από τα πεδία εισόδου
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
@@ -135,14 +153,7 @@ function startStepByStep() {
     stepTurnAroundTime = new Array(n).fill(0);
     stepCompleted = new Array(n).fill(false); // Αρχικοποίηση μη ολοκληρωμένων διεργασιών
 
-
-
-    stepIndex = 0;
-    stepCurrentTime = 0;
-
-    document.getElementById('stepHistory').innerHTML = ''; // Καθαρισμός ιστορικού
-    document.getElementById('seek-count').innerHTML = ''; // Καθαρισμός πίνακα
-
+    // Δημιουργία κουμπιού για βήμα προς βήμα εκτέλεση
     const nextButton = document.createElement('button');
     nextButton.textContent = 'Επόμενο βήμα';
     nextButton.id = 'nextStepButton';
@@ -153,9 +164,13 @@ function startStepByStep() {
 }
 
 
+
 let startDisplayed = false;
 let completionOrder = [];
 let originalBurstTime = [];
+
+let currentProcess = null; // Η τρέχουσα διεργασία που εκτελείται
+let remainingTime = 0;     // Ο εναπομείναν χρόνος εκτέλεσης της τρέχουσας διεργασίας
 
 function stepByStepExecution() {
     const n = stepProcesses.length;
@@ -208,34 +223,45 @@ function stepByStepExecution() {
         return;
     }
 
-    // Βρες τη διαθέσιμη διεργασία με τον μικρότερο χρόνο εκτέλεσης
+    // Αν δεν υπάρχει τρέχουσα διεργασία, βρες τη διαθέσιμη με τον μικρότερο χρόνο εκτέλεσης
+    if (currentProcess === null) {
+        const availableProcesses = stepProcesses
+            .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && !stepCompleted[i] ? i : -1))
+            .filter((i) => i !== -1);
+
+        if (availableProcesses.length === 0) {
+            // Αν δεν υπάρχουν διαθέσιμες διεργασίες, αυξάνουμε τη χρονική στιγμή
+            const stepBox = document.createElement('div');
+            stepBox.classList.add('step-box');
+            stepBox.innerHTML = `
+                <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
+                <div>Εκτελείται: Καμία</div>
+                <div>Αναμονή: Καμία</div>
+            `;
+            document.getElementById('stepHistory').appendChild(stepBox);
+
+            stepCurrentTime++;
+            return;
+        }
+
+        // Βρες τη διεργασία με τον μικρότερο χρόνο εκτέλεσης
+        const shortestJobIndex = availableProcesses.reduce((shortest, i) =>
+            stepBurstTime[i] < stepBurstTime[shortest] ? i : shortest
+        );
+
+        // Θέσε την τρέχουσα διεργασία και τον εναπομείναντα χρόνο
+        currentProcess = shortestJobIndex;
+        remainingTime = stepBurstTime[shortestJobIndex];
+    }
+
+    // Δημιουργία κουτιού για την τρέχουσα χρονική στιγμή
     const availableProcesses = stepProcesses
         .map((_, i) => (stepArrivalTime[i] <= stepCurrentTime && !stepCompleted[i] ? i : -1))
         .filter((i) => i !== -1);
 
-    if (availableProcesses.length === 0) {
-        // Αν δεν υπάρχουν διαθέσιμες διεργασίες, αυξάνουμε τη χρονική στιγμή
-        const stepBox = document.createElement('div');
-        stepBox.classList.add('step-box');
-        stepBox.innerHTML = `
-            <div class="step-time">Χρονική στιγμή: ${stepCurrentTime}</div>
-            <div>Εκτελείται: Καμία</div>
-            <div>Αναμονή: Καμία</div>
-        `;
-        document.getElementById('stepHistory').appendChild(stepBox);
-
-        stepCurrentTime++;
-        return;
-    }
-
-    const shortestJobIndex = availableProcesses.reduce((shortest, i) =>
-        stepBurstTime[i] < stepBurstTime[shortest] ? i : shortest
-    );
-
-    // Δημιουργία κουτιού για την τρέχουσα διεργασία
-    const activeProcess = `<span class="queue-process active">P${stepProcesses[shortestJobIndex]}</span>`;
+    const activeProcess = `<span class="queue-process active">P${stepProcesses[currentProcess]}</span>`;
     const waitingQueue = availableProcesses
-        .filter((i) => i !== shortestJobIndex)
+        .filter((i) => i !== currentProcess)
         .map((i) => `<span class="queue-process">P${stepProcesses[i]}</span>`)
         .join(' -> ') || 'Καμία';
 
@@ -248,14 +274,23 @@ function stepByStepExecution() {
     `;
     document.getElementById('stepHistory').appendChild(stepBox);
 
-    // Εκτέλεση της διεργασίας
-    stepCurrentTime += stepBurstTime[shortestJobIndex];
-    stepTurnAroundTime[shortestJobIndex] = stepCurrentTime - stepArrivalTime[shortestJobIndex];
-    stepWaitingTime[shortestJobIndex] = stepTurnAroundTime[shortestJobIndex] - originalBurstTime[shortestJobIndex];
-    stepBurstTime[shortestJobIndex] = 0;
-    stepCompleted[shortestJobIndex] = true;
-    completionOrder.push(shortestJobIndex);
+    // Εκτέλεση της διεργασίας για μία χρονική μονάδα
+    remainingTime--;
+    stepBurstTime[currentProcess]--;
+
+    // Αν η διεργασία ολοκληρωθεί
+    if (stepBurstTime[currentProcess] === 0) {
+        stepCurrentTime++; // Αύξηση χρόνου μετά την ολοκλήρωση
+        stepTurnAroundTime[currentProcess] = stepCurrentTime - stepArrivalTime[currentProcess];
+        stepWaitingTime[currentProcess] = stepTurnAroundTime[currentProcess] - originalBurstTime[currentProcess];
+        stepCompleted[currentProcess] = true;
+        completionOrder.push(currentProcess);
+        currentProcess = null; // Ελευθέρωση για την επόμενη διεργασία
+    } else {
+        stepCurrentTime++; // Αύξηση χρόνου αν η διεργασία συνεχίζει
+    }
 }
+
 
 
 
