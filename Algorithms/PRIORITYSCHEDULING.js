@@ -284,6 +284,9 @@ function startStepByStep() {
 
 function stepByStepExecution() {
     const n = stepProcesses.length;
+    const priorityOrder = document.getElementById('priority-order').value;
+    const agingRate = parseInt(document.getElementById('aging-rate-input').value || 0);
+    const executionType = document.getElementById('execution-type').value;
 
     // Βρες τις διαθέσιμες διεργασίες
     const availableProcesses = stepProcesses
@@ -295,20 +298,77 @@ function stepByStepExecution() {
         return;
     }
 
+    // Ενημέρωση προτεραιοτήτων με aging
+    if (agingRate > 0) {
+        availableProcesses.forEach((i) => {
+            if (i !== stepLastProcess) {
+                stepPriority[i] -= agingRate; // Μειώνεται η προτεραιότητα με το aging rate
+            }
+        });
+    }
+
     // Βρες τη διεργασία με την υψηλότερη προτεραιότητα
     const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
-        if (stepPriority[i] < stepPriority[highest]) {
-            return i;
-        } else if (stepPriority[i] === stepPriority[highest]) {
+        if (priorityOrder === 'higher-first') {
+            if (stepPriority[i] < stepPriority[highest]) {
+                return i;
+            }
+        } else {
+            if (stepPriority[i] > stepPriority[highest]) {
+                return i;
+            }
+        }
+        if (stepPriority[i] === stepPriority[highest]) {
             return stepArrivalTime[i] < stepArrivalTime[highest] ? i : highest;
         }
         return highest;
     }, availableProcesses[0]);
 
-    // Ενημέρωση διεργασίας και καταγραφή κατάστασης ουράς
+    // Μη Προεκχωρισιμή Λογική
+    if (executionType === 'non-preemptive') {
+        if (stepLastProcess !== highestPriorityIndex) {
+            stepSchedule.push({
+                process: highestPriorityIndex,
+                startTime: stepCurrentTime,
+                endTime: stepCurrentTime + stepRemainingTime[highestPriorityIndex],
+            });
+        }
+
+        stepCurrentTime += stepRemainingTime[highestPriorityIndex];
+        stepRemainingTime[highestPriorityIndex] = 0;
+
+        stepTurnAroundTime[highestPriorityIndex] =
+            stepCurrentTime - stepArrivalTime[highestPriorityIndex];
+        stepWaitingTime[highestPriorityIndex] =
+            stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
+
+        stepCompleted++;
+        updateResultTable(highestPriorityIndex);
+    } else {
+        // Προεκχωρισιμή Λογική
+        stepRemainingTime[highestPriorityIndex]--;
+        stepCurrentTime++;
+
+        if (stepRemainingTime[highestPriorityIndex] === 0) {
+            stepCompleted++;
+            stepTurnAroundTime[highestPriorityIndex] =
+                stepCurrentTime - stepArrivalTime[highestPriorityIndex];
+            stepWaitingTime[highestPriorityIndex] =
+                stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
+            updateResultTable(highestPriorityIndex);
+
+            stepSchedule.push({
+                process: highestPriorityIndex,
+                startTime: stepCurrentTime - 1,
+                endTime: stepCurrentTime,
+            });
+        }
+    }
+
+    // Ενημέρωση ουράς διεργασιών και εμφάνιση κατάστασης
     const activeProcess = `<span class="queue-process active">P${highestPriorityIndex}</span>`;
     const waitingQueue = availableProcesses
-        .filter((i) => i !== highestPriorityIndex)
+        .filter((i) => i !== highestPriorityIndex && stepRemainingTime[i] > 0)
         .map((i) => `<span class="queue-process">P${i}</span>`)
         .join(' -> ') || 'Καμία';
 
@@ -321,25 +381,7 @@ function stepByStepExecution() {
     `;
     document.getElementById('stepHistory').appendChild(stepBox);
 
-    stepRemainingTime[highestPriorityIndex]--;
-    stepCurrentTime++;
-
-    if (stepRemainingTime[highestPriorityIndex] === 0) {
-        stepCompletedProcesses[highestPriorityIndex] = true;
-        stepTurnAroundTime[highestPriorityIndex] =
-            stepCurrentTime - stepArrivalTime[highestPriorityIndex];
-        stepWaitingTime[highestPriorityIndex] =
-            stepTurnAroundTime[highestPriorityIndex] - stepBurstTime[highestPriorityIndex];
-        stepCompleted++;
-        stepSchedule.push({
-            process: highestPriorityIndex,
-            startTime: stepCurrentTime - 1,
-            endTime: stepCurrentTime,
-        });
-        updateResultTable(highestPriorityIndex);
-    }
-
-    // Αν ολοκληρώθηκαν όλες οι διεργασίες
+    // Έλεγχος αν όλες οι διεργασίες ολοκληρώθηκαν
     if (stepCompleted === n) {
         const endBox = document.createElement('div');
         endBox.classList.add('step-box');
@@ -360,6 +402,7 @@ function stepByStepExecution() {
         document.getElementById('nextStepButton').remove();
     }
 }
+
 
 function createResultTable() {
     const n = stepProcesses.length;
