@@ -120,7 +120,7 @@ function drawGanttChart(schedule) {
     const totalDuration = schedule[schedule.length - 1].endTime;
 
     // Ρυθμίσεις καμβά
-    const canvasWidth = Math.max(800, totalDuration * 10); // Δυναμικό πλάτος καμβά
+    const canvasWidth = Math.max(800, totalDuration * 10) + 100; // Δυναμικό πλάτος καμβά
     const scaleFactor = canvasWidth / totalDuration; // Κλίμακα χρόνου
     canvas.width = canvasWidth;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -128,36 +128,33 @@ function drawGanttChart(schedule) {
     let currentX = 0; // Αρχικό X για τις μπάρες
     const barHeight = 40; // Ύψος μπάρας
     const labelFontSize = 12; // Σταθερό μέγεθος γραμματοσειράς
-    const minBarWidth = 50; // Ελάχιστο πλάτος μπάρας για να χωράει την ετικέτα
+    const minBarWidth = 50; // Ελάχιστο πλάτος μπάρας
 
     // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
-    const processColors = {};
-    const colorStep = 360 / schedule.length; // Υπολογισμός βήματος χρώματος
-
-    for (let i = 0; i < schedule.length; i++) {
-        const { process, startTime, endTime } = schedule[i];
-        const duration = endTime - startTime;
-        let barWidth = duration * scaleFactor;
-
-        // Διασφάλιση ότι η μπάρα είναι αρκετά μεγάλη για την ετικέτα
-        const label = `P${process}`;
-        const labelWidth = ctx.measureText(label).width;
-        barWidth = Math.max(barWidth, labelWidth + 20, minBarWidth);
-
-        // Ανάθεση ή ανάκτηση χρώματος για τη διεργασία
-       // Διαφορετικό χρώμα για κάθε διεργασία
-       function getRandomColor() {
+    function getRandomColor() {
         const hue = Math.floor(Math.random() * 360); // Απόχρωση
         const saturation = Math.floor(Math.random() * 40) + 60; // Κορεσμός 60-100%
         const lightness = Math.floor(Math.random() * 40) + 40; // Φωτεινότητα 40-80%
         return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
     }
-    
-    ctx.fillStyle = getRandomColor();
-    
-    ctx.strokeStyle = '#000'; // Μαύρο περίγραμμα
-    ctx.lineWidth = 2;
-    ctx.strokeRect(currentX, 50, barWidth, 40);
+
+    for (let i = 0; i < schedule.length; i++) {
+        const { process, startTime, endTime } = schedule[i];
+        const duration = endTime - startTime;
+
+        // Υπολογισμός πλάτους μπάρας με ελάχιστο πλάτος
+        let barWidth = Math.max(duration * scaleFactor, minBarWidth);
+
+        // Διασφάλιση ότι η μπάρα είναι αρκετά μεγάλη για την ετικέτα
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width;
+        barWidth = Math.max(barWidth, labelWidth + 20);
+
+        // Ανάθεση χρώματος για τη διεργασία
+        ctx.fillStyle = getRandomColor();
+        ctx.strokeStyle = '#000'; // Μαύρο περίγραμμα
+        ctx.lineWidth = 2;
+        ctx.strokeRect(currentX, 50, barWidth, barHeight);
 
         // Σχεδίαση μπάρας διεργασίας
         ctx.fillRect(currentX, 50, barWidth, barHeight);
@@ -169,11 +166,18 @@ function drawGanttChart(schedule) {
 
         // Ετικέτες χρόνου (start time, end time)
         ctx.fillText(startTime, currentX, 45); // Χρόνος έναρξης
-        ctx.fillText(endTime, currentX + barWidth, 45); // Χρόνος λήξης
+
+        // Προσαρμογή για την τελευταία ετικέτα
+        if (i === schedule.length - 1) {
+            ctx.fillText(endTime, currentX + barWidth - 20, 45); // Χρόνος λήξης
+        } else {
+            ctx.fillText(endTime, currentX + barWidth, 45); // Χρόνος λήξης
+        }
 
         currentX += barWidth; // Ενημέρωση για την επόμενη μπάρα
     }
 }
+
 
 
 
