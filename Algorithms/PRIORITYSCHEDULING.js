@@ -38,11 +38,16 @@ function runPriorityCPU() {
         if (agingRate > 0) {
             availableProcesses.forEach((i) => {
                 if (i !== lastProcess) {
-                    priority[i] -= agingRate;
+                    // Ενημέρωση προτεραιότητας μόνο για μη ενεργές διεργασίες
+                    if (priorityOrder === 'higher-first') {
+                        priority[i] -= agingRate; // Μειώνεται για υψηλότερη προτεραιότητα
+                    } else {
+                        priority[i] += agingRate; // Αυξάνεται για υψηλότερη προτεραιότητα
+                    }
                 }
             });
         }
-
+        
         const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
             if (priorityOrder === 'higher-first') {
                 if (priority[i] < priority[highest]) {
@@ -53,11 +58,14 @@ function runPriorityCPU() {
                     return i;
                 }
             }
+        
+            // Αν είναι ίδιες οι προτεραιότητες, επιλέγουμε με βάση τον χρόνο άφιξης
             if (priority[i] === priority[highest]) {
                 return arrivalTime[i] < arrivalTime[highest] ? i : highest;
             }
             return highest;
         }, availableProcesses[0]);
+        
 
         if (executionType === 'non-preemptive') {
             if (lastProcess !== highestPriorityIndex) {
@@ -156,6 +164,8 @@ function runPriorityCPU() {
         ${queueOutput}
     `;
     drawGanttChart(schedule);
+        // Απόκρυψη κουμπιού εκτέλεσης
+        document.getElementById("runButton").style.display = "none";
 }
 
 
@@ -298,14 +308,22 @@ function stepByStepExecution() {
         return;
     }
 
-    // Ενημέρωση προτεραιοτήτων με aging
     if (agingRate > 0) {
         availableProcesses.forEach((i) => {
-            if (i !== stepLastProcess) {
-                stepPriority[i] -= agingRate; // Μειώνεται η προτεραιότητα με το aging rate
+            if (i !== lastProcess) {
+                priority[i] -= agingRate;
+            }
+    
+            // Έλεγχος για όρια προτεραιότητας (π.χ., αν υπάρχει μέγιστη/ελάχιστη τιμή)
+            if (priorityOrder === 'higher-first') {
+                priority[i] = Math.max(priority[i], -100); // Π.χ. κατώτατο όριο -100
+            } else {
+                priority[i] = Math.min(priority[i], 100); // Π.χ. ανώτατο όριο 100
             }
         });
     }
+    
+    
 
     // Βρες τη διεργασία με την υψηλότερη προτεραιότητα
     const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
@@ -613,9 +631,11 @@ function resetPrioritySJF() {
     document.getElementById('burst-time').value = '';
     document.getElementById('arrival-time').value = '';
     document.getElementById('priority').value = '';
-
+ 
     // Καθαρισμός του πίνακα αποτελεσμάτων
-    document.getElementById('seek-count').innerHTML = '';
+    document.getElementById('seek-count').innerHTML = '';  
+    document.getElementById('aging-rate-input').value = '';
+
 
     document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
 

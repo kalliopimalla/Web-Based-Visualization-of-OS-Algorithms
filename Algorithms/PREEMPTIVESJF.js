@@ -110,6 +110,8 @@ function runPreSJFCPU() {
 
     // Εμφάνιση κουμπιού επαναφοράς
     document.getElementById("resetButton").style.display = "inline-block";
+         // Απόκρυψη κουμπιού εκτέλεσης
+         document.getElementById("runButton").style.display = "none";
 }
 
 function drawGanttChart(schedule) {

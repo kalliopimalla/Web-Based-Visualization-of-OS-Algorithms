@@ -335,7 +335,7 @@ function generateRandomSequence(length, max) {
 
 
 
-// script.js
+// Για το sidebar
 document.addEventListener("DOMContentLoaded", () => {
     const openSidebar = document.getElementById("open-sidebar");
     const closeSidebar = document.getElementById("close-sidebar");
@@ -367,6 +367,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+
+
+  
   function adjustCanvasSpacing() {
     const canvas = document.getElementById("seekCanvas");
     const sequenceContainer = document.getElementById("seek-sequence");

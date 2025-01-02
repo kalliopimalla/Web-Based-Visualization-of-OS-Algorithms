@@ -1,126 +1,7 @@
 
 const schedule = []; // Πίνακας προγραμματισμού για το Gantt Chart
 
-function runRoundRobinCPU() {
-    const btInput = document.getElementById('burst-time').value;
-    const atInput = document.getElementById('arrival-time').value;
-    const quantumInput = document.getElementById('quantum').value;
 
-
-
-    const burstTime = btInput.split(',').map(Number);
-    const arrivalTime = atInput.split(',').map(Number);
-    const quantum = parseInt(quantumInput);
-    const n = burstTime.length;
-
-
-    const processes = Array.from({ length: n }, (_, i) => i + 1);
-    const remainingBurstTime = [...burstTime];
-    const wt = new Array(n).fill(0);
-    const tat = new Array(n).fill(0);
-
-    let currentTime = 0;
-    let completed = 0;
-    let queue = [];
-    let visited = new Array(n).fill(false);
-    let queueOutput = '';
-
-    // Αρχικοποίηση: προσθήκη διεργασιών που φτάνουν στη χρονική στιγμή 0
-    for (let i = 0; i < n; i++) {
-        if (arrivalTime[i] <= currentTime && !visited[i]) {
-            queue.push(i);
-            visited[i] = true;
-        }
-    }
-
-    while (completed < n) {
-        if (queue.length === 0) {
-            currentTime++;
-            // Προσθήκη νέων διεργασιών αν φτάσουν
-            for (let i = 0; i < n; i++) {
-                if (arrivalTime[i] <= currentTime && !visited[i]) {
-                    queue.push(i);
-                    visited[i] = true;
-                }
-            }
-            continue;
-        }
-
-        const currentProcess = queue.shift();
-
-        // Εμφάνιση της ουράς διεργασιών
-        const activeProcess = `<span class="queue-process active">P${processes[currentProcess]}</span>`;
-        const waitingQueue = queue
-            .map((i) => `<span class="queue-process">P${processes[i]}</span>`)
-            .join(' -> ') || 'Καμία';
-
-        queueOutput += `
-            <div class="step-box">
-                <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
-                <div>Εκτελείται: ${activeProcess}</div>
-                <div>Αναμονή: ${waitingQueue}</div>
-            </div>
-        `;
-
-        // Εκτέλεση για το quantum ή για το υπόλοιπο burst time
-        const executionTime = Math.min(quantum, remainingBurstTime[currentProcess]);
-        currentTime += executionTime;
-        remainingBurstTime[currentProcess] -= executionTime;
-        if (
-            schedule.length === 0 ||
-            schedule[schedule.length - 1].process !== processes[currentProcess]
-        ) {
-            schedule.push({
-                process: processes[currentProcess],
-                startTime: currentTime - executionTime,
-                endTime: currentTime,
-            });
-        } else {
-            schedule[schedule.length - 1].endTime = currentTime;
-        }
-        
-        
-        // Αν ολοκληρώθηκε η διεργασία
-        if (remainingBurstTime[currentProcess] === 0) {
-            completed++;
-            tat[currentProcess] = currentTime - arrivalTime[currentProcess];
-            wt[currentProcess] = tat[currentProcess] - burstTime[currentProcess];
-        } else {
-            queue.push(currentProcess); // Επιστροφή της διεργασίας στην ουρά
-        }
-
-        // Προσθήκη νέων διεργασιών που φτάνουν στο currentTime
-        for (let i = 0; i < n; i++) {
-            if (arrivalTime[i] <= currentTime && !visited[i]) {
-                queue.push(i);
-                visited[i] = true;
-            }
-        }
-    }
-
-    // Υπολογισμός μέσου χρόνου αναμονής
-    const averageWaitingTime = wt.reduce((sum, time) => sum + time, 0) / n;
-
-    // Δημιουργία πίνακα αποτελεσμάτων
-    let output = "<table border='1'><tr><th>Διεργασίες</th><th>Χρόνος Εκτέλεσης</th><th>Χρόνος Άφιξης</th><th>Χρόνος Αναμονής</th><th>Χρόνος Επιστροφής</th></tr>";
-    for (let i = 0; i < n; i++) {
-        output += `<tr><td>P${processes[i]}</td><td>${burstTime[i]}</td><td>${arrivalTime[i]}</td><td>${wt[i]}</td><td>${tat[i]}</td></tr>`;
-    }
-    output += "</table>";
-
-    document.getElementById('seek-count').innerHTML = output;
-    document.getElementById('stepHistory').innerHTML = `
-        <p><strong>Μέσος Χρόνος Αναμονής :<\strong> ${averageWaitingTime.toFixed(2)}</p>
-        ${queueOutput}
-    `;
-    document.getElementById("resetButton").style.display = "inline-block";
-    drawGanttChart(schedule);
-        // Καθαρισμός καμβά
-        const canvas = document.getElementById('seekCanvas');
-        const ctx = canvas.getContext('2d');
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-}
 
 function runRoundRobinCPU() {
     const btInput = document.getElementById('burst-time').value;
@@ -232,9 +113,12 @@ function runRoundRobinCPU() {
         ${queueOutput}
     `;
     document.getElementById("resetButton").style.display = "inline-block";
-    drawGanttChart(schedule);
+ 
+    // Απόκρυψη κουμπιού εκτέλεσης
+    document.getElementById("runButton").style.display = "none";
 
-   
+    drawGanttChart(schedule);
+     
 }
 
 
@@ -612,10 +496,7 @@ function resetRR() {
     
        
     
-        // Απόκρυψη κουμπιών
-        document.getElementById('runButton').style.display = 'none';
-        document.getElementById('stepByStepBtn').style.display = 'none';
-        document.getElementById('resetButton').style.display = 'none';
+       
   
 
     // Απόκρυψη κουμπιών που δεν χρειάζονται
