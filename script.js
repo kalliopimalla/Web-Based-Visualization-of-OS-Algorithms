@@ -30,3 +30,17 @@ document.querySelectorAll('.submenu-content li a').forEach((link) => {
   });
 });
 
+// Επιλογή των κουμπιών και του sidebar
+const hamburger = document.querySelector('.hamburger');
+const sidebar = document.querySelector('#sidebar');
+const closeSidebar = document.querySelector('#close-sidebar');
+
+// Ενεργοποίηση του Hamburger Menu
+hamburger.addEventListener('click', () => {
+  sidebar.classList.toggle('open'); // Ανοίγει/κλείνει το sidebar
+});
+
+// Κλείσιμο του sidebar
+closeSidebar.addEventListener('click', () => {
+  sidebar.classList.remove('open'); // Κλείνει το sidebar
+});

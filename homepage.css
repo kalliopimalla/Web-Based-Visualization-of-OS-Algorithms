@@ -108,8 +108,8 @@ nav ul li a:hover {
 
 /* Hero Section */
 .hero {
-  position: relative;
-  height: 100vh; /* Ύψος πλήρους οθόνης */
+  position: auto;
+  height: 100h; /* Ύψος πλήρους οθόνης */
   width: 100%; /* Καλύπτει όλο το πλάτος */
   display: flex;
   justify-content: center;
@@ -119,10 +119,10 @@ nav ul li a:hover {
 
 .hero .container {
   position: relative;
-  width: 80%; /* Πλάτος του container */
+  width: 70%; /* Πλάτος του container */
   max-width: 1200px; /* Μέγιστο πλάτος */
   height: auto; /* Αυτόματο ύψος ανάλογα με το περιεχόμενο */
-  padding: 20px;
+  padding: 30px;
   background-color: rgba(252, 246, 228, 0.85); /* Απαλό χρώμα */
   border-radius: 15px; /* Καμπυλωμένες γωνίες */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Απαλή σκιά */
@@ -163,26 +163,46 @@ nav ul li a:hover {
   z-index: 2; /* Πάνω από την εικόνα */
   border-radius: 10px; /* Καμπυλωμένες γωνίες να ταιριάζουν με την εικόνα */
 }
+/* Στυλ για το Hamburger Menu */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 25px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 10px;
+}
 
-/* Sidebar Styling */
+.hamburger span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background-color: #333;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Sidebar */
 .sidebar {
   position: fixed;
   top: 0;
-  right: -300px; /* Αρχικά κρυμμένο */
-  width: 300px;
+  left: -300%; /* Κρυμμένο αρχικά */
+  width: 250px;
   height: 100vh;
   background-color: #fcf6e4;
-  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  overflow-y: auto;
-  transition: right 0.3s ease;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
   z-index: 1000;
-  display: none; /* Κρύβεται εξ αρχής */
+  overflow-y: scroll; /* Εμφανίζεται πάντα η γραμμή κύλισης */
+
 }
 
 .sidebar.open {
-  display: block; /* Εμφανίζεται όταν ανοίγει */
-  right: 0;
+  left: 0; /* Εμφανίζεται όταν είναι ανοικτό */
 }
 
 .sidebar .close-btn {
@@ -197,10 +217,11 @@ nav ul li a:hover {
   right: 10px;
 }
 
+/* Sidebar Links */
 .sidebar ul {
-  list-style-type: none;
-  padding: 0;
-  margin: 20px 0;
+  list-style: none;
+  padding: 20px;
+  margin: 0;
 }
 
 .sidebar ul li {
@@ -211,12 +232,16 @@ nav ul li a:hover {
   text-decoration: none;
   color: #333;
   font-size: 16px;
+  display: block;
   transition: color 0.3s ease;
 }
 
 .sidebar ul li a:hover {
   color: #555;
 }
+
+
+
 
 /* Εμφάνιση τίτλων (πιο έντονα) */
 .sidebar ul li .dropdown-submenu > div {
@@ -319,7 +344,93 @@ footer {
   font-family: 'Poppins', sans-serif;
   position: fixed; /* Σταθερό στο κάτω μέρος της σελίδας */
   bottom: 0; /* Ευθυγράμμιση στο κάτω μέρος */
-  width: 100vw; /* Καταλαμβάνει όλο το πλάτος της οθόνης */
+  width: 100%; /* Καταλαμβάνει όλο το πλάτος της οθόνης */
  
 }
 
+/* Responsive styles για κινητές συσκευές */
+@media (max-width: 320px) {
+  body {
+    font-size: 12px; /* Μείωση της βασικής γραμματοσειράς */
+  }
+  .logo .title {
+    font-size: 18px; /* Μείωση τίτλου */
+  }
+  .logo .subtitle {
+    font-size: 16px; /* Μείωση υπότιτλου */
+  }
+  nav ul li a {
+    font-size: 14px; /* Μείωση γραμματοσειράς του navigation */
+  }
+  .hero .container h1 {
+    font-size: 24px; /* Μείωση τίτλου στο Hero Section */
+  }
+  .hero .container p {
+    font-size: 14px; /* Μείωση παραγράφου */
+  }
+  .sidebar ul li .submenu-content li a {
+    font-size: 14px; /* Μείωση γραμματοσειράς στο sidebar */
+  }
+}
+
+/* Responsive styles για οθόνες έως 480px */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px; /* Προσαρμογή της βασικής γραμματοσειράς */
+  }
+  .logo .title {
+    font-size: 20px; /* Μείωση τίτλου */
+  }
+  .logo .subtitle {
+    font-size: 18px;
+  }
+  nav ul li a {
+    font-size: 15px; /* Προσαρμογή γραμματοσειράς του navigation */
+  }
+  .hero .container h1 {
+    font-size: 28px; /* Προσαρμογή τίτλου στο Hero Section */
+  }
+  .hero .container p {
+    font-size: 16px; /* Προσαρμογή παραγράφου */
+  }
+  .sidebar ul li .submenu-content li a {
+    font-size: 15px; /* Προσαρμογή γραμματοσειράς στο sidebar */
+  }
+}
+
+/* Responsive styles για οθόνες έως 768px */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px; /* Προσαρμογή της βασικής γραμματοσειράς */
+  }
+  .logo .title {
+    font-size: 22px; /* Μείωση τίτλου */
+  }
+  .logo .subtitle {
+    font-size: 20px;
+  }
+  nav ul li a {
+    font-size: 16px; /* Προσαρμογή γραμματοσειράς του navigation */
+  }
+  .hero .container h1 {
+    font-size: 32px; /* Προσαρμογή τίτλου στο Hero Section */
+  }
+  .hero .container p {
+    font-size: 18px; /* Προσαρμογή παραγράφου */
+  }
+  .sidebar ul li .submenu-content li a {
+    font-size: 16px; /* Προσαρμογή γραμματοσειράς στο sidebar */
+  }
+}
+
+
+/* Εμφάνιση Hamburger Menu σε μικρότερες οθόνες */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex; /* Εμφανίζεται το Hamburger Menu */
+  }
+
+  nav {
+    display: none; /* Απόκρυψη κανονικού μενού */
+  }
+}
