@@ -835,6 +835,32 @@ table th {
 }
 
 
+.popup select {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid #666; /* Γκρι περίγραμμα */
+  border-radius: 5px;
+  background-color: #f9f9f9; /* Ανοιχτό γκρι φόντο */
+  color: #333; /* Σκούρο κείμενο */
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.popup select:focus {
+  outline: none;
+  border-color: #444; /* Πιο σκούρο γκρι όταν είναι ενεργό */
+  box-shadow: 0 0 5px #666; /* Ελαφρύ γκρι πλαίσιο */
+  background-color: #fff; /* Λευκό φόντο όταν επιλέγεται */
+}
+
+.popup select option {
+  font-size: 14px;
+  color: #333; /* Σκούρο χρώμα για τις επιλογές */
+  background-color: #f9f9f9; /* Ίδιο φόντο με το dropdown */
+}
 
 
 
