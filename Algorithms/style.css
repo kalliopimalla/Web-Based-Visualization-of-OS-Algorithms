@@ -236,15 +236,17 @@ body {
 
 
   /* Για την υλοποιηση 2ο div */
+  
   .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    width: 80%; 
+    max-width: 800px; /* Μέγιστο πλάτος για μεγάλες οθόνες */
+    margin: 0 auto; /* Κεντράρισμα */
+    box-sizing: border-box; /* Συμπερίληψη padding/border στο πλάτος */
+       padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
-  
 
 /*Content για την υλοποίηση το 1ο div*/
 
@@ -466,44 +468,66 @@ body {
     
      /* Στυλ για τα βήματα ουράς στους αλγοριθμους για την CPU*/
      .step-box {
-      border: 1px solid #333;
-      padding: 10px auto;
-      margin: 5px 0 auto;
-      border-radius: 5px;
-      background-color: #f0f0f0;
-      margin-bottom: 10px;
-     
+      border: 2px solid #444; /* Πιο έντονο περίγραμμα */
+      padding: 15px; /* Περισσότερο padding για καλύτερη ευκρίνεια */
+      margin: 10px 0; /* Κενό πάνω-κάτω */
+      border-radius: 8px; /* Πιο στρογγυλεμένες γωνίες */
+      background-color: #f9f9f9; /* Ελαφρώς πιο φωτεινό γκρι */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Προσθήκη σκιάς για πιο σύγχρονη εμφάνιση */
     }
+    
     .step-time {
       font-weight: bold;
-      color: #333; 
-      margin-bottom: 5px;
+      color: #222; /* Πιο σκούρο χρώμα */
+      font-size: 16px; /* Μεγαλύτερο μέγεθος γραμματοσειράς */
+      margin-bottom: 10px; /* Περισσότερο κενό από κάτω */
     }
     .queue-state {
-      margin-top: 5px auto;
+      margin-top: 10px; /* Περισσότερο κενό στην κορυφή */
       display: flex;
-      gap: 5px;
+      gap: 10px; /* Μεγαλύτερο κενό μεταξύ των στοιχείων */
+      flex-wrap: wrap; /* Τα στοιχεία να "σπάνε" στη νέα γραμμή αν χρειαστεί */
     }
     .queue-process {
       display: inline-block;
-      margin-right: 5px;
-      padding: 5px 10px auto;
-      border: 1px solid #333;
-      border-radius: 3px;
-      background-color: #e1e7f7;
+      margin-right: 0; /* Αφαιρεί περιττά περιθώρια */
+      padding: 8px 15px; /* Μεγαλύτερο padding για καλύτερη ευκρίνεια */
+      border: 2px solid #333; /* Πιο έντονο περίγραμμα */
+      border-radius: 5px; /* Στρογγυλεμένες γωνίες */
+      background-color: #d6e4f9; /* Πιο απαλό μπλε */
+      color: #333; /* Σκούρο κείμενο */
+      font-size: 14px; /* Σταθερό μέγεθος γραμματοσειράς */
+      transition: background-color 0.3s, transform 0.2s; /* Εφέ για hover */
     }
 
  
+    .queue-process:hover {
+      background-color: #b3d0f5; /* Πιο έντονο μπλε όταν περνάει το ποντίκι */
+      transform: scale(1.05); /* Ελαφρώς μεγαλύτερο μέγεθος */
+    }
+    
     .queue-process.active {
-      background-color: #ffcccb;
+      background-color: #ffcccc; /* Κόκκινο φόντο για ενεργή διεργασία */
       font-weight: bold;
-      border-color: #ff0000;
+      border-color: #ff0000; /* Κόκκινο περίγραμμα */
     }
     
     .step-box div:nth-child(3) {
-      margin-top: 10px auto; /* Δημιουργεί κενό μεταξύ της "Εκτελείται" και της "Αναμονή" */
+      margin-top: 15px; /* Περισσότερο κενό μεταξύ στοιχείων */
     }
-       
+
+    .seek-count {
+      width: 100%; /* Καταλαμβάνει όλο το πλάτος του container */
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 15px;
+      border: 1px solid #444;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      box-sizing: border-box;
+    }
+
+
    /*cpu buttons*/
 #stepHistory {
   position: relative; /* Για να τοποθετηθεί το κουμπί μέσα στον container */
@@ -819,20 +843,52 @@ input {
   box-shadow: 0 0 5px red;
 }
 
+
+
+.table-container {
+  width: 100%; /* Καταλαμβάνει όλο το πλάτος του container */
+  overflow-x: auto; /* Ενεργοποίηση οριζόντιας κύλισης αν χρειαστεί */
+  margin: 10px 0; /* Κενό πάνω και κάτω */
+  box-sizing: border-box; /* Περιλαμβάνει το padding στο πλάτος */
+}
+
 table {
-  width: 100%;
-  border-collapse: collapse;
+  width: 100%; /* Καταλαμβάνει όλο το πλάτος του parent container */
+  border-collapse: collapse; /* Ενώνει τα περιθώρια των κελιών */
+  background-color: #fff; /* Λευκό φόντο για τον πίνακα */
 }
 
 table th, table td {
-  text-align: center; /* Κεντράρισμα στοιχείων */
-  padding: 8px; /* Προαιρετικό για καλύτερη εμφάνιση */
-  border: 1px solid #ddd; /* Προαιρετικό για διαχωρισμό γραμμών */
+  padding: 10px; /* Εσωτερικό περιθώριο για τα κελιά */
+  text-align: center; /* Κεντρική ευθυγράμμιση του κειμένου */
+  border: 1px solid #ccc; /* Γκρι περίγραμμα */
+  font-size: 14px; /* Σταθερό μέγεθος γραμματοσειράς */
 }
 
 table th {
-  background-color: #f4f4f4; /* Προαιρετικό για διαφορετικό χρώμα κεφαλίδας */
+  background-color: #f0f0f0; /* Απαλό γκρι φόντο για τις επικεφαλίδες */
+  font-weight: bold; /* Έντονο κείμενο */
 }
+
+table td {
+  word-wrap: break-word; /* Διάσπαση λέξεων αν χρειάζεται */
+}
+
+/* Responsive Media Queries */
+@media (max-width: 768px) {
+  table th, table td {
+    font-size: 12px; /* Μικρότερο μέγεθος γραμματοσειράς για μικρές οθόνες */
+    padding: 8px; /* Μικρότερο padding */
+  }
+}
+
+@media (max-width: 480px) {
+  table th, table td {
+    font-size: 10px; /* Ακόμη μικρότερο μέγεθος γραμματοσειράς */
+    padding: 5px; /* Ακόμη μικρότερο padding */
+  }
+}
+
 
 
 .popup select {
