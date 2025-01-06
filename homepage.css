@@ -333,20 +333,40 @@ main {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Απαλή σκιά */
   text-align: center;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ελάχιστο ύψος οθόνης */
+  margin: 0;
+}
+
+#main-content {
+  flex: 1; /* Καταλαμβάνει τον υπόλοιπο χώρο */
+}
+footer {
+  position: relative;
+  bottom: 0;
+}
 
 footer {
-  background-color: #333; /* Σκούρο φόντο για το footer */
-  color: #fff; /* Λευκό κείμενο */
+  background-color: #333;
+  color: #fff;
   text-align: center;
   padding: 15px 0;
   font-size: 14px;
-  z-index: 1; /* Τοποθετούμε το footer πάνω από άλλα στοιχεία */
   font-family: 'Poppins', sans-serif;
-  position: fixed; /* Σταθερό στο κάτω μέρος της σελίδας */
-  bottom: 0; /* Ευθυγράμμιση στο κάτω μέρος */
-  width: 100%; /* Καταλαμβάνει όλο το πλάτος της οθόνης */
- 
+  width: 100%;
+
+  left: 0; /* Ευθυγράμμιση αριστερά */
+  right: 0; /* Ευθυγράμμιση δεξιά */
 }
+
+
 
 /* Responsive styles για κινητές συσκευές */
 @media (max-width: 320px) {

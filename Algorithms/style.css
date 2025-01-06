@@ -1,4 +1,3 @@
-/* Βασικό στυλ */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -11,7 +10,7 @@ body {
   
   }
   
-  /* Header */
+
   header {
     display: flex;
     justify-content: space-between;
@@ -21,6 +20,17 @@ body {
     box-sizing: border-box;
   }
   
+
+
+  /* Hero Section */
+  .hero {
+    text-align: center;
+    padding: 40px;
+    background-color: rgba(252, 246, 228, 0.85);
+    margin-bottom: 20px;
+  }
+  
+
   header .logo {
     display: flex;
     flex-direction: column;
@@ -37,6 +47,19 @@ body {
     color: #666;
   }
   
+
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 14px;
+    z-index: 1;
+    position: relative;
+    visibility: hidden; /* Κρυφό από προεπιλογή */
+    display: none; /* Δεν καταλαμβάνει χώρο στη διάταξη */
+  }
+
   /* Navigation */
   nav ul {
     list-style-type: none;
@@ -55,56 +78,13 @@ body {
     font-size: 16px;
   }
   
-  /* Hero Section */
-  .hero {
-    text-align: center;
-    padding: 40px;
-    background-color: rgba(252, 246, 228, 0.85);
-    margin-bottom: 20px;
-  }
-  
-  /* Algorithm Sections */
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .algorithm-description, .algorithm-steps, .algorithm-implementation {
-    margin-bottom: 20px;
-  }
-  
-  .algorithm-steps ol {
-    padding-left: 20px;
-  }
-  
-  .input-fields label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .input-fields input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  button {
-    padding: 10px 20px auto;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
 
+
+
+
+  
   /* Sidebar Styling */
-.sidebar {
+  .sidebar {
     position: fixed;
     top: 0;
     right: -300px; /* Αρχικά κρυμμένο */
@@ -216,18 +196,53 @@ body {
   border-left: 4px solid #ff8c00;
 }
 
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 15px 0;
-  font-size: 14px;
-  z-index: 1;
-  position: relative;
-  visibility: hidden; /* Κρυφό από προεπιλογή */
-  display: none; /* Δεν καταλαμβάνει χώρο στη διάταξη */
-}
 
+
+
+  .algorithm-description, .algorithm-steps, .algorithm-implementation {
+    margin-bottom: 20px;
+  }
+  
+  .algorithm-steps ol {
+    padding-left: 20px;
+  }
+  
+  .input-fields label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .input-fields input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  button {
+    padding: 10px 20px fixed;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+
+
+  /* Για την υλοποιηση 2ο div */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+
+/*Content για την υλοποίηση το 1ο div*/
 
       .content {
    
@@ -327,69 +342,93 @@ footer {
       
     
     
-    
-    
-    
-    
       
+  
     
     
-    /*Απο εδω κι κατω*/
+ /*3o div για την υλοποιηση */
+ .input-steps {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  text-align: center;
+  margin: 20px auto;
+  max-width: 600px auto;
+}
+input, button {
+  margin-bottom: 10px;
+}
+.input-steps p {
+  margin: 10px 0 auto;
+}
+.input-steps input {
+  width: 100%;
+  padding: 8px auto;
+  margin: 10px 0 auto;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.input-steps button {
+  padding: 10px 20px auto;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.input-steps button:hover {
+  background-color: #333(2, 172, 172);
+}
+
+.input-steps button, #resetButton {
+  padding: 10px 20px auto;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-steps button:hover, #resetButton:hover {
+  background-color: rgb(0, 0, 0);
+}
+
+  
     
-    
-    .disk-track {
-      display: inline-block;
-      margin: 5px;
-      padding: 10px;
-      background-color: #333;
-      color: white;
-      border-radius: 5px;
-      width: 50px;
-    }
-    .seek-sequence {
+
+    /* Στυλ για τα κουτια εξυπηρετησης στο disk και για τον πινακα αποτελεσματων στο Page repl */ 
+     .seek-sequence {
+      max-width: 100%; /* Περιορίζει το πλάτος του πίνακα στο 90% της σελίδας */
+      overflow-x: auto; /* Ενεργοποίηση scroll μόνο αν χρειάζεται */
+      margin: 0 auto;
+      margin-bottom: 20px; /* Προσθέτει κενό κάτω από τη "Σειρά Εξυπηρέτησης" */
       margin-top: 20px;
     }
+    .seek-sequence ul {
+      list-style-type: none;
+      padding-left: 0 auto;
+    }
+    .seek-sequence ul li {
+      padding: 5px auto;
+      font-size: 14px auto;
+      border-bottom: 1px solid #ddd;
+    }
+  
 
-    .input-steps {
-      text-align: center;
-      margin: 20px auto;
-      max-width: 600px auto;
+    .seek-sequence-boxes {
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap; /* Επιτρέπει το "wrap" στις γραμμές */
+     display: auto; /* Χρησιμοποιείται για να τακτοποιεί τα κουτιά σε γραμμή */
+      gap: 10px; /* Απόσταση μεταξύ των κουτιών */
+      min-width: fit-content; /* Το πλάτος να προσαρμόζεται ανάλογα με τα περιεχόμενα */
+      justify-content: start; /* Τα κουτιά στοιχίζονται στην αρχή */
     }
-    .input-steps p {
-      margin: 10px 0 auto;
-    }
-    .input-steps input {
-      width: 100%;
-      padding: 8px auto;
-      margin: 10px 0 auto;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    .input-steps button {
-      padding: 10px 20px auto;
-      background-color: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .input-steps button:hover {
-      background-color: #333(2, 172, 172);
-    }
-    
-    .input-steps button, #resetButton {
-      padding: 10px 20px auto;
-      background-color: #333;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    
-    .input-steps button:hover, #resetButton:hover {
-      background-color: rgb(0, 0, 0);
-    }
-    
+
+  
+
+  
+  
     
     
      /* Στυλ για τα βήματα */
@@ -419,15 +458,7 @@ footer {
       margin-top: 10px auto; /* Δημιουργεί κενό μεταξύ της "Εκτελείται" και της "Αναμονή" */
     }
     
-    .seek-sequence-boxes {
-      display: auto;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-      flex-wrap: wrap; /* Επιτρέπει το "wrap" στις γραμμές */
-    
-      justify-content: start; /* Τα κουτιά στοιχίζονται στην αρχή */
-    }
+ 
   
     .sequence-box {
       flex: 1 0 calc(10% - 10px); /* Κάθε κουτί καταλαμβάνει το 10% της γραμμής με απόσταση */
@@ -461,16 +492,7 @@ footer {
     
     
     
-     /* Στυλ για τα κουτια εξυπηρετησης */
-    .seek-sequence ul {
-      list-style-type: none;
-      padding-left: 0 auto;
-    }
-    .seek-sequence ul li {
-      padding: 5px auto;
-      font-size: 14px auto;
-      border-bottom: 1px solid #ddd;
-    }
+   
     #seek-count-display {
       color: #333;
     }
@@ -550,11 +572,7 @@ footer {
       overflow: hidden; /* Αφαιρεί περιττά scrollbars */
     }
     
-    .seek-sequence {
-      max-width: 100%; /* Περιορίζει το πλάτος του πίνακα στο 90% της σελίδας */
-      overflow-x: auto; /* Ενεργοποίηση scroll μόνο αν χρειάζεται */
-      margin: 0 auto;
-    }
+  
     
     .visual-table {
       width: 100%; /* Ο πίνακας καταλαμβάνει όλο το διαθέσιμο πλάτος */
@@ -760,14 +778,7 @@ footer {
   position: relative;
 }
 
-.seek-sequence {
-  margin-bottom: 20px; /* Προσθέτει κενό κάτω από τη "Σειρά Εξυπηρέτησης" */
-}
 
-
-.seek-sequence {
-  margin-bottom: 20px; /* Σταθερό διάστημα */
-}
 
 .canvas-container {
   margin-top: 20px; /* Διάστημα πάνω από τον καμβά */
@@ -781,11 +792,7 @@ footer {
   box-sizing: border-box;
 }
 
-.seek-sequence-boxes {
-  display: auto; /* Χρησιμοποιείται για να τακτοποιεί τα κουτιά σε γραμμή */
-  gap: 10px; /* Απόσταση μεταξύ των κουτιών */
-  min-width: fit-content; /* Το πλάτος να προσαρμόζεται ανάλογα με τα περιεχόμενα */
-}
+
 
 .sequence-box {
   display: inline-block;
@@ -880,50 +887,3 @@ select option:hover {
 }
 
 
-/* Για οθόνες με πλάτος έως 425px */
-@media (max-width: 425px) {
-  body {
-      font-size: 14px; /* Γενικό μέγεθος για το περιεχόμενο */
-  }
-  h1 {
-      font-size: 20px; /* Τίτλοι */
-  }
-  h2 {
-      font-size: 18px;
-  }
-  p {
-      font-size: 12px; /* Παράγραφοι */
-  }
-}
-
-/* Για οθόνες με πλάτος έως 375px */
-@media (max-width: 375px) {
-  body {
-      font-size: 13px;
-  }
-  h1 {
-      font-size: 18px;
-  }
-  h2 {
-      font-size: 16px;
-  }
-  p {
-      font-size: 11px;
-  }
-}
-
-/* Για οθόνες με πλάτος έως 320px */
-@media (max-width: 320px) {
-  body {
-      font-size: 12px;
-  }
-  h1 {
-      font-size: 16px;
-  }
-  h2 {
-      font-size: 14px;
-  }
-  p {
-      font-size: 10px;
-  }
-}
