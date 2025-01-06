@@ -64,7 +64,7 @@
     <!-- Hero Section -->
     <section class="hero">
       <div class="container">
-        <h1>Scan</h1>
+        <h1>SCAN</h1>
        
       </div>
     </section>
@@ -165,7 +165,7 @@
         <h2>Υλοποίηση</h2>
        
         <div class="content">
-   
+          <div class="container">
     <div class="input-steps">
 
       <p><strong>Αριθμός κυλίνδρων:</strong></p>
@@ -176,7 +176,7 @@
 
       <p><strong>Η σειρά των αιτήσεων:</strong></p>
       <div class="popup">
-          <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)" style="width: 600px;">
+          <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)" style="width: 600px auto;">
           <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
         </div>
 
@@ -219,12 +219,12 @@
             <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
                     </div>
                 </div>
-              </div>
-              <div class="canvas-container">
-                  <canvas id="seekCanvas" width="1200" height="600"></canvas>
-              </div>
               
-                     
+                <div id="gantt-wrapper" style="overflow-x: auto; overflow-y: auto; white-space: nowrap; margin-top: 20px;"> 
+                  <div class="canvas-container">
+                      <canvas id="seekCanvas" width="750" height="750"></canvas>
+                  </div>
+                </div>
                      
                   
                   <br>
@@ -233,8 +233,8 @@
           
           
           
-          
-          
+            </div>
+       
                 </div>
               </section>
             </main>

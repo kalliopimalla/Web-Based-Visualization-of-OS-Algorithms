@@ -56,10 +56,15 @@ body {
     font-size: 14px;
     z-index: 1;
     position: relative;
+    bottom: 0;
     visibility: hidden; /* Κρυφό από προεπιλογή */
     display: none; /* Δεν καταλαμβάνει χώρο στη διάταξη */
+    left: 0; /* Ευθυγράμμιση αριστερά */
+    right: 0; /* Ευθυγράμμιση δεξιά */
+    width: 100%;
   }
 
+  
   /* Navigation */
   nav ul {
     list-style-type: none;
@@ -583,10 +588,9 @@ input, button {
     /*Για το Gantt chart */
 
 #gantt-wrapper {
-  overflow-x: auto; /* Οριζόντια κύλιση */
- 
-  margin-top: 20px;
-  padding: 10px;
+
+  margin-top: 20px auto;
+  padding: 10px auto;
   background-color: #f9f9f9;
   border-radius: 5px;
 }
@@ -664,8 +668,7 @@ input, button {
   max-width: 1200px; /* Ορισμός μέγιστου πλάτους */
   width: 100%; /* Να καλύπτει όλο το διαθέσιμο πλάτος */
   position: relative;
-  height: 100vh; /* Καθιστά την περιοχή να καταλαμβάνει όλο το ύψος της οθόνης */
-  margin-top: 20px; /* Διάστημα πάνω από τον καμβά */
+ 
 }
 
 
