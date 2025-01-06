@@ -198,28 +198,21 @@ body {
 
 
 
-
+/* τα βασικα sections καθε σελιδας */
   .algorithm-description, .algorithm-steps, .algorithm-implementation {
     margin-bottom: 20px;
   }
-  
-  .algorithm-steps ol {
-    padding-left: 20px;
-  }
-  
-  .input-fields label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .input-fields input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
+     
+  .algorithm-implementation {
+    text-align: center; /* Κεντράρει το περιεχόμενο μέσα στην ενότητα */
+    margin: 20px auto;
+    padding: 20px auto;
+  } 
+
+
+
+
+/*γενικα css για ολα τα κουμπια*/
   button {
     padding: 10px 20px fixed;
     background-color: #333;
@@ -431,17 +424,20 @@ input, button {
   
     
     
-     /* Στυλ για τα βήματα */
+     /* Στυλ για τα βήματα ουράς στους αλγοριθμους για την CPU*/
      .step-box {
       border: 1px solid #333;
       padding: 10px auto;
       margin: 5px 0 auto;
       border-radius: 5px;
       background-color: #f0f0f0;
+      margin-bottom: 10px;
+     
     }
     .step-time {
       font-weight: bold;
-      color: #333;
+      color: #333; 
+      margin-bottom: 5px;
     }
     .queue-state {
       margin-top: 5px auto;
@@ -449,17 +445,52 @@ input, button {
       gap: 5px;
     }
     .queue-process {
+      display: inline-block;
+      margin-right: 5px;
       padding: 5px 10px auto;
       border: 1px solid #333;
       border-radius: 3px;
       background-color: #e1e7f7;
     }
+
+ 
+    .queue-process.active {
+      background-color: #ffcccb;
+      font-weight: bold;
+      border-color: #ff0000;
+    }
+    
     .step-box div:nth-child(3) {
       margin-top: 10px auto; /* Δημιουργεί κενό μεταξύ της "Εκτελείται" και της "Αναμονή" */
     }
-    
+       
+   /*cpu buttons*/
+#stepHistory {
+  position: relative; /* Για να τοποθετηθεί το κουμπί μέσα στον container */
+  min-height: 200px; /* Ελάχιστο ύψος για να έχει χώρο */
+  padding-bottom: 60px; /* Για να υπάρχει χώρος κάτω για το κουμπί */
+}
+
+#nextStepButton {
+  position: absolute;
+  bottom: 10px; /* Τοποθέτηση κοντά στο κάτω μέρος */
+  left: 50%;
+  transform: translateX(-50%); /* Ευθυγράμμιση στο κέντρο */
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#nextStepButton:hover {
+  background-color: #333;
+}
  
   
+    /*Για τα κουτιά για τη σειρά εξυπηρέτησης (Disk)*/
     .sequence-box {
       flex: 1 0 calc(10% - 10px); /* Κάθε κουτί καταλαμβάνει το 10% της γραμμής με απόσταση */
       max-width: calc(10% - 10px);
@@ -469,7 +500,11 @@ input, button {
       border-radius: 5px;
       background-color: #f9f9f9;
       text-align: center;
+      display: inline-block;
+      min-width: 50px; /* Πλάτος κάθε κουτιού */
     }
+ 
+    /*Για τον συνολικό αριθμό κινήσεων (Disk)*/
     .seek-count-display {
       margin-top: 20px auto;
       padding: 15px auto; 
@@ -484,32 +519,13 @@ input, button {
       transition: all 0.3s ease;
     }
     
-    
     .arrow {
       font-size: 20px;
       color: #333;
     }
     
-    
-    
-   
-    #seek-count-display {
-      color: #333;
-    }
-    
-    .queue-process {
-      padding: 5px 10px auto;
-      border: 1px solid #333;
-      border-radius: 3px;
-      background-color: #e1e7f7;
-    }
-    
-    .queue-process.active {
-      background-color: #ffcccb;
-      font-weight: bold;
-      border-color: #ff0000;
-    }
-    
+  
+
      
     
     
@@ -555,65 +571,6 @@ input, button {
     }
     
     
-    
-    
-    
-    
-    .algorithm-implementation {
-      text-align: center; /* Κεντράρει το περιεχόμενο μέσα στην ενότητα */
-      margin: 20px auto;
-      padding: 20px auto;
-    }
-    
-    .sequence-container {
-      display: auto;
-      justify-content: center; /* Κεντράρει τον πίνακα */
-      align-items: center;
-      overflow: hidden; /* Αφαιρεί περιττά scrollbars */
-    }
-    
-  
-    
-    .visual-table {
-      width: 100%; /* Ο πίνακας καταλαμβάνει όλο το διαθέσιμο πλάτος */
-      max-width: 1200px; /* Περιορισμός μέγιστου πλάτους */
-      border-collapse: collapse; /* Συγχώνευση γραμμών για καθαρό look */
-      margin: 0 auto; /* Κεντράρει τον πίνακα */
-    }
-    
-    .visual-table th,
-    .visual-table td {
-      border: 1px solid #ccc;
-      padding: 15px;
-      font-size: 14px;
-      text-align: center;
-      white-space: normal; /* Επιτρέπει την αναδίπλωση του κειμένου */
-      
-    }
-    
-    .visual-table th {
-      background-color: #f2f2f2;
-    }
-    
-    
-    
-    #resultText {
-      margin-top: 20px;
-      font-size: 16px;
-      line-height: 1.5;
-      text-align: center;
-    }
-    
-    #resultText .faults {
-      color: red;
-      font-weight: bold;
-    }
-    
-    #resultText .hits {
-      color: green;
-      font-weight: bold;
-    }
-    
     .input-group {
       display: auto;
       align-items: center;
@@ -622,34 +579,8 @@ input, button {
     .input-group input {
       margin-right: 10px;
     }
-    .step-box {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-bottom: 10px;
-      background-color: #f9f9f9;
-    }
     
-    .step-time {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    
-    .queue-process.active {
-      color: red;
-      font-weight: bold;
-    }
-    
-    .queue-process {
-      display: inline-block;
-      margin-right: 5px;
-      padding: 2px 6px;
-      background-color: #ddd;
-      border-radius: 4px;
-    }
-
-
- 
-
+    /*Για το Gantt chart */
 
 #gantt-wrapper {
   overflow-x: auto; /* Οριζόντια κύλιση */
@@ -721,51 +652,8 @@ input, button {
 }
 
     
-    .canvas-container {
-      display: auto;
-      justify-content: center;
-      align-items: center;
-      height: 100vh; /* Καθιστά την περιοχή να καταλαμβάνει όλο το ύψος της οθόνης */
-      margin: 0 auto;
-  }
-  
-  #seekCanvas {
-      display: auto;
-      border: 1px solid #000;
-      padding: 15px auto;
-  }
-  
-    
-  h2 {
-    text-align: center; /* Κεντράρει το κείμενο οριζόντια */
-    margin-top: 20px; /* Προσθέτει λίγο κενό από το πάνω μέρος */
-    font-size: 24px; /* Μπορεί να προσαρμοστεί ανάλογα με τις ανάγκες */
-    font-weight: bold;
-}
-   
-#stepHistory {
-  position: relative; /* Για να τοποθετηθεί το κουμπί μέσα στον container */
-  min-height: 200px; /* Ελάχιστο ύψος για να έχει χώρο */
-  padding-bottom: 60px; /* Για να υπάρχει χώρος κάτω για το κουμπί */
-}
 
-#nextStepButton {
-  position: absolute;
-  bottom: 10px; /* Τοποθέτηση κοντά στο κάτω μέρος */
-  left: 50%;
-  transform: translateX(-50%); /* Ευθυγράμμιση στο κέντρο */
-  padding: 10px 20px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-#nextStepButton:hover {
-  background-color: #333;
-}
+/*Για τον καμβα της υλοποιησης */
 
 .canvas-container {
   display: auto; /* Χρήση Flexbox */
@@ -776,34 +664,105 @@ input, button {
   max-width: 1200px; /* Ορισμός μέγιστου πλάτους */
   width: 100%; /* Να καλύπτει όλο το διαθέσιμο πλάτος */
   position: relative;
-}
-
-
-
-.canvas-container {
+  height: 100vh; /* Καθιστά την περιοχή να καταλαμβάνει όλο το ύψος της οθόνης */
   margin-top: 20px; /* Διάστημα πάνω από τον καμβά */
 }
 
-.sequence-container {
-  overflow-x: auto; /* Ενεργοποιεί την οριζόντια κύλιση αν χρειάζεται */
-  width: 100%; /* Πλάτος να καταλαμβάνει όλο το διαθέσιμο χώρο */
-  border: 1px solid #ccc; /* Προαιρετικό - για οπτική διάκριση */
-  padding: 10px;
-  box-sizing: border-box;
-}
 
 
-
-.sequence-box {
-  display: inline-block;
-  padding: 10px;
-  border: 1px solid #000;
-  border-radius: 5px;
-  background-color: #f9f9f9;
+  #seekCanvas {
+      display: auto;
+      border: 1px solid #000;
+      padding: 15px auto;
+  }
+  
+    
+       
+ /*τα αποτελεσματα για page replacement*/   
+ #resultText {
+  margin-top: 20px;
+  font-size: 16px;
+  line-height: 1.5;
   text-align: center;
-  min-width: 50px; /* Πλάτος κάθε κουτιού */
 }
 
+#resultText .faults {
+  color: red;
+  font-weight: bold;
+}
+
+#resultText .hits {
+  color: green;
+  font-weight: bold;
+}
+ 
+
+/*Πίνακας Οπτικοποίησης page replac*/    
+    .sequence-container {
+      display: auto;
+      justify-content: center; /* Κεντράρει τον πίνακα */
+      align-items: center;
+      overflow: hidden; /* Αφαιρεί περιττά scrollbars */
+      overflow-x: auto; /* Ενεργοποιεί την οριζόντια κύλιση αν χρειάζεται */
+      width: 100%; /* Πλάτος να καταλαμβάνει όλο το διαθέσιμο χώρο */
+      border: 1px solid #ccc; /* Προαιρετικό - για οπτική διάκριση */
+      padding: 10px;
+      box-sizing: border-box;
+      flex-direction: column;
+      gap: 20px; /* Απόσταση μεταξύ των πινάκων */
+    }
+  
+
+    .visual-table {
+      width: 100%; /* Ο πίνακας καταλαμβάνει όλο το διαθέσιμο πλάτος */
+      max-width: 1200px; /* Περιορισμός μέγιστου πλάτους */
+      border-collapse: collapse; /* Συγχώνευση γραμμών για καθαρό look */
+      margin: 0 auto; /* Κεντράρει τον πίνακα */
+    }
+    
+    .visual-table th,
+    .visual-table td {
+      border: 1px solid #ccc;
+      padding: 15px;
+      font-size: 14px;
+      text-align: center;
+      white-space: normal; /* Επιτρέπει την αναδίπλωση του κειμένου */
+      
+    }
+    
+    .visual-table th {
+      background-color: #f2f2f2;
+    }
+   
+
+    .final-table-container {
+      margin-top: 20px; /* Απόσταση από τον πίνακα σταδιακής εκτέλεσης */
+    }
+    
+
+
+
+
+
+
+ 
+
+    
+
+
+
+  h2 {
+    text-align: center; /* Κεντράρει το κείμενο οριζόντια */
+    margin-top: 20px; /* Προσθέτει λίγο κενό από το πάνω μέρος */
+    font-size: 24px; /* Μπορεί να προσαρμοστεί ανάλογα με τις ανάγκες */
+    font-weight: bold;
+}
+
+
+
+
+
+/*Για τα σφαλματα */
 .error-message {
   color: red;
   box-shadow: 0 0 5px red;
@@ -838,52 +797,10 @@ table th {
 }
 
 
-/* Στυλ για το dropdown */
-select {
-  width: 600px;
-  height: 35px;
-  font-size: 16px;
-  background-color: #f0f0f0; /* Χρώμα φόντου */
-  color: #333; /* Χρώμα κειμένου */
-  border: 1px solid #ccc; /* Περίγραμμα */
-  border-radius: 5px; /* Στρογγυλεμένες γωνίες */
-  padding: 5px 10px;
-  outline: none;
-}
 
-/* Στυλ για τις επιλογές */
-select option {
-  background-color: #f0f0f0; /* Αρχικό χρώμα φόντου */
-  color: #333; /* Χρώμα κειμένου */
-}
 
-/* Στυλ για hover στις επιλογές */
-select option:hover {
-  background-color: #d6d6d6; /* Χρώμα φόντου στο hover */
-  color: #000; /* Χρώμα κειμένου στο hover */
-}
 
-.sequence-container {
-  display: auto;
-  flex-direction: column;
-  gap: 20px; /* Απόσταση μεταξύ των πινάκων */
-}
 
-.visual-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 0 auto;
-}
 
-.visual-table th,
-.visual-table td {
-  border: 1px solid #ccc;
-  padding: 10px;
-  text-align: center;
-}
-
-.final-table-container {
-  margin-top: 20px; /* Απόσταση από τον πίνακα σταδιακής εκτέλεσης */
-}
 
 
