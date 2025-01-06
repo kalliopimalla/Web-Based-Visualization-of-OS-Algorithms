@@ -219,10 +219,16 @@ body {
 
 /*γενικα css για ολα τα κουμπια*/
   button {
-    padding: 10px 20px fixed;
-    background-color: #333;
+    padding: 8px 16px; /* Μικρότερο μέγεθος */
+    margin: 8px;
+    background-color: #444; /* Σκούρο γκρι */
     color: white;
     border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px; /* Μικρότερο μέγεθος κειμένου */
+    font-family: 'Poppins', sans-serif;
+    transition: background-color 0.3s, transform 0.2s;
     border-radius: 5px;
     cursor: pointer;
   }
@@ -348,47 +354,76 @@ body {
  .input-steps {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   text-align: center;
   margin: 20px auto;
-  max-width: 600px auto;
+  max-width: 600px;
 }
-input, button {
-  margin-bottom: 10px;
-}
+
 .input-steps p {
-  margin: 10px 0 auto;
+  margin: 10px 0;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
 }
+
 .input-steps input {
-  width: 100%;
-  padding: 8px auto;
-  margin: 10px 0 auto;
-  border: 1px solid #ccc;
+  width: 80%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #444; 
   border-radius: 5px;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
 }
+
+.input-steps input:focus {
+  outline: none;
+  border-color: #444; 
+  box-shadow: 0 0 5px #444;
+}
+
 .input-steps button {
-  padding: 10px 20px auto;
-  background-color: #333;
+  padding: 8px 10px; /* Μικρότερο μέγεθος */
+  margin: 8px;
+  background-color: #444; /* Σκούρο γκρι */
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px; /* Μικρότερο μέγεθος κειμένου */
+  font-family: 'Poppins', sans-serif;
+  transition: background-color 0.3s, transform 0.2s;
 }
+
 .input-steps button:hover {
-  background-color: #333(2, 172, 172);
+  background-color: #222; /* Μαύρο όταν περνάει το ποντίκι */
+  transform: scale(1.02); /* Ελαφρώς μεγαλύτερο μέγεθος */
 }
 
-.input-steps button, #resetButton {
-  padding: 10px 20px auto;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.input-steps button:active {
+  background-color: #000; /* Ακόμη πιο σκούρο μαύρο όταν πατιέται */
+  transform: scale(0.98);
 }
 
-.input-steps button:hover, #resetButton:hover {
-  background-color: rgb(0, 0, 0);
+#seek-sequence h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+#seek-sequence-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.popup span {
+  font-size: 14px;
+  color: #555;
+  display: block;
+  margin-top: 5px;
 }
 
   
