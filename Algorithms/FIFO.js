@@ -101,7 +101,6 @@ function createTable() {
 
 
 
-// Πλήρης εκτέλεση της προσομοίωσης
 function updateTable() {
     faultCount = 0;
     hitCount = 0;
@@ -110,36 +109,40 @@ function updateTable() {
     let frameIndex = 0;
 
     pages.forEach((page, i) => {
-        if (!pageFrames.includes(page)) { // page fault
-            faultCount++;
-            pageFrames[frameIndex] = page;
-            frameIndex = (frameIndex + 1) % maxFrames;
+        const isPageFault = !pageFrames.includes(page);
 
-            pageTable.forEach(cell => {
-                if (cell.getAttribute("data-step") == i && pageFrames[cell.getAttribute("data-frame")] == page) {
-                    cell.innerText = page;
-                    cell.style.backgroundColor = '#f8d7da'; // Κόκκινο για fault
-                } else if (cell.getAttribute("data-step") == i) {
-                    cell.innerText = pageFrames[cell.getAttribute("data-frame")] ?? '';
-                }
-            });
+        if (isPageFault) {
+            faultCount++;
+            pageFrames[frameIndex] = page; // Αντικατάσταση σελίδας FIFO
+            frameIndex = (frameIndex + 1) % maxFrames; // Κυκλική αύξηση δείκτη
         } else {
             hitCount++;
-            pageTable.forEach(cell => {
-                if (cell.getAttribute("data-step") == i && pageFrames[cell.getAttribute("data-frame")] == page) {
-                    cell.innerText = page;
-                    cell.style.backgroundColor = '#d4edda'; // Πράσινο για hit
-                } else if (cell.getAttribute("data-step") == i) {
-                    cell.innerText = pageFrames[cell.getAttribute("data-frame")] ?? '';
-                }
-            });
         }
+
+        // Ενημέρωση του πίνακα
+        pageTable.forEach(cell => {
+            if (cell.getAttribute("data-step") == i) {
+                const frameValue = pageFrames[cell.getAttribute("data-frame")];
+                cell.innerText = frameValue ?? '';
+                cell.style.backgroundColor = frameValue === page
+                    ? (isPageFault ? '#f8d7da' : '#d4edda') // Κόκκινο για fault, Πράσινο για hit
+                    : '';
+            }
+        });
+
+        // Debugging: Εκτύπωση κατάστασης
+        console.log(`Step ${i + 1}: Page ${page}`);
+        console.log(`Frames: ${pageFrames}`);
+        console.log(`Faults: ${faultCount}, Hits: ${hitCount}`);
     });
+
+    // Ενημέρωση αποτελεσμάτων
     resultText.innerHTML = `
-        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
-        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
+        <span class="faults" style="color: red;">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+        <span class="hits" style="color: green;">Συνολικός αριθμός hits: ${hitCount}</span>
     `;
 }
+
 
 function runFIFO() {
     initializeSimulation();
@@ -151,59 +154,56 @@ function runFIFO() {
     
 }
 
-// Προβολή ενός βήματος της προσομοίωσης
 function nextStep() {
     if (step === 0 && table) {
         initializeSimulation(); // Ξεκινά νέα προσομοίωση και αδειάζει τον πίνακα
+        pageFrames = Array(maxFrames).fill(null); // Επαναφορά frames για τη νέα προσομοίωση
+        frameIndex = 0; // Χρησιμοποιείται για την αντικατάσταση FIFO
     }
 
     if (step < pages.length) {
         let page = pages[step];
         const pageTable = Array.from(table.getElementsByTagName("td"));
-        let frameIndex = step % maxFrames;
 
-        if (!pageFrames.includes(page)) { // page fault
+        if (!pageFrames.includes(page)) { // Page Fault
             faultCount++;
-            pageFrames[frameIndex] = page;
 
+            // Αντικατάσταση σελίδας FIFO
+            pageFrames[frameIndex] = page;
+            frameIndex = (frameIndex + 1) % maxFrames; // Κυκλική μετακίνηση για FIFO
+
+            // Ενημέρωση του πίνακα
             pageTable.forEach(cell => {
-                if (cell.getAttribute("data-step") == step && pageFrames[cell.getAttribute("data-frame")] == page) {
-                    cell.innerText = page;
-                    cell.style.backgroundColor = '#f8d7da'; // Κόκκινο για fault
-                } else if (cell.getAttribute("data-step") == step) {
-                    cell.innerText = pageFrames[cell.getAttribute("data-frame")] ?? '';
+                if (cell.getAttribute("data-step") == step) {
+                    const frame = cell.getAttribute("data-frame");
+                    cell.innerText = pageFrames[frame] ?? '';
+                    cell.style.backgroundColor = pageFrames[frame] == page ? '#f8d7da' : ''; // Κόκκινο για fault
                 }
             });
-        } else {
+        } else { // Page Hit
             hitCount++;
+
+            // Ενημέρωση του πίνακα
             pageTable.forEach(cell => {
-                if (cell.getAttribute("data-step") == step && pageFrames[cell.getAttribute("data-frame")] == page) {
-                    cell.innerText = page;
-                    cell.style.backgroundColor = '#d4edda'; // Πράσινο για hit
-                } else if (cell.getAttribute("data-step") == step) {
-                    cell.innerText = pageFrames[cell.getAttribute("data-frame")] ?? '';
+                if (cell.getAttribute("data-step") == step) {
+                    const frame = cell.getAttribute("data-frame");
+                    cell.innerText = pageFrames[frame] ?? '';
+                    cell.style.backgroundColor = pageFrames[frame] == page ? '#d4edda' : ''; // Πράσινο για hit
                 }
             });
         }
 
         step++;
-        
-     
-    
     } else {
-   
+        // Ενημέρωση αποτελεσμάτων
         resultText.innerHTML = `
-        <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
-        <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
-    `;
- 
-    
+            <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${faultCount}</span><br>
+            <span class="hits">Συνολικός αριθμός hits: ${hitCount}</span>
+        `;
+        enableResetButton();
     }
-    enableResetButton();
-
-
-
 }
+
 
 function generateSequence() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος

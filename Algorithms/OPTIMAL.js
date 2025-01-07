@@ -103,16 +103,7 @@ function nextStep() {
     }
 
     if (step >= pages.length) {
-        // Δημιουργία δυναμικού μηνύματος ολοκλήρωσης
-        const completionMessage = document.getElementById("completionMessage");
-        if (!completionMessage) {
-            const message = document.createElement("div");
-            message.id = "completionMessage";
-            message.textContent = "Η προσομοίωση ολοκληρώθηκε!";
-            message.style.color = "blue";
-            message.style.marginTop = "10px";
-            document.getElementById("seek-sequence").appendChild(message);
-        }
+       
         return; // Επιστροφή αν η προσομοίωση ολοκληρώθηκε
     }
 
