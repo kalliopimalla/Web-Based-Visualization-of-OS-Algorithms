@@ -21,6 +21,7 @@ function runPriorityCPU() {
     let completed = 0;
     let lastProcess = -1;
     let queueOutput = '';
+    const startedProcesses = new Array(n).fill(false); // Πίνακας για καταγραφή εκκίνησης
 
     while (completed < n) {
         const availableProcesses = [];
@@ -38,16 +39,15 @@ function runPriorityCPU() {
         if (agingRate > 0) {
             availableProcesses.forEach((i) => {
                 if (i !== lastProcess) {
-                    // Ενημέρωση προτεραιότητας μόνο για μη ενεργές διεργασίες
                     if (priorityOrder === 'higher-first') {
-                        priority[i] -= agingRate; // Μειώνεται για υψηλότερη προτεραιότητα
+                        priority[i] -= agingRate;
                     } else {
-                        priority[i] += agingRate; // Αυξάνεται για υψηλότερη προτεραιότητα
+                        priority[i] += agingRate;
                     }
                 }
             });
         }
-        
+
         const highestPriorityIndex = availableProcesses.reduce((highest, i) => {
             if (priorityOrder === 'higher-first') {
                 if (priority[i] < priority[highest]) {
@@ -58,31 +58,31 @@ function runPriorityCPU() {
                     return i;
                 }
             }
-        
-            // Αν είναι ίδιες οι προτεραιότητες, επιλέγουμε με βάση τον χρόνο άφιξης
+
             if (priority[i] === priority[highest]) {
                 return arrivalTime[i] < arrivalTime[highest] ? i : highest;
             }
             return highest;
         }, availableProcesses[0]);
-        
 
         if (executionType === 'non-preemptive') {
             if (lastProcess !== highestPriorityIndex) {
-                const activeProcess = `<span class="queue-process active">P${highestPriorityIndex}</span>`;
-                const waitingQueue = availableProcesses
-                    .filter((i) => i !== highestPriorityIndex)
-                    .map((i) => `<span class="queue-process">P${i}</span>`)
-                    .join(' -> ') || 'Καμία';
+                if (!startedProcesses[highestPriorityIndex]) {
+                    const activeProcess = `<span class="queue-process active">P${highestPriorityIndex}</span>`;
+                    const waitingQueue = availableProcesses
+                        .filter((i) => i !== highestPriorityIndex)
+                        .map((i) => `<span class="queue-process">P${i}</span>`)
+                        .join(' -> ') || 'Καμία';
 
-                queueOutput += `
-                    <div class="step-box">
-                        <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
-                        <div>Εκτελείται: ${activeProcess}</div>
-                        <div>Αναμονή: ${waitingQueue}</div>
-                    </div>
-                `;
-
+                    queueOutput += `
+                        <div class="step-box">
+                            <div class="step-time">Χρονική στιγμή: ${currentTime}</div>
+                            <div>Εκτελείται: ${activeProcess}</div>
+                            <div>Αναμονή: ${waitingQueue}</div>
+                        </div>
+                    `;
+                    startedProcesses[highestPriorityIndex] = true;
+                }
                 lastProcess = highestPriorityIndex;
             }
 
@@ -105,18 +105,21 @@ function runPriorityCPU() {
             remainingBurstTime[highestPriorityIndex]--;
             currentTime++;
 
-            const waitingQueue = availableProcesses
-                .filter((i) => i !== highestPriorityIndex && remainingBurstTime[i] > 0)
-                .map((i) => `<span class="queue-process">P${i}</span>`)
-                .join(' -> ') || 'Καμία';
+            if (!startedProcesses[highestPriorityIndex]) {
+                const waitingQueue = availableProcesses
+                    .filter((i) => i !== highestPriorityIndex && remainingBurstTime[i] > 0)
+                    .map((i) => `<span class="queue-process">P${i}</span>`)
+                    .join(' -> ') || 'Καμία';
 
-            queueOutput += `
-                <div class="step-box">
-                    <div class="step-time">Χρονική στιγμή: ${currentTime - 1}</div>
-                    <div>Εκτελείται: <span class="queue-process active">P${highestPriorityIndex}</span></div>
-                    <div>Αναμονή: ${waitingQueue}</div>
-                </div>
-            `;
+                queueOutput += `
+                    <div class="step-box">
+                        <div class="step-time">Χρονική στιγμή: ${currentTime - 1}</div>
+                        <div>Εκτελείται: <span class="queue-process active">P${highestPriorityIndex}</span></div>
+                        <div>Αναμονή: ${waitingQueue}</div>
+                    </div>
+                `;
+                startedProcesses[highestPriorityIndex] = true;
+            }
 
             if (remainingBurstTime[highestPriorityIndex] === 0) {
                 completed++;
@@ -164,8 +167,8 @@ function runPriorityCPU() {
         ${queueOutput}
     `;
     drawGanttChart(schedule);
-        // Απόκρυψη κουμπιού εκτέλεσης
-        document.getElementById("runButton").style.display = "none";
+
+    document.getElementById("runButton").style.display = "none";
 }
 
 
