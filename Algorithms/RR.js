@@ -126,32 +126,81 @@ function runRoundRobinCPU() {
 function drawGanttChart(schedule) {
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const totalBurstTime = schedule[schedule.length - 1].endTime;
-    const scaleFactor = canvas.parentElement.clientWidth / totalBurstTime;
-    let currentX = 0;
+    // Υπολογισμός συνολικού χρόνου
+    const totalDuration = schedule[schedule.length - 1].endTime;
 
-    schedule.forEach(({ process, startTime, endTime }) => {
+    // Ρυθμίσεις καμβά
+ // Αναφορά στο container του Gantt
+const ganttWrapper = document.getElementById('gantt-wrapper');
+
+// Υπολογισμός του δυναμικού πλάτους του καμβά
+const containerWidth = ganttWrapper.offsetWidth+10000; // Πλάτος του container
+const canvasWidth = Math.max(containerWidth, totalDuration * 10) +2000; // Πλάτος καμβά
+const scaleFactor = canvasWidth / totalDuration; // Κλίμακα χρόνου
+
+// Ορισμός πλάτους του καμβά
+
+canvas.width = canvasWidth;
+canvas.style.width = `${canvasWidth}px`; // Εφαρμογή πλάτους καμβά στο CSS
+
+// Καθαρισμός και προετοιμασία του καμβά
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+// Σχεδίαση Gantt Chart
+
+
+    let currentX = 0; // Αρχικό X για τις μπάρες
+    const barHeight = 40; // Ύψος μπάρας
+    const labelFontSize = 12; // Σταθερό μέγεθος γραμματοσειράς
+    const minBarWidth = 50; // Ελάχιστο πλάτος μπάρας
+
+    // Χάρτης για την αντιστοίχιση διεργασιών με χρώματα
+    function getRandomColor() {
+        const hue = Math.floor(Math.random() * 360); // Απόχρωση
+        const saturation = Math.floor(Math.random() * 40) + 60; // Κορεσμός 60-100%
+        const lightness = Math.floor(Math.random() * 40) + 40; // Φωτεινότητα 40-80%
+        return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+
+    for (let i = 0; i < schedule.length; i++) {
+        const { process, startTime, endTime } = schedule[i];
         const duration = endTime - startTime;
-        const barWidth = Math.max(duration * scaleFactor, 50); // Ελάχιστο πλάτος
 
-        // Σχεδίαση μπάρας
-        ctx.fillStyle = `hsl(${Math.random() * 360}, 70%, 70%)`; // Τυχαίο χρώμα
-        ctx.fillRect(currentX, 50, barWidth, 40);
-        ctx.strokeRect(currentX, 50, barWidth, 40);
+        // Υπολογισμός πλάτους μπάρας με ελάχιστο πλάτος
+        let barWidth = Math.max(duration * scaleFactor, minBarWidth);
 
-        // Ετικέτες
+        // Διασφάλιση ότι η μπάρα είναι αρκετά μεγάλη για την ετικέτα
+        const label = `P${process}`;
+        const labelWidth = ctx.measureText(label).width;
+        barWidth = Math.max(barWidth, labelWidth + 20);
+
+        // Ανάθεση χρώματος για τη διεργασία
+        ctx.fillStyle = getRandomColor();
+        ctx.strokeStyle = '#000'; // Μαύρο περίγραμμα
+        ctx.lineWidth = 2;
+        ctx.strokeRect(currentX, 50, barWidth, barHeight);
+
+        // Σχεδίαση μπάρας διεργασίας
+        ctx.fillRect(currentX, 50, barWidth, barHeight);
+
+        // Ετικέτα διεργασίας μέσα στη μπάρα
         ctx.fillStyle = '#000';
-        ctx.fillText(`P${process}`, currentX + barWidth / 2 - 10, 75);
-        ctx.fillText(startTime, currentX, 45);
+        ctx.font = `${labelFontSize}px Arial`;
+        ctx.fillText(label, currentX + barWidth / 2 - ctx.measureText(label).width / 2, 75);
 
-        if (endTime === totalBurstTime) {
-            ctx.fillText(endTime, currentX + barWidth - 10, 45);
+        // Ετικέτες χρόνου (start time, end time)
+        ctx.fillText(startTime, currentX, 45); // Χρόνος έναρξης
+
+        // Προσαρμογή για την τελευταία ετικέτα
+        if (i === schedule.length - 1) {
+            ctx.fillText(endTime, currentX + barWidth - 20, 45); // Χρόνος λήξης
+        } else {
+            ctx.fillText(endTime, currentX + barWidth, 45); // Χρόνος λήξης
         }
 
-        currentX += barWidth;
-    });
+        currentX += barWidth; // Ενημέρωση για την επόμενη μπάρα
+    }
 }
 
 
