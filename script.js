@@ -1,4 +1,4 @@
-// script.js
+// Για το sidebar
 document.addEventListener("DOMContentLoaded", () => {
   const openSidebar = document.getElementById("open-sidebar");
   const closeSidebar = document.getElementById("close-sidebar");
@@ -28,19 +28,4 @@ document.querySelectorAll('.submenu-content li a').forEach((link) => {
       .forEach((el) => el.classList.remove('active'));
     e.target.classList.add('active');
   });
-});
-
-// Επιλογή των κουμπιών και του sidebar
-const hamburger = document.querySelector('.hamburger');
-const sidebar = document.querySelector('#sidebar');
-const closeSidebar = document.querySelector('#close-sidebar');
-
-// Ενεργοποίηση του Hamburger Menu
-hamburger.addEventListener('click', () => {
-  sidebar.classList.toggle('open'); // Ανοίγει/κλείνει το sidebar
-});
-
-// Κλείσιμο του sidebar
-closeSidebar.addEventListener('click', () => {
-  sidebar.classList.remove('open'); // Κλείνει το sidebar
 });
