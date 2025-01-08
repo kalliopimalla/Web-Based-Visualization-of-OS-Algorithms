@@ -646,38 +646,19 @@ body {
     
     /*Για το Gantt chart */
 
-    #gantt-wrapperDisk {
-      overflow-x: auto; /* Κύλιση ενεργοποιείται μόνο όταν χρειάζεται */
-      overflow-y: auto;
-      white-space: nowrap;
-      margin-top: 20px;
-      display: flex; /* Ευθυγράμμιση με χρήση Flexbox */
-      justify-content: center; /* Κεντράρισμα οριζόντια */
-      align-items: center; /* Κεντράρισμα κάθετα */
-      height: 100%; /* Ανάλογα με το ύψος που θέλεις */
+    #gantt-wrapper {
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      overflow-x: auto; /* Ενεργοποίηση οριζόντιας κύλισης */
+      overflow-y: hidden; /* Απενεργοποίηση κάθετης κύλισης */
+      white-space: nowrap; /* Αποφυγή περιτυλίγματος περιεχομένου */
+      max-width: 100%; /* Περιορισμός στο διαθέσιμο πλάτος */
+      border: 1px solid #ccc; /* Για οπτική επιβεβαίωση του container */
   }
   
   
-  
-
-#gantt-wrapper::-webkit-scrollbar {
-  height: 8px; /* Ύψος της μπάρας κύλισης */
-  display: none; /* Αρχικά κρύβει τη μπάρα */
-}
-
-#gantt-wrapper:hover::-webkit-scrollbar {
-  display: block; /* Εμφανίζει τη μπάρα όταν ο χρήστης περνά το ποντίκι */
-  background: #f1f1f1; /* Χρώμα του background της μπάρας */
-}
-
-#gantt-wrapper::-webkit-scrollbar-thumb {
-  background: #888; /* Χρώμα του "αντικειμένου" της μπάρας */
-  border-radius: 10px; /* Στρογγυλεμένες άκρες */
-}
-
-#gantt-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #555; /* Χρώμα όταν περνάει το ποντίκι πάνω */
-}
 
 #seekCanvas {
   margin: 10px auto;
@@ -685,8 +666,14 @@ body {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
+  
 }
+#seekCanvas {
+    
+  
 
+  padding: 15px auto;
+}
 
 .gantt-chart-container {
   margin-top: 20px;
@@ -757,11 +744,7 @@ body {
 
 
 
-  #seekCanvas {
-      display: auto;
-      border: 1px solid #000;
-      padding: 15px auto;
-  }
+ 
   
     
        
@@ -944,8 +927,44 @@ table td {
 }
 
 
+/* Για τους αλγοριθμους χρονοπρογραμματισμου δισκου χρησιμοποιω κατι αντισοιχ με το Gant wrapper για αυτο η ιδια ονομασια */
+#gantt-wrapperDisk {
+  overflow-x: auto; /* Κύλιση ενεργοποιείται μόνο όταν χρειάζεται */
+  overflow-y: auto;
+  white-space: nowrap;
+  margin-top: 20px;
+  display: flex; /* Ευθυγράμμιση με χρήση Flexbox */
+  justify-content: center; /* Κεντράρισμα οριζόντια */
+  align-items: center; /* Κεντράρισμα κάθετα */
+  height: 100%; /* Ανάλογα με το ύψος που θέλεις */
+}
 
 
 
+#gantt-wrapperDisk {
+  overflow-x: auto; /* Η κύλιση ενεργοποιείται μόνο όταν χρειάζεται */
+  white-space: nowrap; /* Διατηρεί τα περιεχόμενα σε μία γραμμή */
+  scrollbar-width: thin; /* Λεπτή μπάρα κύλισης για Firefox */
+  scrollbar-color: #888 #f1f1f1; /* Χρώμα της μπάρας κύλισης (Firefox) */
+}
+
+#gantt-wrapperDisk::-webkit-scrollbar {
+  height: 8px; /* Ύψος της μπάρας κύλισης */
+  display: none; /* Αρχικά κρύβει τη μπάρα */
+}
+
+#gantt-wrapperDisk:hover::-webkit-scrollbar {
+  display: block; /* Εμφανίζει τη μπάρα όταν ο χρήστης περνά το ποντίκι */
+  background: #f1f1f1; /* Χρώμα του background της μπάρας */
+}
+
+#gantt-wrapperDisk::-webkit-scrollbar-thumb {
+  background: #888; /* Χρώμα του "αντικειμένου" της μπάρας */
+  border-radius: 10px; /* Στρογγυλεμένες άκρες */
+}
+
+#gantt-wrapperDisk::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Χρώμα όταν περνάει το ποντίκι πάνω */
+}
 
 
