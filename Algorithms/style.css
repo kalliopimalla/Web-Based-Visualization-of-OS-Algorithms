@@ -646,12 +646,37 @@ body {
     
     /*Για το Gantt chart */
 
-#gantt-wrapper {
+    #gantt-wrapperDisk {
+      overflow-x: auto; /* Κύλιση ενεργοποιείται μόνο όταν χρειάζεται */
+      overflow-y: auto;
+      white-space: nowrap;
+      margin-top: 20px;
+      display: flex; /* Ευθυγράμμιση με χρήση Flexbox */
+      justify-content: center; /* Κεντράρισμα οριζόντια */
+      align-items: center; /* Κεντράρισμα κάθετα */
+      height: 100%; /* Ανάλογα με το ύψος που θέλεις */
+  }
+  
+  
+  
 
-  margin-top: 20px auto;
-  padding: 10px auto;
-  background-color: #f9f9f9;
-  border-radius: 5px;
+#gantt-wrapper::-webkit-scrollbar {
+  height: 8px; /* Ύψος της μπάρας κύλισης */
+  display: none; /* Αρχικά κρύβει τη μπάρα */
+}
+
+#gantt-wrapper:hover::-webkit-scrollbar {
+  display: block; /* Εμφανίζει τη μπάρα όταν ο χρήστης περνά το ποντίκι */
+  background: #f1f1f1; /* Χρώμα του background της μπάρας */
+}
+
+#gantt-wrapper::-webkit-scrollbar-thumb {
+  background: #888; /* Χρώμα του "αντικειμένου" της μπάρας */
+  border-radius: 10px; /* Στρογγυλεμένες άκρες */
+}
+
+#gantt-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Χρώμα όταν περνάει το ποντίκι πάνω */
 }
 
 #seekCanvas {
