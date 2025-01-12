@@ -150,7 +150,8 @@ function runFIFO() {
         // Ενεργοποίηση του κουμπιού επαναφοράς
         enableResetButton();
      
-
+   // Εμφάνιση του πίνακα οπτικοποίησης
+   document.getElementById("sequence-container").style.display = "block";
     
 }
 
@@ -202,6 +203,8 @@ function nextStep() {
         `;
         enableResetButton();
     }
+       // Εμφάνιση του πίνακα οπτικοποίησης
+       document.getElementById("sequence-container").style.display = "block";
 }
 
 
@@ -257,6 +260,8 @@ resetButton.addEventListener('click', () => {
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
    document.getElementById('maxPageNumber').value = ''; // Μηδενισμός του μέγιστου αριθμού σελίδας
+      // Απόκρυψη του πίνακα οπτικοποίησης
+      document.getElementById("sequence-container").style.display = "none";
     // Μηδενισμός μεταβλητών
     pages = [];
     frames = [];

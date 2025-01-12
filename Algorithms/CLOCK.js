@@ -162,7 +162,9 @@ function runCLOCK() {
     `;
 
   document.getElementById("resetButton").style.display = "block"; // Εμφάνιση του κουμπιού επαναφοράς
-
+      
+   // Εμφάνιση του πίνακα οπτικοποίησης
+   document.getElementById("sequence-container").style.display = "block";
   // Ενημέρωση αρχικού βήματος στον πίνακα
   clockResults = results;
   clockStep = 0;
@@ -380,6 +382,8 @@ resetButton.addEventListener('click', () => {
     document.getElementById('resetButton').style.display = 'none'; // Απόκρυψη του κουμπιού επαναφοράς
     document.getElementById('maxPageNumber').value = ''; 
     document.getElementById('sequenceLength').value = ''; 
+       // Απόκρυψη του πίνακα οπτικοποίησης
+       document.getElementById("sequence-container").style.display = "none";
     const resultText = document.getElementById('resultText');
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
    // Επαναφορά πινάκων

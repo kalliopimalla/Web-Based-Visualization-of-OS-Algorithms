@@ -146,6 +146,10 @@ function nextStep() {
         <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${pageFaults}</span><br>
         <span class="hits">Συνολικός αριθμός hits: ${hits}</span>
     `;
+
+      
+   // Εμφάνιση του πίνακα οπτικοποίησης
+   document.getElementById("sequence-container").style.display = "block";
 }
 
 
@@ -202,6 +206,9 @@ function runOPTIMAL() {
     initializeSimulation();
     updateTable();
     enableResetButton();
+      
+   // Εμφάνιση του πίνακα οπτικοποίησης
+   document.getElementById("sequence-container").style.display = "block";
 }
 
 // Function to check whether a page exists in a frame or not
@@ -278,7 +285,8 @@ resetButton.addEventListener('click', () => {
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
     document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
     document.getElementById('maxPageNumber').value = ''; // Μηδενισμός του μέγιστου αριθμού σελίδας
-
+      // Απόκρυψη του πίνακα οπτικοποίησης
+      document.getElementById("sequence-container").style.display = "none";
     // Μηδενισμός μεταβλητών
     pages = [];
     frames = [];
