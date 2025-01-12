@@ -464,6 +464,8 @@ function createThreeColumnTable() {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
     document.getElementById("resetButton").style.display = "inline-block";
+        // Εμφάνιση του Gantt Chart
+        document.getElementById('gantt-wrapper').style.display = "block";
 
     // Εμφάνιση του quantum στην οθόνη
     const quantumDisplay = `<p><strong>Χρονικό Κβάντο:</strong> ${quantum}</p>`;
@@ -511,7 +513,8 @@ function resetRR() {
     document.getElementById('burst-time').value = '';
     document.getElementById('arrival-time').value = '';
     document.getElementById('quantum').value = '';
-
+ // Απόκρυψη κουμπιών και Gantt Chart
+ document.getElementById('gantt-wrapper').style.display = "none";
     // Καθαρισμός του πίνακα αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = '';
 

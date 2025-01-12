@@ -467,7 +467,8 @@ function createThreeColumnTable() {
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("resetButton").style.display = "inline-block";
-
+    // Εμφάνιση του Gantt Chart
+    document.getElementById('gantt-wrapper').style.display = "block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
 }
 
@@ -512,7 +513,8 @@ function resetFCFS() {
 
     // Καθαρισμός του πίνακα αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = '';
-
+  // Απόκρυψη κουμπιών και Gantt Chart
+  document.getElementById('gantt-wrapper').style.display = "none";
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
     

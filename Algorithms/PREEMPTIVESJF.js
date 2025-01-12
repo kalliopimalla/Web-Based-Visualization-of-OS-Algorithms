@@ -450,6 +450,8 @@ if (burstTime.length > 100 || arrivalTime.length > 100) {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
     document.getElementById("resetButton").style.display = "inline-block";
+        // Εμφάνιση του Gantt Chart
+        document.getElementById('gantt-wrapper').style.display = "block";
 }
 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
@@ -484,7 +486,8 @@ function resetPreSJF() {
     // Καθαρισμός των πεδίων εισόδου
     document.getElementById('burst-time').value = '';
     document.getElementById('arrival-time').value = '';
-
+ // Απόκρυψη κουμπιών και Gantt Chart
+ document.getElementById('gantt-wrapper').style.display = "none";
     // Καθαρισμός του πίνακα αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = '';
 
