@@ -190,24 +190,6 @@ function runClockStepByStep() {
 }
 
 
-function runClockStepByStep() {
-  if (clockStep === 0 && clockResults.length > 0) {
-    updateClockStep(); // Ενημέρωση για το πρώτο βήμα
-    return;
-  }
-
-  if (clockStep >= clockResults.length) {
-    // Εμφάνιση τελικών αποτελεσμάτων
-    document.getElementById("resultText").innerHTML = `
-      <span class="faults">Συνολικός αριθμός σφαλμάτων σελίδας: ${clockResults.filter(r => r.result === "fault").length}</span><br>
-      <span class="hits">Συνολικός αριθμός hits: ${clockResults.filter(r => r.result === "hit").length}</span>
-    `;
-    return;
-  }
-
-  updateClockStep();
-  clockStep++;
-}
 
 
 const resetButton = document.getElementById('resetButton');
@@ -276,6 +258,7 @@ function createClockTable(sequenceLength, frames) {
 
 
 function updateClockStep() {
+  document.getElementById("sequence-container").style.display = "block";
   if (clockStep >= clockResults.length) {
       // Εμφάνιση τελικών αποτελεσμάτων
       document.getElementById("resultText").innerHTML = `
@@ -369,6 +352,7 @@ function runClockStepByStep() {
     }
 
     updateClockStep();
+
 }
 
 
