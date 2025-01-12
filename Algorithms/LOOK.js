@@ -82,7 +82,12 @@ clearErrorMessages();
         displayError(directionElement, "Παρακαλώ επιλέξτε κατεύθυνση (left ή right)!");
         return;
     }
-
+ // Εμφάνιση των στοιχείων αν όλα τα δεδομένα είναι έγκυρα
+ document.getElementById("gantt-wrapperDisk").style.display = "block";
+ document.getElementById("seek-sequence").style.display = "block";
+ document.getElementById("seek-sequence-boxes").style.display = "block";
+ document.getElementById("seek-count-display").style.display = "block";
+ document.getElementById("toggleNumbersButton").style.display = "inline-block"; // Εμφάνιση κουμπιού
     // Κλήση της συνάρτησης LOOK
     LOOK(tracks, headPosition, direction, cylinderRange);
 
@@ -368,6 +373,12 @@ function resetCanvasAndInputs() {
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
+
+    document.getElementById("gantt-wrapperDisk").style.display = "none";
+    document.getElementById("seek-sequence").style.display = "none";
+    document.getElementById("seek-sequence-boxes").style.display = "none";
+    document.getElementById("seek-count-display").style.display = "none";
+    document.getElementById("toggleNumbersButton").style.display = "none"; // Απόκρυψη κουμπιού
 
     document.getElementById("resetButton").style.display = "none";
           // Καθαρισμός του πεδίου για το μήκος ακολουθίας

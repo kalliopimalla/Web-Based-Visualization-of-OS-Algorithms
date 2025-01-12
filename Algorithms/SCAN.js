@@ -86,7 +86,13 @@ clearErrorMessages()
         return;
     }
     
-    
+     // Εμφάνιση των στοιχείων αν όλα τα δεδομένα είναι έγκυρα
+   document.getElementById("gantt-wrapperDisk").style.display = "block";
+   document.getElementById("seek-sequence").style.display = "block";
+   document.getElementById("seek-sequence-boxes").style.display = "block";
+   document.getElementById("seek-count-display").style.display = "block";
+   document.getElementById("toggleNumbersButton").style.display = "inline-block"; // Εμφάνιση κουμπιού
+
     // Προσθήκη της κεφαλής στη λίστα για ταξινόμηση
     tracks.push(head);
 
@@ -343,6 +349,11 @@ function resetCanvasAndInputs() {
     document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
     showFooter();
+    document.getElementById("gantt-wrapperDisk").style.display = "none";
+    document.getElementById("seek-sequence").style.display = "none";
+    document.getElementById("seek-sequence-boxes").style.display = "none";
+    document.getElementById("seek-count-display").style.display = "none";
+    document.getElementById("toggleNumbersButton").style.display = "none"; // Απόκρυψη κουμπιού
 
     // Μηδενισμός μεταβλητών
     pages = [];

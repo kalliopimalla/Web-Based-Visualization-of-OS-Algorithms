@@ -53,6 +53,14 @@ function executeCSCAN() {
         return;
     }
 
+ // Εμφάνιση των στοιχείων αν όλα τα δεδομένα είναι έγκυρα
+ document.getElementById("gantt-wrapperDisk").style.display = "block";
+ document.getElementById("seek-sequence").style.display = "block";
+ document.getElementById("seek-sequence-boxes").style.display = "block";
+ document.getElementById("seek-count-display").style.display = "block";
+ document.getElementById("toggleNumbersButton").style.display = "inline-block"; // Εμφάνιση κουμπιού
+
+
     if (!tracks.includes(0)) tracks.push(0); // Προσθήκη 0 αν δεν υπάρχει
     if (!tracks.includes(cylinderRange - 1)) tracks.push(cylinderRange - 1); // Προσθήκη μέγιστου κυλίνδρου αν δεν υπάρχει
 
@@ -275,7 +283,11 @@ function resetCanvasAndInputs() {
     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
       // Καθαρισμός του πεδίου για το μήκος ακολουθίας
       document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
-
+      document.getElementById("gantt-wrapperDisk").style.display = "none";
+      document.getElementById("seek-sequence").style.display = "none";
+      document.getElementById("seek-sequence-boxes").style.display = "none";
+      document.getElementById("seek-count-display").style.display = "none";
+      document.getElementById("toggleNumbersButton").style.display = "none"; // Απόκρυψη κουμπιού
       // Εμφάνιση του footer
       showFooter();
   

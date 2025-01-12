@@ -78,6 +78,16 @@ if (requestQueue.length > 100) {
 }
 clearErrorMessages()
 
+
+
+
+   // Εμφάνιση των στοιχείων αν όλα τα δεδομένα είναι έγκυρα
+   document.getElementById("gantt-wrapperDisk").style.display = "block";
+   document.getElementById("seek-sequence").style.display = "block";
+   document.getElementById("seek-sequence-boxes").style.display = "block";
+   document.getElementById("seek-count-display").style.display = "block";
+   document.getElementById("toggleNumbersButton").style.display = "inline-block"; // Εμφάνιση κουμπιού
+
     let seekCount = 0;
     let seekSequence = [headPosition];
     let currentPosition = headPosition;
@@ -150,6 +160,13 @@ function resetCanvasAndInputs() {
     document.getElementById("resetButton").style.display = "none";
     document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
     showFooter();// Εμφάνιση footer
+
+    document.getElementById("gantt-wrapperDisk").style.display = "none";
+    document.getElementById("seek-sequence").style.display = "none";
+    document.getElementById("seek-sequence-boxes").style.display = "none";
+    document.getElementById("seek-count-display").style.display = "none";
+    document.getElementById("toggleNumbersButton").style.display = "none"; // Απόκρυψη κουμπιού
+
 
 }
 

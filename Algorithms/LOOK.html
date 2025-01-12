@@ -203,24 +203,24 @@
             <br>
             <br>
             <button onclick="executeLOOK()">Εκτέλεση</button>
-            <button id="toggleNumbersButton">Εμφάνιση/Απόκρυψη αριθμών στα βέλη</button>
+            <button id="toggleNumbersButton" style="display: none;">Εμφάνιση/Απόκρυψη θέσεων κεφαλής</button>
+
             <button id="resetButton" style="display: none;">Επαναφορά</button>
          <!-- Προσθήκη του συνολικού αριθμού κινήσεων -->
         <div id="seek-count-display" class="seek-count-display"></div>
     
         <!-- Προσθήκη κουτιών για τη σειρά εξυπηρέτησης -->
-        <div id="seek-sequence" class="seek-sequence">
-            <h3>Σειρά Εξυπηρέτησης:</h3>
-            <div id="seek-sequence-boxes" class="seek-sequence-boxes"></div>
-                    </div>
-                </div>
-   
-
-                <div id="gantt-wrapperDisk"  style="overflow-x: auto; overflow-y: auto; white-space: nowrap; margin-top: 20px;"> 
-                                  <div class="canvas-container">
-                                    <canvas id="seekCanvas" width="700" height="750"></canvas>
-                                  </div>
-                                </div>
+        <div id="seek-sequence" class="seek-sequence" style="display: none;">
+          <h3>Σειρά Εξυπηρέτησης:</h3>
+          <div id="seek-sequence-boxes" class="seek-sequence-boxes" style="display: none;"></div>
+        </div>
+        
+  
+    <div id="gantt-wrapperDisk" style="overflow-x: auto; overflow-y: auto; white-space: nowrap; display: none;">
+      <div class="canvas-container">
+        <canvas id="seekCanvas" width="700" height="750"></canvas>
+      </div>
+    </div>
            
            
         

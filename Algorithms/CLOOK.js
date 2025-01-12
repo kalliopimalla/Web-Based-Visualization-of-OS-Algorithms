@@ -100,6 +100,13 @@ clearErrorMessages();
     return;
 }
 
+ // Εμφάνιση των στοιχείων αν όλα τα δεδομένα είναι έγκυρα
+ document.getElementById("gantt-wrapperDisk").style.display = "block";
+ document.getElementById("seek-sequence").style.display = "block";
+ document.getElementById("seek-sequence-boxes").style.display = "block";
+ document.getElementById("seek-count-display").style.display = "block";
+ document.getElementById("toggleNumbersButton").style.display = "inline-block"; // Εμφάνιση κουμπιού
+
     // Διαχωρισμός αιτημάτων
     const left = tracks.filter(track => track < headPosition).sort((a, b) => a - b);
     const right = tracks.filter(track => track >= headPosition).sort((a, b) => a - b);
@@ -345,7 +352,11 @@ function resetCanvasAndInputs() {
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
-
+    document.getElementById("gantt-wrapperDisk").style.display = "none";
+    document.getElementById("seek-sequence").style.display = "none";
+    document.getElementById("seek-sequence-boxes").style.display = "none";
+    document.getElementById("seek-count-display").style.display = "none";
+    document.getElementById("toggleNumbersButton").style.display = "none"; // Απόκρυψη κουμπιού
     document.getElementById("resetButton").style.display = "none";
      // Καθαρισμός του πεδίου για το μήκος ακολουθίας
      document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
