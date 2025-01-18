@@ -509,16 +509,6 @@ body {
       margin-top: 15px; /* Περισσότερο κενό μεταξύ στοιχείων */
     }
 
-    .seek-count {
-      width: 100%; /* Καταλαμβάνει όλο το πλάτος του container */
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 15px;
-      border: 1px solid #444;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-      box-sizing: border-box;
-    }
 
 
    /*cpu buttons*/
@@ -561,21 +551,25 @@ body {
       min-width: 50px; /* Πλάτος κάθε κουτιού */
     }
  
-    /*Για τον συνολικό αριθμό κινήσεων (Disk)*/
-    .seek-count-display {
-      margin-top: 20px auto;
-      padding: 15px auto; 
-      background-color: #f9f9f9;
-      border: 2px solid #333;
-      border-radius: 8px;
-      font-size: 18px;
-      font-weight: bold;
-      color :#333;
-      text-align: center;
-      box-shadow: 0px 4px 8px #333(0, 123, 255, 0.2);
-      transition: all 0.3s ease;
-    }
-    
+/*Για τον συνολικό αριθμό κινήσεων (Disk)*/
+.seek-count-display {
+  margin: 20px auto;
+  padding: 20px 20px;
+  background-color: rgba(255, 255, 255, 0.9); /* Ελαφρώς διαφανές φόντο */
+  border: 2px solid #333; 
+  border-radius: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1); /* Ελαφριά σκιά */
+  transition: all 0.3s ease-in-out;
+}
+
+
+
+
+
     .arrow {
       font-size: 20px;
       color: #333;
