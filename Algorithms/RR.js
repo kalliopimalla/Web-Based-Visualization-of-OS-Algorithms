@@ -547,10 +547,6 @@ function resetRR() {
         document.getElementById("sequenceLength").value = "";
     
        
-    
-       
-  
-
     // Απόκρυψη κουμπιών που δεν χρειάζονται
     document.getElementById('runButton').style.display = 'none';
     document.getElementById('stepByStepBtn').style.display = 'none';
