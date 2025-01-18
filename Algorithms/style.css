@@ -422,14 +422,6 @@ body {
   justify-content: center;
 }
 
-.popup span {
-  font-size: 14px;
-  color: #555;
-  display: block;
-  margin-top: 5px;
-}
-
-  
     
 
     /* Στυλ για τα κουτια εξυπηρετησης στο disk και για τον πινακα αποτελεσματων στο Page repl */ 
@@ -601,23 +593,36 @@ body {
       display: inline-block;
     }
     
-    .popup .popuptext {
-      visibility: hidden;
-      width: 200px;
-      background-color: #555;
-      color: #fff;
-      text-align: center;
-      border-radius: 6px;
-      padding: 8px;
-      position: absolute;
-      z-index: 1;
-      bottom: 125%; /* τοποθέτηση πάνω από το input */
-      left: 50%;
-      margin-left: -100px;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-    
+.popup span {
+  font-size: 14px;
+  color: #555;
+  display: block;
+  margin-top: 5px;
+}
+
+.popup .popuptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%; /* τοποθέτηση πάνω από το input */
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s 3s; /* Προσθήκη καθυστέρησης 3 δευτερολέπτων */
+}
+
+.popup:hover .popuptext,
+.popup:focus .popuptext {
+  visibility: visible;
+  opacity: 1;
+}
+
     .popup .popuptext::after {
       content: "";
       position: absolute;
@@ -633,6 +638,33 @@ body {
     .popup:focus .popuptext {
       visibility: visible;
       opacity: 1;
+    }
+    
+    .popup select {
+      width: 100%;
+      padding: 10px ;
+      margin: 10px 0;
+      font-size: 12px;
+      font-family: 'Poppins', sans-serif;
+      border: 1px solid #666; /* Γκρι περίγραμμα */
+      border-radius: 5px;
+      background-color: #f9f9f9; /* Ανοιχτό γκρι φόντο */
+      color: #333; /* Σκούρο κείμενο */
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .popup select:focus {
+      outline: none;
+      border-color: #444; /* Πιο σκούρο γκρι όταν είναι ενεργό */
+      box-shadow: 0 0 5px #666; /* Ελαφρύ γκρι πλαίσιο */
+      background-color: #fff; /* Λευκό φόντο όταν επιλέγεται */
+    }
+    
+    .popup select option {
+      font-size: 12px;
+      color: #333; /* Σκούρο χρώμα για τις επιλογές */
+      background-color: #f9f9f9; /* Ίδιο φόντο με το dropdown */
     }
     
     
@@ -900,32 +932,6 @@ table td {
 
 
 
-.popup select {
-  width: 100%;
-  padding: 10px ;
-  margin: 10px 0;
-  font-size: 12px;
-  font-family: 'Poppins', sans-serif;
-  border: 1px solid #666; /* Γκρι περίγραμμα */
-  border-radius: 5px;
-  background-color: #f9f9f9; /* Ανοιχτό γκρι φόντο */
-  color: #333; /* Σκούρο κείμενο */
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.popup select:focus {
-  outline: none;
-  border-color: #444; /* Πιο σκούρο γκρι όταν είναι ενεργό */
-  box-shadow: 0 0 5px #666; /* Ελαφρύ γκρι πλαίσιο */
-  background-color: #fff; /* Λευκό φόντο όταν επιλέγεται */
-}
-
-.popup select option {
-  font-size: 12px;
-  color: #333; /* Σκούρο χρώμα για τις επιλογές */
-  background-color: #f9f9f9; /* Ίδιο φόντο με το dropdown */
-}
 
 
 /* Για τους αλγοριθμους χρονοπρογραμματισμου δισκου χρησιμοποιω κατι αντισοιχ με το Gant wrapper για αυτο η ιδια ονομασια */
