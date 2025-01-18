@@ -184,6 +184,7 @@ nav ul li a:hover {
   .sidebar.open {
     display: block; /* Εμφανίζεται όταν ανοίγει */
     right: 0;
+    cursor: pointer;
   }
   
   .sidebar .close-btn {

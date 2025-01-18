@@ -107,6 +107,7 @@ body {
   .sidebar.open {
     display: block; /* Εμφανίζεται όταν ανοίγει */
     right: 0;
+    cursor: pointer;
   }
   
   .sidebar .close-btn {
