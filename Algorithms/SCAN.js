@@ -322,7 +322,7 @@ function drawArrow(ctx, fromX, fromY, toX, toY, value) {
 
 
 // Συνδέσεις κουμπιών
-document.getElementById("generateSequenceButton").addEventListener("click", generateRandomSequence);
+
 document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
 document.getElementById("toggleNumbersButton").addEventListener("click", () => {
     showNumbersOnArrows = !showNumbersOnArrows;
@@ -337,7 +337,7 @@ function resetCanvasAndInputs() {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    document.getElementById("example-btn").style.display = "inline-block";
      // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
      canvas.height = 600;
 
@@ -346,7 +346,7 @@ function resetCanvasAndInputs() {
     document.getElementById("head-position").value = "";
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
-    document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+    
     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
     showFooter();
     document.getElementById("gantt-wrapperDisk").style.display = "none";
@@ -469,7 +469,7 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
         }
     }
 }
-
+/** 
 document.getElementById("generateSequenceButton").addEventListener("click", function () {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
@@ -507,9 +507,14 @@ function generateRandomSequence(length, max) {
     }
     return sequence;
 }
+*/
 
-
-
+function example(){
+    document.getElementById("process-queue").value = [176, 79, 34, 60, 92, 11, 41, 114].join(",");
+    document.getElementById("head-position").value=50;
+    document.getElementById("cylinder-number").value=200;
+    document.getElementById("example-btn").style.display = "none";
+}
 
 function adjustCanvasHeight(sequenceLength) {
     const canvas = document.getElementById("seekCanvas");
@@ -533,51 +538,7 @@ function adjustCanvasHeight(sequenceLength) {
     // Ρύθμιση του κάτω περιθωρίου για τη "Σειρά Εξυπηρέτησης"
     sequenceContainer.style.marginBottom = canvasHeight > 600 ? "40px" : "20px";
 }
-// Κάλεσε τη συνάρτηση μετά την προσαρμογή του καμβά
-document.getElementById("generateSequenceButton").addEventListener("click", function () {
-    clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
-    // Λήψη του μήκους από το πεδίο εισαγωγής
-    const sequenceLengthInputElement = document.getElementById("sequence-length");
-    const sequenceLengthInput = sequenceLengthInputElement.value.trim();
-    const sequenceLength = parseInt(sequenceLengthInput, 10);
-
-    // Λήψη του εύρους κυλίνδρων
-    const cylinderRangeInputElement = document.getElementById("cylinder-number");
-    const cylinderRangeInput = cylinderRangeInputElement.value.trim();
-    const cylinderRange = parseInt(cylinderRangeInput, 10);
-
-    // Επικύρωση του εύρους κυλίνδρων
-    if (isNaN(cylinderRange) || cylinderRange <= 0 || cylinderRange > 1000) {
-        displayError(cylinderRangeInputElement, "Παρακαλώ εισάγετε έγκυρο αριθμό κυλίνδρων (1-1000).");
-        return;
-    }
-
-    // Επικύρωση μήκους ακολουθίας
-    if (isNaN(sequenceLength) || sequenceLength <= 0 || sequenceLength > 100) {
-        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε έγκυρο μήκος για την ακολουθία (1-100).");
-        return;
-    }
-
-    // Δημιουργία τυχαίας ακολουθίας
-    const randomSequence = generateRandomSequence(sequenceLength, cylinderRange);
-
-    // Ενημέρωση του πεδίου εισόδου με την τυχαία ακολουθία
-    const processQueueInputElement = document.getElementById("process-queue");
-    processQueueInputElement.value = randomSequence.join(",");
-
-    // Ενημέρωση του καμβά αν το μήκος είναι μεγαλύτερο από 30
-    const canvas = document.getElementById("seekCanvas");
-    if (sequenceLength > 30) {
-        canvas.height = 600 + (sequenceLength - 30) * 20; // Δυναμικό ύψος καμβά
-    } else {
-        canvas.height = 600; // Επαναφορά στο αρχικό ύψος
-    }
-
-    // Ρύθμιση του container για να μετακινηθεί σωστά
-    const canvasContainer = document.querySelector(".canvas-container");
-    canvasContainer.style.marginTop = "20px"; // Διασφαλίζει περιθώριο πάνω
-});
 
 
 // Συνάρτηση για εμφάνιση μηνύματος σφάλματος

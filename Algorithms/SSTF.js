@@ -144,7 +144,12 @@ clearErrorMessages()
     document.getElementById("resetButton").style.display = "inline-block";
     hideFooter(); // Απόκρυψη του footer
 }
-
+function example(){
+    document.getElementById("process-queue").value = [176, 79, 34, 60, 92, 11, 41, 114].join(",");
+    document.getElementById("head-position").value=50;
+    document.getElementById("cylinder-number").value=200;
+    document.getElementById("example-btn").style.display = "none";
+}
 // Συνάρτηση επαναφοράς
 function resetCanvasAndInputs() {
     const canvas = document.getElementById("seekCanvas");
@@ -152,13 +157,14 @@ function resetCanvasAndInputs() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
      // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
      canvas.height = 600;
+     document.getElementById("example-btn").style.display = "inline-block";
      document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
     document.getElementById("process-queue").value = "";
     document.getElementById("head-position").value = "";
     document.getElementById("seek-count-display").innerText = "";
     document.getElementById("seek-sequence-boxes").innerHTML = "";
     document.getElementById("resetButton").style.display = "none";
-    document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+   // document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
     showFooter();// Εμφάνιση footer
 
     document.getElementById("gantt-wrapperDisk").style.display = "none";
@@ -300,7 +306,7 @@ function visualizeSeekSequence(seekSequence, cylinderRange) {
 }
 
 
-
+/** 
 document.getElementById("generateSequenceButton").addEventListener("click", function() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
@@ -354,7 +360,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
 });
 
-
+*/
 
   
   document.querySelectorAll('.submenu-content li a').forEach((link) => {

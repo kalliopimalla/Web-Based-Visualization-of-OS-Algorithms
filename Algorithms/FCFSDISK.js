@@ -135,7 +135,7 @@ function resetCanvasAndInputs() {
     const canvas = document.getElementById("seekCanvas");
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    document.getElementById("example-btn").style.display = "inline-block";
     // Επαναφορά του ύψους του καμβά στο αρχικό μέγεθος
     canvas.height = 600;
 
@@ -146,7 +146,7 @@ function resetCanvasAndInputs() {
     document.getElementById("seek-sequence-boxes").innerHTML = "";
     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
     // Καθαρισμός του πεδίου για το μήκος ακολουθίας
-    document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+   // document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
     document.getElementById("gantt-wrapperDisk").style.display = "none";
     document.getElementById("seek-sequence").style.display = "none";
     document.getElementById("seek-sequence-boxes").style.display = "none";
@@ -299,7 +299,7 @@ for (let i = 0; i < numHorizontalLines; i++) {
 }
 
 
-
+/**
 document.getElementById("generateSequenceButton").addEventListener("click", function () {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
@@ -329,14 +329,19 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     // Ενημέρωση του πεδίου εισόδου με την τυχαία ακολουθία
     document.getElementById("process-queue").value = randomSequence.join(",");
 });
+ */
+
+
+function example(){
+    document.getElementById("process-queue").value = [176, 79, 34, 60, 92, 11, 41, 114].join(",");
+    document.getElementById("head-position").value=50;
+    document.getElementById("cylinder-number").value=200;
+    document.getElementById("example-btn").style.display = "none";
+}
 
 
 
-
-
-
-
-function generateRandomSequence(length, max) {
+/**function generateRandomSequence(length, max) {
     let sequence = [];
     for (let i = 0; i < length; i++) {
         let randomNum = Math.floor(Math.random() * (max + 1)); // Εντός του εύρους
@@ -344,7 +349,7 @@ function generateRandomSequence(length, max) {
     }
     return sequence;
 }
-
+*/
 
 
 

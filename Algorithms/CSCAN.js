@@ -282,7 +282,7 @@ function resetCanvasAndInputs() {
     document.getElementById("resetButton").style.display = "none";
     document.getElementById("cylinder-number").value = ""; // Μηδενισμός του αριθμού κυλίνδρων
       // Καθαρισμός του πεδίου για το μήκος ακολουθίας
-      document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+    
       document.getElementById("gantt-wrapperDisk").style.display = "none";
       document.getElementById("seek-sequence").style.display = "none";
       document.getElementById("seek-sequence-boxes").style.display = "none";
@@ -290,16 +290,22 @@ function resetCanvasAndInputs() {
       document.getElementById("toggleNumbersButton").style.display = "none"; // Απόκρυψη κουμπιού
       // Εμφάνιση του footer
       showFooter();
-  
+      document.getElementById("example-btn").style.display = "inline-block";
+}
+
+
+function example(){
+    document.getElementById("process-queue").value = [176, 79, 34, 60, 92, 11, 41, 114].join(",");
+    document.getElementById("head-position").value=50;
+    document.getElementById("cylinder-number").value=200;
+    document.getElementById("example-btn").style.display = "none";
 }
 
 
 
 
 
-
-
-
+/** 
 function generateRandomSequence(length, max = 200) {
 
   
@@ -311,7 +317,7 @@ function generateRandomSequence(length, max = 200) {
     }
     return sequence;
 }
-
+*/
 
 
 
@@ -341,7 +347,7 @@ function adjustCanvasSpacing() {
 
 
 
-
+/** 
 // Σύνδεση της λειτουργίας με το κουμπί
 document.getElementById("generateSequenceButton").addEventListener("click", function () {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
@@ -380,7 +386,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
         canvas.height = 600; // Επαναφορά στο αρχικό ύψος
     }
 });
-
+*/
 
 
 

@@ -121,7 +121,7 @@
         <p style="margin: 5px 0;">
           Καταχωρίστε τη <strong>σειρά αιτήσεων</strong> που θέλετε να δείτε. Αν εισάγετε τη σειρά χειροκίνητα, 
           βεβαιωθείτε ότι τα αιτήματα δεν υπερβαίνουν τον αριθμό κυλίνδρων που δώσατε. 
-          Εναλλακτικά, μπορείτε να δημιουργήσετε <strong>τυχαία ακολουθία</strong> ορίζοντας το μήκος της, η οποία θα παραχθεί αυτόματα σωστά.
+          Εναλλακτικά, μπορείτε να τρέξετε το έτοιμο παράδειγμα πατώντας <strong>Συμπλήρωση παραδείγματος</strong>.
         </p>
       </div>
       
@@ -181,7 +181,7 @@
           <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
         </div>
 
-        <div class="popup">
+       <!-- <div class="popup">
           <div class="input-container"> 
             <label for="sequence-length"><strong>Μήκος ακολουθίας:</strong></label>
             <input type="number" id="sequence-length" placeholder="π.χ. 10" min="1" style="width: 100px;">
@@ -189,7 +189,7 @@
         </div>
           <span class="popuptext">Μέγιστο μήκος ακολουθιας το 100</span>
       </div>
-
+-->
 
       <p><strong>Η θέση της κεφαλής :</strong></p>
             <div class="popup">
@@ -208,6 +208,7 @@
             <br>
             <br>
             <button onclick="executeSCAN()">Εκτέλεση</button>
+            <button id="example-btn" onclick="example()">Συμπλήρωση παραδείγματος</button>
             <button id="toggleNumbersButton" style="display: none;">Εμφάνιση/Απόκρυψη θέσεων κεφαλής</button>
 
 

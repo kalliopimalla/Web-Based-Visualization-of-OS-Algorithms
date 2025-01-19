@@ -119,8 +119,8 @@
         <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 2:</strong>
         <p style="margin: 5px 0;">
           Καταχωρίστε τη <strong>σειρά αιτήσεων</strong> που θέλετε να δείτε. Αν εισάγετε τη σειρά χειροκίνητα, 
-          βεβαιωθείτε ότι  τα αιτήματα δεν υπερβαίνουν τον αριθμό κυλίνδρων που δώσατε. 
-          Εναλλακτικά, μπορείτε να δημιουργήσετε <strong>τυχαία ακολουθία</strong> ορίζοντας το μήκος της, η οποία θα παραχθεί αυτόματα σωστά.
+          βεβαιωθείτε ότι τα αιτήματα δεν υπερβαίνουν τον αριθμό κυλίνδρων που δώσατε. 
+          Εναλλακτικά, μπορείτε να τρέξετε το έτοιμο παράδειγμα πατώντας <strong>Συμπλήρωση παραδείγματος</strong>.
         </p>
       </div>
       
@@ -177,7 +177,7 @@
                 <input type="text" id="process-queue" placeholder="(π.χ. 176,79,34,...)" style="width: 600px auto;">
                 <span class="popuptext">Δέχεται αριθμούς διαχωρισμένους με κόμμα χωρίς κενά</span>
               </div>
-      
+      <!--
               <div class="popup">
                 <div class="input-container"> 
                   <label for="sequence-length"><strong>Μήκος ακολουθίας:</strong></label>
@@ -186,7 +186,7 @@
               </div>
                 <span class="popuptext">Μέγιστο μήκος ακολουθιας το 100</span>
             </div>
-
+-->
             <p><strong>Η θέση της κεφαλής :</strong></p>
             <div class="popup">
               <input type="number" id="head-position" placeholder="π.χ. 50">
@@ -203,6 +203,7 @@
             <br>
             <br>
             <button onclick="executeLOOK()">Εκτέλεση</button>
+            <button id="example-btn" onclick="example()">Συμπλήρωση παραδείγματος</button>
             <button id="toggleNumbersButton" style="display: none;">Εμφάνιση/Απόκρυψη θέσεων κεφαλής</button>
 
 
