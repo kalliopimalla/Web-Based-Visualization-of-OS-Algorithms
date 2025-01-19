@@ -469,6 +469,7 @@ if (burstTime.length > 100 || arrivalTime.length > 100) {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
     document.getElementById("resetButton").style.display = "inline-block";
+    document.getElementById("stepHistory").style.display = "inline-block";  
         // Εμφάνιση του Gantt Chart
         document.getElementById('gantt-wrapper').style.display = "block";
 }
@@ -517,7 +518,7 @@ function resetSJF() {
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
-
+    document.getElementById('stepHistory').style.display = "none";
     document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
 
     // Καθαρισμός καμβά

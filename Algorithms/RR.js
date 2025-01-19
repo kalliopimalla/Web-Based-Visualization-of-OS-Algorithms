@@ -464,6 +464,7 @@ function createThreeColumnTable() {
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("stepByStepBtn").style.display = "inline-block";
     document.getElementById("resetButton").style.display = "inline-block";
+    document.getElementById("stepHistory").style.display = "inline-block";  
         // Εμφάνιση του Gantt Chart
         document.getElementById('gantt-wrapper').style.display = "block";
 
@@ -522,6 +523,7 @@ function resetRR() {
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
+    document.getElementById('stepHistory').style.display = "none";
     // Καθαρισμός καμβά
     const canvas = document.getElementById('seekCanvas');
     const ctx = canvas.getContext('2d');
@@ -534,17 +536,8 @@ function resetRR() {
         stepWaitingTime = [];
         stepTurnAroundTime = [];
         stepCompleted = [];
-    
-        // Καθαρισμός πεδίων εισόδου
-        document.getElementById('burst-time').value = '';
-        document.getElementById('arrival-time').value = '';
-        document.getElementById('quantum').value = '';
-    
-        // Καθαρισμός DOM στοιχείων
-        document.getElementById('stepHistory').innerHTML = '';
-        document.getElementById('seek-count').innerHTML = '';
         document.getElementById('quantum-display').innerHTML = '';
-        document.getElementById("sequenceLength").value = "";
+     
     
        
     // Απόκρυψη κουμπιών που δεν χρειάζονται

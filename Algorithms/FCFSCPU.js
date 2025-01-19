@@ -464,6 +464,7 @@ function createThreeColumnTable() {
     output += "</table>";
 
     // Εμφάνιση του πίνακα στη σελίδα
+    document.getElementById("stepHistory").style.display = "inline-block";  
     document.getElementById('seek-count').innerHTML = output;
     document.getElementById("runButton").style.display = "inline-block";
     document.getElementById("resetButton").style.display = "inline-block";
@@ -517,7 +518,7 @@ function resetFCFS() {
   document.getElementById('gantt-wrapper').style.display = "none";
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
-    
+    document.getElementById('stepHistory').style.display = "none";
       // Καθαρισμός του καμβά
       const canvas = document.getElementById('seekCanvas');
       const ctx = canvas.getContext('2d');
