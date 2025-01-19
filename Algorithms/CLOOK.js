@@ -16,8 +16,7 @@ function executeCLOOK() {
     const direction = directionElement ? directionElement.value.trim().toLowerCase() : null;
     const cylinderRangeInput = document.getElementById("cylinder-number");
     const cylinderRange = parseInt(cylinderRangeInput.value.trim(), 10)-1;
-    const sequenceLengthInputElement = document.getElementById("sequence-length");
-    const sequenceLength = parseInt(sequenceLengthInputElement.value.trim(), 10);
+
 
 
 
@@ -66,10 +65,7 @@ clearErrorMessages();
         return;
     }
 
-    if (sequenceLength <= 0 || sequenceLength > 100) {
-        displayError(sequenceLengthInputElement, "Παρακαλώ εισάγετε μήκος ακολουθίας (1-100).");
-        return;
-    }
+
 
     if (isNaN(cylinderRange)) {
         displayError(
@@ -91,8 +87,7 @@ clearErrorMessages();
         return;
     }
 
-    // Ρύθμιση δυναμικού ύψους καμβά
-    adjustCanvasHeight(tracks.length);
+    
      
  // Έλεγχος αν η κεφαλή είναι μη αρνητικός αριθμός
  if (headPosition < 0) {
@@ -325,10 +320,7 @@ function drawArrow(ctx, fromX, fromY, toX, toY) {
 }
 
 // Συνδέσεις κουμπιών
-document.getElementById("generateSequenceButton").addEventListener("click", () => {
-    const randomSequence = Array.from({ length: 10 }, () => Math.floor(Math.random() * disk_size));
-    document.getElementById("process-queue").value = randomSequence.join(", ");
-});
+
 document.getElementById("resetButton").addEventListener("click", resetCanvasAndInputs);
 document.getElementById("toggleNumbersButton").addEventListener("click", () => {
     showNumbersOnArrows = !showNumbersOnArrows;
@@ -358,15 +350,20 @@ function resetCanvasAndInputs() {
     document.getElementById("seek-count-display").style.display = "none";
     document.getElementById("toggleNumbersButton").style.display = "none"; // Απόκρυψη κουμπιού
     document.getElementById("resetButton").style.display = "none";
-     // Καθαρισμός του πεδίου για το μήκος ακολουθίας
-     document.getElementById("sequence-length").value = ""; // Μηδενισμός του sequence length
+    document.getElementById("example-btn").style.display = "inline-block";
+   
 
      // Εμφάνιση του footer
      showFooter();
  
 }
-
-
+function example(){
+    document.getElementById("process-queue").value = [176, 79, 34, 60, 92, 11, 41, 114].join(",");
+    document.getElementById("head-position").value=50;
+    document.getElementById("cylinder-number").value=200;
+    document.getElementById("example-btn").style.display = "none";
+}
+/** 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length = sequenceLength, max = 200) {
 
@@ -430,7 +427,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
 
 });
 
-
+*/
 // script.js
 document.addEventListener("DOMContentLoaded", () => {
     const openSidebar = document.getElementById("open-sidebar");

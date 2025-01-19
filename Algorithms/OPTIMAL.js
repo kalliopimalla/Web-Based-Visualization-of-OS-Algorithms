@@ -153,7 +153,12 @@ function nextStep() {
 }
 
 
-
+function example(){
+    document.getElementById("pages").value = [ 1,3,0,3,5,6,3].join(",");
+    document.getElementById("frame-number").value=3;
+   
+    document.getElementById("example-btn").style.display = "none";
+}
 
 
 function updateTable() {
@@ -238,7 +243,7 @@ function predict(pg, fr, pn, index) {
     return replaceIndex === -1 ? 0 : replaceIndex; // Σε περίπτωση που όλες οι σελίδες χρησιμοποιούνται
 }
 
-
+/** 
 function generateSequence() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
@@ -268,7 +273,7 @@ function generateSequence() {
 
     document.getElementById("pages").value = sequence.join(',');
 }
-
+*/
 
 // Κώδικας για το resetButton
 const resetButton = document.getElementById('resetButton');
@@ -278,13 +283,13 @@ resetButton.addEventListener('click', () => {
     // Επαναφορά των πεδίων εισόδου
     document.getElementById('pages').value = '';
     document.getElementById('frame-number').value = '';
-
+    document.getElementById("example-btn").style.display = "inline-block";
     // Επαναφορά των αποτελεσμάτων
     document.getElementById('seek-count').innerText = '';
     document.getElementById('seek-sequence').innerHTML = '';
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
-    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
-    document.getElementById('maxPageNumber').value = ''; // Μηδενισμός του μέγιστου αριθμού σελίδας
+  // document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+    //document.getElementById('maxPageNumber').value = ''; // Μηδενισμός του μέγιστου αριθμού σελίδας
       // Απόκρυψη του πίνακα οπτικοποίησης
       document.getElementById("sequence-container").style.display = "none";
     // Μηδενισμός μεταβλητών

@@ -364,8 +364,8 @@ resetButton.addEventListener('click', () => {
     document.getElementById('frame-number').value = ''; // Επαναφορά αριθμού πλαισίων
     document.querySelector('.visual-table').innerHTML = ''; // Επαναφορά του πίνακα
     document.getElementById('resetButton').style.display = 'none'; // Απόκρυψη του κουμπιού επαναφοράς
-    document.getElementById('maxPageNumber').value = ''; 
-    document.getElementById('sequenceLength').value = ''; 
+    //document.getElementById('maxPageNumber').value = ''; 
+    //document.getElementById('sequenceLength').value = ''; 
        // Απόκρυψη του πίνακα οπτικοποίησης
        document.getElementById("sequence-container").style.display = "none";
     const resultText = document.getElementById('resultText');
@@ -376,14 +376,26 @@ resetButton.addEventListener('click', () => {
    if (finalTableContainer) {
        finalTableContainer.querySelector('.final-table').innerHTML = ''; // Καθαρισμός τελικού πίνακα
    }
-
+   document.getElementById("example-btn").style.display = "inline-block";
     resetButton.style.display = 'none';
 });
+
+
+
+function example(){
+  document.getElementById("pages").value = [ 1,3,0,3,5,6,3].join(",");
+  document.getElementById("frame-number").value=3;
+ 
+  document.getElementById("example-btn").style.display = "none";
+}
+
+
+
 
 function enableResetButton() {
     resetButton.style.display = 'block';
 }
-
+/**
 function generateSequence() {
     clearErrorMessages();
 
@@ -410,7 +422,7 @@ function generateSequence() {
     }
 
     document.getElementById("pages").value = sequence.join(',');
-}
+} */
 
 // script.js
 document.addEventListener("DOMContentLoaded", () => {

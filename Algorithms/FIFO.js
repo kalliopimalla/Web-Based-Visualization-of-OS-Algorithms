@@ -95,7 +95,7 @@ function createTable() {
     seekSequence.appendChild(table);
 
     // Προσαρμογή πλάτους καμβά
-    adjustCanvasWidth(pages.length);
+    //adjustCanvasWidth(pages.length);
 }
 
 
@@ -207,7 +207,7 @@ function nextStep() {
        document.getElementById("sequence-container").style.display = "block";
 }
 
-
+/** 
 function generateSequence() {
     clearErrorMessages(); // Καθαρισμός προηγούμενων μηνυμάτων σφάλματος
 
@@ -243,8 +243,14 @@ function generateSequence() {
     // Ενημέρωση του πεδίου "pages" με την τυχαία ακολουθία
     document.getElementById("pages").value = sequence.join(',');
 }
+*/
 
-
+function example(){
+    document.getElementById("pages").value = [ 1,3,0,3,5,6,3].join(",");
+    document.getElementById("frame-number").value=3;
+   
+    document.getElementById("example-btn").style.display = "none";
+}
 // Κώδικας για το resetButton
 const resetButton = document.getElementById('resetButton');
 
@@ -258,8 +264,8 @@ resetButton.addEventListener('click', () => {
     document.getElementById('seek-count').innerText = '';
     document.getElementById('seek-sequence').innerHTML = '';
     resultText.innerHTML = ''; // Καθαρισμός αποτελεσμάτων
-   document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
-   document.getElementById('maxPageNumber').value = ''; // Μηδενισμός του μέγιστου αριθμού σελίδας
+  // document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+  // document.getElementById('maxPageNumber').value = ''; // Μηδενισμός του μέγιστου αριθμού σελίδας
       // Απόκρυψη του πίνακα οπτικοποίησης
       document.getElementById("sequence-container").style.display = "none";
     // Μηδενισμός μεταβλητών
@@ -270,7 +276,7 @@ resetButton.addEventListener('click', () => {
     faultCount = 0;
     hitCount = 0;
     pageFrames = [];
-
+    document.getElementById("example-btn").style.display = "inline-block";
     // Απόκρυψη του κουμπιού επαναφοράς
     resetButton.style.display = 'none';
 
@@ -319,7 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
 
 
-
+/**
 function adjustCanvasWidth(sequenceLength) {
     const canvasContainer = document.getElementById("seek-sequence");
     const minWidth = 800; // Ελάχιστο πλάτος
@@ -329,6 +335,9 @@ function adjustCanvasWidth(sequenceLength) {
     canvasContainer.style.width = `${newWidth}px`; // Ενημέρωση του πλάτους
     canvasContainer.style.overflowX = "auto"; // Ενεργοποίηση οριζόντιας κύλισης
 }
+
+*/
+
 
 
 // Συνάρτηση για εμφάνιση μηνύματος σφάλματος
