@@ -475,9 +475,14 @@ if (burstTime.length > 100 || arrivalTime.length > 100) {
 }
 
 
+function example(){
+    document.getElementById("burst-time").value = [ 8,4,9,5,1].join(",");
+    document.getElementById("arrival-time").value=[ 2,3,4,1,5].join(",");
+    document.getElementById("example-btn").style.display = "none";
+}
 
 
-
+/**
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length, max = 100, startFromZero = false) {
     let sequence = [];
@@ -505,7 +510,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     document.getElementById("arrival-time").value = arrivalTimeSequence.join(",");
 });
 
-
+ */
 
 function resetSJF() {
     // Καθαρισμός των πεδίων εισόδου
@@ -515,11 +520,11 @@ function resetSJF() {
  document.getElementById('gantt-wrapper').style.display = "none";
     // Καθαρισμός του πίνακα αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = '';
-
+    document.getElementById("example-btn").style.display = "inline-block";
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
     document.getElementById('stepHistory').style.display = "none";
-    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+  //  document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
 
     // Καθαρισμός καμβά
     const canvas = document.getElementById('seekCanvas');

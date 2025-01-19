@@ -78,6 +78,11 @@ arrivalTime = sortedData.sortedArrivalTime;
     document.getElementById('runButton').style.display = 'none';
 }
 
+function example(){
+    document.getElementById("burst-time").value = [ 8,4,9,5,1].join(",");
+    document.getElementById("arrival-time").value=[ 2,3,4,1,5].join(",");
+    document.getElementById("example-btn").style.display = "none";
+}
 
 
 function drawPartialGanttChart(processes, bt, at) {
@@ -474,7 +479,7 @@ function createThreeColumnTable() {
 }
 
 
-
+/** 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length, max = 100, startFromZero = false) {
     let sequence = [];
@@ -502,7 +507,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     document.getElementById("arrival-time").value = arrivalTimeSequence.join(",");
 });
 
-
+*/
 
 
 
@@ -511,7 +516,7 @@ function resetFCFS() {
     // Καθαρισμός των πεδίων εισόδου
     document.getElementById('burst-time').value = '';
     document.getElementById('arrival-time').value = '';
-
+    document.getElementById("example-btn").style.display = "inline-block";
     // Καθαρισμός του πίνακα αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = '';
   // Απόκρυψη κουμπιών και Gantt Chart
@@ -524,7 +529,7 @@ function resetFCFS() {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
   
-      document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+     // document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
   
     // Απόκρυψη κουμπιών που δεν χρειάζονται
     document.getElementById('runButton').style.display = 'none';

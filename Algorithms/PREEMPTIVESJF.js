@@ -185,6 +185,11 @@ function drawGanttChart(schedule) {
 
 
 
+function example(){
+    document.getElementById("burst-time").value = [ 8,4,9,5,1].join(",");
+    document.getElementById("arrival-time").value=[ 2,3,4,1,5].join(",");
+    document.getElementById("example-btn").style.display = "none";
+}
 
 
 let stepCurrentTime = 0;
@@ -454,7 +459,7 @@ if (burstTime.length > 100 || arrivalTime.length > 100) {
         // Εμφάνιση του Gantt Chart
         document.getElementById('gantt-wrapper').style.display = "block";
 }
-
+/** 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length, max = 100, startFromZero = false) {
     let sequence = [];
@@ -481,7 +486,7 @@ document.getElementById("generateSequenceButton").addEventListener("click", func
     document.getElementById("burst-time").value = burstTimeSequence.join(",");
     document.getElementById("arrival-time").value = arrivalTimeSequence.join(",");
 });
-
+*/
 
 function resetPreSJF() {
     // Καθαρισμός των πεδίων εισόδου
@@ -491,8 +496,8 @@ function resetPreSJF() {
  document.getElementById('gantt-wrapper').style.display = "none";
     // Καθαρισμός του πίνακα αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = '';
-
-    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+    document.getElementById("example-btn").style.display = "inline-block";
+    //document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
     
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';
