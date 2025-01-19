@@ -567,7 +567,7 @@ if (burstTime.length > 100 || arrivalTime.length > 100 || priority.length > 100)
         document.getElementById('gantt-wrapper').style.display = "block";
 }
 
-
+/**
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length, max = 100, startFromZero = false) {
     let sequence = [];
@@ -630,10 +630,21 @@ document.getElementById("generateSequenceButton2").addEventListener("click", fun
 });
 
 
+ */
+
+
+function example(){
+    document.getElementById("burst-time").value = [ 8,4,9,5,1].join(",");
+    document.getElementById("arrival-time").value=[ 2,3,4,1,5].join(",");
+    document.getElementById("priority").value=[ 1,2,3,4,5].join(",");
+  
+    document.getElementById("example-btn").style.display = "none";
+}
 
 
 function resetPrioritySJF() {
     // Καθαρισμός των πεδίων εισόδου
+    document.getElementById("example-btn").style.display = "inline-block";
     document.getElementById('burst-time').value = '';
     document.getElementById('arrival-time').value = '';
     document.getElementById('priority').value = '';
@@ -644,7 +655,7 @@ function resetPrioritySJF() {
     document.getElementById('aging-rate-input').value = '';
     document.getElementById('stepHistory').style.display = "none";
 
-    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+   // document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';

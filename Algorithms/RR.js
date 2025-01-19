@@ -3,6 +3,13 @@ const schedule = []; // Πίνακας προγραμματισμού για τ�
 
 
 
+function example(){
+    document.getElementById("burst-time").value = [ 8,4,9,5,1].join(",");
+    document.getElementById("arrival-time").value=[ 2,3,4,1,5].join(",");
+    document.getElementById("quantum").value=2;
+    
+    document.getElementById("example-btn").style.display = "none";
+}
 function runRoundRobinCPU() {
     const btInput = document.getElementById('burst-time').value;
     const atInput = document.getElementById('arrival-time').value;
@@ -472,6 +479,9 @@ function createThreeColumnTable() {
     const quantumDisplay = `<p><strong>Χρονικό Κβάντο:</strong> ${quantum}</p>`;
     document.getElementById('quantum-display').innerHTML = quantumDisplay;
 }
+
+
+/** 
 // Συνάρτηση για τη δημιουργία τυχαίας ακολουθίας
 function generateRandomSequence(length, max = 100, startFromZero = false) {
     let sequence = [];
@@ -507,10 +517,11 @@ document.getElementById("generateSequenceButton2").addEventListener("click", fun
     document.getElementById("quantum").value = randomQuantum; // Ενημέρωση του πεδίου εισόδου για το κβάντο
 });
 
-
+*/
 
 function resetRR() {
     // Καθαρισμός των πεδίων εισόδου
+
     document.getElementById('burst-time').value = '';
     document.getElementById('arrival-time').value = '';
     document.getElementById('quantum').value = '';
@@ -518,8 +529,8 @@ function resetRR() {
  document.getElementById('gantt-wrapper').style.display = "none";
     // Καθαρισμός του πίνακα αποτελεσμάτων
     document.getElementById('seek-count').innerHTML = '';
-
-    document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
+    document.getElementById("example-btn").style.display = "inline-block";
+   // document.getElementById("sequenceLength").value = ""; // Μηδενισμός του sequence length
 
     // Καθαρισμός του ιστορικού βημάτων
     document.getElementById('stepHistory').innerHTML = '';

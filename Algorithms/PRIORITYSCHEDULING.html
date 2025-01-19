@@ -118,14 +118,13 @@
 
   <div style="margin-bottom: 15px;">
     <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 2:</strong>
-    <p style="margin: 5px 0;">Εισαγάγετε τον <strong>χρόνο άφιξης</strong> για κάθε διεργασία, διασφαλίζοντας ότι είναι σωστά μορφοποιημένος.</p>
+    <p style="margin: 5px 0;">Εισαγάγετε τον <strong>χρόνο άφιξης</strong> για κάθε διεργασία, διασφαλίζοντας ότι είναι σωστά μορφοποιημένος. Εναλλακτικά, μπορείτε να τρέξετε το έτοιμο παράδειγμα πατώντας <strong>Συμπλήρωση παραδείγματος</strong>.</p>
   </div>
 
   <div style="margin-bottom: 15px;">
     <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 3:</strong>
     <p style="margin: 5px 0;">
-      Εισαγάγετε τις <strong>προτεραιότητες</strong> για κάθε διεργασία. Εάν δεν θέλετε να τις εισάγετε χειροκίνητα, 
-      μπορείτε να πατήσετε το κουμπί <strong>«Δημιουργία Τυχαίας Ακολουθίας»</strong> για αυτόματη δημιουργία προτεραιοτήτων.
+      Εισαγάγετε τις <strong>προτεραιότητες</strong> για κάθε διεργασία.
     </p>
   </div>
   <div style="margin-bottom: 15px;">
@@ -190,7 +189,7 @@
       <div class="input-steps">
        
 
-        <!-- Μήκος Ακολουθίας Διεργασιών -->
+        <!-- Μήκος Ακολουθίας Διεργασιών 
         <div class="popup">
           <div class="input-group">
             <label for="sequenceLength"><strong>Μήκος Ακολουθίας Διεργασιών:</strong></label>
@@ -198,7 +197,7 @@
             <button id="generateSequenceButton">Δημιουργία Τυχαίων Ακολουθιών</button>
           </div>
           <span class="popuptext">Μέγιστο μήκος ακολουθίας: 100</span>
-        </div>
+        </div>-->
 
         <!-- Χρόνοι Εκτέλεσης -->
         <div class="popup">
@@ -223,7 +222,7 @@
           <div>
             <label for="priority"><strong>Προτεραιότητες:</strong></label>
             <input type="text" id="priority" placeholder="π.χ., 1,3,2,4">
-            <button id="generateSequenceButton2">Δημιουργία Τυχαίας Ακολουθίας</button>
+            <!--<button id="generateSequenceButton2">Δημιουργία Τυχαίας Ακολουθίας</button>-->
           </div>
           <br>
           <div>
@@ -268,7 +267,7 @@
         <!-- Κουμπιά Ελέγχου -->
         <button onclick="runPriorityCPU()" id="runButton" style="display: none;">Απευθείας Εκτέλεση</button>
         <button onclick="startStepByStep()" id="stepByStepBtn" style="display:none;">Βήμα προς βήμα</button>
-   
+        <button id="example-btn" onclick="example()">Συμπλήρωση παραδείγματος</button>
 
         <!-- Πίνακας Αποτελεσμάτων και Ιστορικό -->
         <div class="table-container">

@@ -116,7 +116,7 @@
 
   <div style="margin-bottom: 15px;">
     <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 2:</strong>
-    <p style="margin: 5px 0;">Εισαγάγετε τον <strong>χρόνο άφιξης</strong> για κάθε διεργασία, διασφαλίζοντας ότι είναι σωστά μορφοποιημένος.</p>
+    <p style="margin: 5px 0;">Εισαγάγετε τον <strong>χρόνο άφιξης</strong> για κάθε διεργασία, διασφαλίζοντας ότι είναι σωστά μορφοποιημένος.  Εναλλακτικά, μπορείτε να τρέξετε το έτοιμο παράδειγμα πατώντας <strong>Συμπλήρωση παραδείγματος</strong>.</p>
   </div>
 
 
@@ -124,8 +124,7 @@
   <div style="margin-bottom: 15px;">
     <strong style="color: #000; font-size: 1.2em;">ΒΗΜΑ 3:</strong>
     <p style="margin: 5px 0;">
-      Εισαγάγετε την τιμή για το <strong>κβάντο</strong> (Quantum) . Εάν δεν θέλετε να το εισάγετε χειροκίνητα, 
-      μπορείτε να πατήσετε το κουμπί <strong>«Τυχαίο Κβάντο»</strong> για να παραχθεί αυτόματα μια τυχαία τιμή.
+      Εισαγάγετε την τιμή για το <strong>κβάντο</strong> (Quantum) . 
     </p>
   </div>
 
@@ -162,7 +161,7 @@
 
 
                 <h2>Υλοποίηση</h2>
-              
+              <!--
                 <div class="popup">
                   <div class="input-group">
                     <label for="sequenceLength"><strong>Μήκος Ακολουθίας Διεργασιών:</strong></label>
@@ -170,7 +169,7 @@
                     <button id="generateSequenceButton">Δημιουργία Τυχαίων Ακολουθιών</button>
                     </div>
                     <span class="popuptext"> Μέγιστο μήκος ακολουθιας το 100</span>
-                </div>
+                </div>-->
     
                 <div class="popup">
                 <div class="input-group">
@@ -197,7 +196,7 @@
                 <div class="input-group">
                     <label for="quantum"><strong>Κβάντο Χρόνου:</strong></label>
                     <input type="number" id="quantum" placeholder="π.χ. 2">
-                    <button id="generateSequenceButton2">Τυχαίο Κβάντο</button>
+                   <!-- <button id="generateSequenceButton2">Τυχαίο Κβάντο</button>-->
                 </div>
                 <span class="popuptext">Δέχεται θετικό αριθμό</span>
               </div>
@@ -212,6 +211,7 @@
                  <br>
                 <button onclick="runRoundRobinCPU() " id="runButton" style="display: none; ">Απευθείας Εκτέλεση</button>
                 <button onclick="startStepByStep()" id="stepByStepBtn" style="display:none;">Βήμα προς βήμα</button>
+                <button id="example-btn" onclick="example()">Συμπλήρωση παραδείγματος</button>
             
 
                 <div class="table-container">
