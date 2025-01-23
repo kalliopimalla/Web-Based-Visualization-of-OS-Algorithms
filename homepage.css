@@ -419,4 +419,12 @@ footer {
   }
 }
 
+footer a {
+  text-decoration: underline; /* Υπογραμμίζει το link */
+  color: #fff; /* Λευκό χρώμα */
+}
 
+footer a:hover {
+  text-decoration: none; /* Αφαιρεί την υπογράμμιση όταν περνάει το ποντίκι */
+  color: #f1c40f; /* Αλλάζει το χρώμα σε χρυσό */
+}
