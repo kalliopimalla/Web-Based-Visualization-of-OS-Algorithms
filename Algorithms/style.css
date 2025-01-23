@@ -925,7 +925,11 @@ table td {
 }
 
 
-
+#seekCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
 
 /* Για τους αλγοριθμους χρονοπρογραμματισμου δισκου χρησιμοποιω κατι αντισοιχ με το Gant wrapper για αυτο η ιδια ονομασια */
@@ -934,20 +938,16 @@ table td {
   overflow-y: auto;
   white-space: nowrap;
   margin-top: 20px;
-  display: flex; /* Ευθυγράμμιση με χρήση Flexbox */
+  display: auto; /* Ευθυγράμμιση με χρήση Flexbox */
   justify-content: center; /* Κεντράρισμα οριζόντια */
   align-items: center; /* Κεντράρισμα κάθετα */
   height: 100%; /* Ανάλογα με το ύψος που θέλεις */
-}
-
-
-
-#gantt-wrapperDisk {
-  overflow-x: auto; /* Η κύλιση ενεργοποιείται μόνο όταν χρειάζεται */
-  white-space: nowrap; /* Διατηρεί τα περιεχόμενα σε μία γραμμή */
   scrollbar-width: thin; /* Λεπτή μπάρα κύλισης για Firefox */
   scrollbar-color: #888 #f1f1f1; /* Χρώμα της μπάρας κύλισης (Firefox) */
 }
+
+
+
 
 #gantt-wrapperDisk::-webkit-scrollbar {
   height: 8px; /* Ύψος της μπάρας κύλισης */
